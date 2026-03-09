@@ -39,6 +39,7 @@ links:
     - portal.azure.com
     - www.npmjs.com
     - sonner.emilkowal.ski
+    - tailortech.statuspage.io
   blocked_domains: [] # block links to these domains
 
 # Heading validation rules
