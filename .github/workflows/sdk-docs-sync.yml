@@ -19,7 +19,7 @@ jobs:
       - name: Checkout current repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          path: docs-v2
+          path: docs
 
       - name: Checkout sdk repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -34,15 +34,15 @@ jobs:
           node-version: "24"
 
       - name: Install dependencies for docs-sync script
-        working-directory: docs-v2/scripts/docs-sync
+        working-directory: docs/scripts/docs-sync
         run: npm ci
 
       - name: Sync the docs files
-        working-directory: docs-v2/scripts/docs-sync
+        working-directory: docs/scripts/docs-sync
         run: npm start -- sdk
 
       - name: Check for changes
-        working-directory: docs-v2
+        working-directory: docs
         id: git_diff
         run: |
           git config --global --add safe.directory $PWD
@@ -56,7 +56,7 @@ jobs:
         if: steps.git_diff.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
         with:
-          path: docs-v2
+          path: docs
           token: ${{ secrets.PAT_TOKEN }}
           commit-message: Update SDK pages
           branch: update-sdk-pages
