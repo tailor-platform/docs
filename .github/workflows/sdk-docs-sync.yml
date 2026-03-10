@@ -57,7 +57,7 @@ jobs:
         uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
         with:
           path: docs
-          token: ${{ secrets.PAT_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Update SDK pages
           branch: update-sdk-pages
           title: Update SDK pages
