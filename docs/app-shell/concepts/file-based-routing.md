@@ -1,3 +1,8 @@
+---
+title: File-Based Routing
+description: Define pages via directory structure using the Vite plugin instead of explicit module configuration
+---
+
 # File-Based Routing
 
 File-based routing allows you to define pages by simply placing components in a directory structure, eliminating the need for explicit `defineModule()` and `defineResource()` calls.
@@ -19,6 +24,20 @@ src/pages/
     └── settings/
         └── page.tsx          # /settings
 ```
+
+Directories **without** a `page.tsx` still contribute a path segment — navigating to that path returns a 404 while their children remain accessible:
+
+```
+src/pages/
+├── admin/
+│   ├── users/
+│   │   └── page.tsx   # /admin/users → renders page
+│   └── roles/
+│       └── page.tsx   # /admin/roles → renders page
+│   # no page.tsx for /admin → 404
+```
+
+Guards defined on a `page.tsx` apply to that exact path. Directories without `page.tsx` do not support guards — add guards to the individual child pages instead.
 
 ## Setup
 
