@@ -11,21 +11,23 @@ All interfaces are typed via [`@tailor-platform/function-types`](https://github.
 
 ## Overview
 
-| Interface | Description |
+| Service | Description |
 | --- | --- |
-| [`tailor.idp.Client`](#tailor-idp-client) | Create, update, delete IdP users and send password reset emails |
-| [`tailor.secretmanager`](#tailor-secretmanager) | Retrieve secrets from vaults |
-| [`tailor.authconnection`](#tailor-authconnection) | Get access tokens for external auth connections |
-| [`tailor.iconv`](#tailor-iconv) | Convert between character encodings |
-| [`tailor.workflow`](#tailor-workflow) | Trigger workflows and job functions |
-| [`tailordb.Client`](#tailordb-client) | Execute SQL queries against TailorDB |
-| [`tailordb.file`](#tailordb-file) | Upload, download, and manage files in TailorDB |
+| [IdP Client](#idp-client) | Create, update, delete IdP users and send password reset emails |
+| [Secret Manager](#secret-manager) | Retrieve secrets from vaults |
+| [Auth Connection](#auth-connection) | Get access tokens for external auth connections |
+| [Character Encoding](#character-encoding) | Convert between character encodings (iconv) |
+| [Workflow](#workflow) | Trigger workflows and job functions |
+| [TailorDB Client](#tailordb-client) | Execute SQL queries against TailorDB |
+| [TailorDB File](#tailordb-file) | Upload, download, and manage files in TailorDB |
 
-## `tailor.idp.Client`
+## IdP Client
+
+**Interface**: `tailor.idp.Client`
 
 Manage Built-in IdP users directly from your function. No external HTTP calls or machine user tokens needed.
 
-See also: [Managing IdP Users in Functions](/guides/function/managing-idp-users)
+**See also**: [Managing IdP Users in Functions](/guides/function/managing-idp-users)
 
 ```typescript
 const client = new tailor.idp.Client({ namespace: "my-namespace" });
@@ -51,8 +53,6 @@ await client.sendPasswordResetEmail({
 });
 ```
 
-### Methods
-
 | Method | Returns | Description |
 | --- | --- | --- |
 | `users(options?)` | `Promise<ListUsersResponse>` | List users with optional filtering and pagination |
@@ -62,7 +62,9 @@ await client.sendPasswordResetEmail({
 | `deleteUser(userId)` | `Promise<boolean>` | Delete a user by ID |
 | `sendPasswordResetEmail(input)` | `Promise<boolean>` | Send a password reset email |
 
-## `tailor.secretmanager`
+## Secret Manager
+
+**Interface**: `tailor.secretmanager`
 
 Retrieve secrets stored in Tailor Platform vaults.
 
@@ -78,14 +80,14 @@ const secrets = await tailor.secretmanager.getSecrets("my-vault", [
 // secrets.API_KEY, secrets.API_SECRET
 ```
 
-### Functions
-
 | Function | Returns | Description |
 | --- | --- | --- |
 | `getSecret(vault, name)` | `Promise<string \| undefined>` | Get a single secret. Returns `undefined` if not found |
 | `getSecrets(vault, names)` | `Promise<Partial<Record<string, string>>>` | Get multiple secrets. Missing keys are omitted |
 
-## `tailor.authconnection`
+## Auth Connection
+
+**Interface**: `tailor.authconnection`
 
 Get access tokens for configured external auth connections (e.g., OAuth providers).
 
@@ -94,13 +96,13 @@ const token = await tailor.authconnection.getConnectionToken("my-google-connecti
 // Use token to call external APIs
 ```
 
-### Functions
-
 | Function | Returns | Description |
 | --- | --- | --- |
 | `getConnectionToken(connectionName)` | `Promise<any>` | Get the access token for a named auth connection |
 
-## `tailor.iconv`
+## Character Encoding
+
+**Interface**: `tailor.iconv`
 
 Convert between character encodings. Useful for processing files in non-UTF-8 encodings (e.g., Shift_JIS CSV files).
 
@@ -118,8 +120,6 @@ const result = tailor.iconv.convert(buffer, "EUC-JP", "UTF-8");
 const encodings = tailor.iconv.encodings();
 ```
 
-### Functions
-
 | Function | Returns | Description |
 | --- | --- | --- |
 | `convert(str, fromEncoding, toEncoding)` | `string \| Uint8Array` | Convert between encodings. Returns `string` when target is UTF-8 |
@@ -134,7 +134,9 @@ const converter = new tailor.iconv.Iconv("Shift_JIS", "UTF-8");
 const result = converter.convert(inputBuffer);
 ```
 
-## `tailor.workflow`
+## Workflow
+
+**Interface**: `tailor.workflow`
 
 Trigger workflows and job functions from within a function.
 
@@ -162,18 +164,18 @@ const result = await tailor.workflow.triggerJobFunction("calculateTax", {
 });
 ```
 
-### Functions
-
 | Function | Returns | Description |
 | --- | --- | --- |
 | `triggerWorkflow(name, args?, options?)` | `Promise<string>` | Trigger a workflow. Returns the execution ID |
 | `triggerJobFunction(name, args?)` | `any` | Trigger a job function and return its result |
 
-## `tailordb.Client`
+## TailorDB Client
+
+**Interface**: `tailordb.Client`
 
 Execute SQL queries directly against TailorDB. For ORM-style access, consider using `@tailor-platform/function-kysely-tailordb`.
 
-See also: [Accessing TailorDB](/guides/function/accessing-tailordb)
+**See also**: [Accessing TailorDB](/guides/function/accessing-tailordb)
 
 ```typescript
 const db = new tailordb.Client({ namespace: "my-namespace" });
@@ -190,15 +192,15 @@ try {
 }
 ```
 
-### Methods
-
 | Method | Returns | Description |
 | --- | --- | --- |
 | `connect()` | `Promise<void>` | Open the database connection |
 | `end()` | `Promise<void>` | Close the database connection |
 | `queryObject<T>(sql, args?)` | `Promise<QueryResult<T>>` | Execute a SQL query with parameterized arguments |
 
-## `tailordb.file`
+## TailorDB File
+
+**Interface**: `tailordb.file`
 
 Upload, download, and manage files attached to TailorDB records.
 
@@ -249,9 +251,7 @@ const meta = await tailordb.file.getMetadata("my-namespace", "Document", "attach
 await tailordb.file.delete("my-namespace", "Document", "attachment", recordId);
 ```
 
-### Methods
-
-All methods take `(namespace, typeName, fieldName, recordId)` as the first four arguments.
+**Note**: All methods take `(namespace, typeName, fieldName, recordId)` as the first four arguments.
 
 | Method | Returns | Description |
 | --- | --- | --- |
