@@ -88,8 +88,7 @@ export const defaultSidebarOrder: string[] = ["overview", "quickstart"];
 
 // Section-specific overrides (only if you need different ordering for a specific section)
 export const sidebarItemOrder: Record<string, string[]> = {
-  // Add section-specific overrides here if needed
-  // Example: 'guides': ['overview', 'quickstart', 'tailordb', ...]
+  function: ["overview", "builtin-interfaces"],
   "app-shell": [
     "api",
     "authentication",

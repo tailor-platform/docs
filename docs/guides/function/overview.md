@@ -14,12 +14,14 @@ With Function service, you can:
 
 - Send HTTP requests to 3rd party applications
 - Access and execute SQL queries to Tailor DB
+- Manage IdP users, secrets, files, and workflows via [built-in interfaces](/guides/function/builtin-interfaces)
 - Process data transformations
 - Implement custom business logic with npm packages
 
 To keep the this guide simple, we'll focus on a basic example of writing a function that returns a greeting message.
 For more advanced use cases, you can refer to these sections:
 
+- [Built-in interfaces](/guides/function/builtin-interfaces) — all platform APIs available as global variables
 - [Sending HTTP request](/guides/function/sending-request)
 - [Accessing Tailor DB](/guides/function/accessing-tailordb)
 
@@ -192,6 +194,7 @@ export default createExecutor({
 
 For more advanced use cases, you can refer to these sections:
 
+- [Built-in interfaces](/guides/function/builtin-interfaces) — all platform APIs available as global variables (IdP, secrets, files, workflows, etc.)
 - [Sending HTTP request](/guides/function/sending-request)
 - [Accessing Tailor DB](/guides/function/accessing-tailordb)
 
