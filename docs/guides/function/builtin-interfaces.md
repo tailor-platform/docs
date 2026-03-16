@@ -7,7 +7,7 @@ doc_type: guide
 Functions (Resolvers, Workflows, Executors) have access to built-in interfaces as global variables.
 These provide direct access to platform services without external HTTP calls or token management.
 
-All interfaces are typed via `@tailor-platform/function-types` — install the package to get full TypeScript support.
+All interfaces are typed via [`@tailor-platform/function-types`](https://github.com/tailor-platform/function/tree/main/packages/types) — install the package to get full TypeScript support.
 
 ## Overview
 

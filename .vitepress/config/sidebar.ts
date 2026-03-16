@@ -25,9 +25,11 @@ export function generateSidebar(
 
   const entries = fs.readdirSync(fullPath, { withFileTypes: true });
 
-  // Get section name for custom ordering
+  // Get custom ordering: check current directory name first, then top-level section
+  const currentDirName = path.basename(dir);
   const sectionName = dir.split(path.sep)[0];
-  const customOrder = sidebarItemOrder[sectionName] || defaultSidebarOrder;
+  const customOrder =
+    sidebarItemOrder[currentDirName] || sidebarItemOrder[sectionName] || defaultSidebarOrder;
 
   // Get markdown files (excluding index.md)
   const files = entries

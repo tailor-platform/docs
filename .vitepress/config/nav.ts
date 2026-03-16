@@ -2,7 +2,7 @@ import type { DefaultTheme } from "vitepress";
 import fs from "node:fs";
 import path from "node:path";
 import { toTitle } from "./utils.js";
-import { navGroups, navItemOrder } from "./constants.js";
+import { navGroups, navItemOrder, sidebarItemOrder, defaultSidebarOrder } from "./constants.js";
 
 // Generate grouped nav items with organized dropdown structure
 export function generateNav(docsDir: string): DefaultTheme.NavItem[] {
@@ -38,10 +38,16 @@ export function generateNav(docsDir: string): DefaultTheme.NavItem[] {
               const subFiles = fs
                 .readdirSync(path.join(sectionPath, e.name))
                 .filter((f) => f.endsWith(".md") && !f.startsWith("."))
-                .sort();
+                .map((f) => f.replace(/\.md$/, ""));
 
-              if (subFiles.length > 0) {
-                link = `/${section}/${e.name}/${subFiles[0].replace(/\.md$/, "")}`;
+              // Use sidebarItemOrder, then defaultSidebarOrder, then alphabetical
+              const order = sidebarItemOrder[e.name] || defaultSidebarOrder;
+              const firstOrdered = order.find((item) => subFiles.includes(item));
+              if (firstOrdered) {
+                link = `/${section}/${e.name}/${firstOrdered}`;
+              } else if (subFiles.length > 0) {
+                subFiles.sort();
+                link = `/${section}/${e.name}/${subFiles[0]}`;
               }
             }
 
