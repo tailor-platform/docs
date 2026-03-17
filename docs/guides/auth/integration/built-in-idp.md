@@ -312,6 +312,7 @@ Once registered, the IdP subgraph provides the following GraphQL operations for 
 
 - `_users` - List IdP users with pagination and filtering
 - `_user` - Get a specific IdP user by ID
+- `_userBy` - Get a specific IdP user by ID or name
 
 **Mutation Operations:**
 
@@ -367,6 +368,32 @@ query GetUsersByName {
 ```graphql
 query GetUser($userId: ID!) {
   _user(id: $userId) {
+    id
+    name
+    createdAt
+    disabled
+  }
+}
+```
+
+**Get an IdP user by ID or name:**
+
+The `_userBy` query allows you to fetch a single user by exactly one of `id` or `name`. Exactly one argument must be provided — specifying both or neither returns an error.
+
+```graphql
+# By ID
+query GetUserById {
+  _userBy(id: "user-uuid") {
+    id
+    name
+    createdAt
+    disabled
+  }
+}
+
+# By name
+query GetUserByName {
+  _userBy(name: "foo@example.com") {
     id
     name
     createdAt

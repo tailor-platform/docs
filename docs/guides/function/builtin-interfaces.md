@@ -41,8 +41,9 @@ const { users, totalCount } = await client.users({
   query: { names: ["user@example.com"] },
 });
 
-// Get, update, delete
+// Get by ID or by name
 const user = await client.user(userId);
+const userByName = await client.userByName("foo@example.com");
 await client.updateUser({ id: userId, name: "new@example.com" });
 await client.deleteUser(userId);
 
@@ -57,6 +58,7 @@ await client.sendPasswordResetEmail({
 | --- | --- | --- |
 | `users(options?)` | `Promise<ListUsersResponse>` | List users with optional filtering and pagination |
 | `user(userId)` | `Promise<User>` | Get a user by ID |
+| `userByName(name)` | `Promise<User>` | Get a user by name |
 | `createUser(input)` | `Promise<User>` | Create a new user |
 | `updateUser(input)` | `Promise<User>` | Update an existing user |
 | `deleteUser(userId)` | `Promise<boolean>` | Delete a user by ID |

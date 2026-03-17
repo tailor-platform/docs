@@ -71,6 +71,7 @@ class Client {
   constructor(config: ClientConfig);
   users(options?: ListUsersOptions): Promise<ListUsersResponse>;
   user(userId: string): Promise<User>;
+  userByName(name: string): Promise<User>;
   createUser(input: CreateUserInput): Promise<User>;
   updateUser(input: UpdateUserInput): Promise<User>;
   deleteUser(userId: string): Promise<boolean>;
@@ -160,6 +161,25 @@ export default async (args) => {
   const idpClient = new tailor.idp.Client({ namespace: args.namespaceName });
 
   const user = await idpClient.user(args.userId);
+
+  return {
+    id: user.id,
+    name: user.name,
+    disabled: user.disabled,
+    createdAt: user.createdAt,
+  };
+};
+```
+
+### Get User by Name
+
+The `userByName` method retrieves a single user by their name.
+
+```js
+export default async (args) => {
+  const idpClient = new tailor.idp.Client({ namespace: args.namespaceName });
+
+  const user = await idpClient.userByName(args.userName);
 
   return {
     id: user.id,
