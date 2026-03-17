@@ -78,7 +78,7 @@ export const excludedSections: string[] = ["public"];
 
 // Custom title overrides for sections/folders
 export const customTitles: Record<string, string> = {
-  "app-shell": "App Shell",
+  "app-shell": "AppShell",
   // Add more custom titles here as needed
 };
 
