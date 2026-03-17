@@ -1,4 +1,4 @@
-# UI Framework
+# App Shell
 
 AppShell is a UI framework for building interfaces on Tailor Platform.
 
