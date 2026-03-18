@@ -222,6 +222,33 @@ Below is a list of supported events and their payloads.
 </tbody>
 </table>
 
+## Auth
+
+### Access Token Issued
+
+`auth.access_token.issued`
+
+<table>
+<thead>
+  <tr>
+    <th>Field Name </th>
+    <th>Description</th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>`workspaceId`</td>
+    <td>`String`: The workspace ID where the event occurred.</td>
+  </tr>
+
+  <tr>
+    <td>`namespaceName`</td>
+    <td>`String`: Name of the application.</td>
+  </tr>
+</tbody>
+</table>
+
 ## Built-in IdP
 
 ### User Created
