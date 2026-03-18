@@ -14,49 +14,15 @@ These features include:
 
 Below is a table listing all the available `settings`, with each field and its corresponding type.
 
-<thead>
-  <tr>
-    <th>Field Name </th>
-    <th>Type</th>
-  </tr>
-</thead>
-
-<tbody>
-  <tr>
-    <td>Aggregation</td>
-    <td>`bool`</td>
-  </tr>
-
-  <tr>
-    <td>BulkUpsert</td>
-    <td>`bool`</td>
-  </tr>
-
-  <tr>
-    <td>Draft</td>
-    <td>`bool`</td>
-  </tr>
-
-  <tr>
-    <td>DefaultQueryLimitSize</td>
-    <td>`int`: Default number of records returned by a query is 100.</td>
-  </tr>
-
-  <tr>
-    <td>MaxBulkUpsertSize</td>
-    <td>`int`: Maximum number of records that can be processed in a single bulk upsert operation is limited to 1,000.</td>
-  </tr>
-
-  <tr>
-    <td>PluralForm</td>
-    <td>`bool`</td>
-  </tr>
-
-  <tr>
-    <td>PublishRecordEvents</td>
-    <td>`bool`</td>
-  </tr>
-</tbody>
+| Field Name | Type |
+|------------|------|
+| Aggregation | `bool` |
+| BulkUpsert | `bool` |
+| Draft | `bool` |
+| DefaultQueryLimitSize | `int`: Default number of records returned by a query is 100. |
+| MaxBulkUpsertSize | `int`: Maximum number of records that can be processed in a single bulk upsert operation is limited to 1,000. |
+| PluralForm | `bool` |
+| PublishRecordEvents | `bool` |
 
 Also, we can utilize the following advanced GraphQL schema configuration to optimize GraphQL queries.
 
