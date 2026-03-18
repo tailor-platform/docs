@@ -264,3 +264,13 @@
 .vp-doc summary:hover {
   color: var(--vp-c-brand-1);
 }
+
+/* ===== Fix: Code visibility in custom blocks ===== */
+
+.vp-doc .tip code,
+.vp-doc .warning code,
+.vp-doc .info code,
+.vp-doc .danger code {
+  color: var(--vp-code-color) !important;
+  opacity: 1 !important;
+}
