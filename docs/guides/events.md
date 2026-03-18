@@ -14,171 +14,51 @@ Below is a list of supported events and their payloads.
 
 `tailordb.type_record.created`
 
-<table>
-<thead>
-  <tr>
-    <th>Field Name </th>
-    <th>Description</th>
-  </tr>
-</thead>
-
-<tbody>
-  <tr>
-    <td>`workspaceId`</td>
-    <td>`String`: The workspace ID where the event occurred.</td>
-  </tr>
-
-  <tr>
-    <td>`namespaceName`</td>
-    <td>`String`: Name of the application.</td>
-  </tr>
-
-  <tr>
-    <td>`typeName`</td>
-    <td>`String`: Name of the type.</td>
-  </tr>
-
-  <tr>
-    <td>`newRecord`</td>
-    <td>`Object`: The new record added to Tailor DB.</td>
-  </tr>
-</tbody>
-</table>
+| Field Name | Description |
+|------------|-------------|
+| `workspaceId` | `String`: The workspace ID where the event occurred. |
+| `namespaceName` | `String`: Name of the application. |
+| `typeName` | `String`: Name of the type. |
+| `newRecord` | `Object`: The new record added to Tailor DB. |
 
 ### Record Updated
 
 `tailordb.type_record.updated`
 
-<table>
-<thead>
-  <tr>
-    <th>Field Name </th>
-    <th>Description</th>
-  </tr>
-</thead>
-
-<tbody>
-  <tr>
-    <td>`workspaceId`</td>
-    <td>`String`: The workspace ID where the event occurred.</td>
-  </tr>
-
-  <tr>
-    <td>`namespaceName`</td>
-    <td>`String`: Name of the application.</td>
-  </tr>
-
-  <tr>
-    <td>`typeName`</td>
-    <td>`String`: Name of the type.</td>
-  </tr>
-
-  <tr>
-    <td>`oldRecord`</td>
-    <td>`Object`: The old record in Tailor DB.</td>
-  </tr>
-
-  <tr>
-    <td>`newRecord`</td>
-    <td>`Object`: The updated record in Tailor DB.</td>
-  </tr>
-</tbody>
-</table>
+| Field Name | Description |
+|------------|-------------|
+| `workspaceId` | `String`: The workspace ID where the event occurred. |
+| `namespaceName` | `String`: Name of the application. |
+| `typeName` | `String`: Name of the type. |
+| `oldRecord` | `Object`: The old record in Tailor DB. |
+| `newRecord` | `Object`: The updated record in Tailor DB. |
 
 ### Record Deleted
 
 `tailordb.type_record.deleted`
 
-<table>
-<thead>
-  <tr>
-    <th>Field Name </th>
-    <th>Description</th>
-  </tr>
-</thead>
-
-<tbody>
-  <tr>
-    <td>`workspaceId`</td>
-    <td>`String`: The workspace ID where the event occurred.</td>
-  </tr>
-
-  <tr>
-    <td>`namespaceName`</td>
-    <td>`String`: Name of the application.</td>
-  </tr>
-
-  <tr>
-    <td>`typeName`</td>
-    <td>`String`: Name of the type.</td>
-  </tr>
-
-  <tr>
-    <td>`oldRecord`</td>
-    <td>`Object`: The deleted record.</td>
-  </tr>
-</tbody>
-</table>
+| Field Name | Description |
+|------------|-------------|
+| `workspaceId` | `String`: The workspace ID where the event occurred. |
+| `namespaceName` | `String`: Name of the application. |
+| `typeName` | `String`: Name of the type. |
+| `oldRecord` | `Object`: The deleted record. |
 
 ### File Uploaded
 
 `tailordb.type_record_file.uploaded`
 
-<table>
-<thead>
-  <tr>
-    <th>Field Name </th>
-    <th>Description</th>
-  </tr>
-</thead>
-
-<tbody>
-  <tr>
-    <td>`workspaceId`</td>
-    <td>`String`: The workspace ID where the event occurred.</td>
-  </tr>
-
-  <tr>
-    <td>`namespaceName`</td>
-    <td>`String`: Name of the application.</td>
-  </tr>
-
-  <tr>
-    <td>`typeName`</td>
-    <td>`String`: Name of the type.</td>
-  </tr>
-
-  <tr>
-    <td>`metadata.content_type`</td>
-    <td>`String`: MIME type of the uploaded file.</td>
-  </tr>
-
-  <tr>
-    <td>`metadata.field_name`</td>
-    <td>`String`: Name of the file field that received the upload.</td>
-  </tr>
-
-  <tr>
-    <td>`metadata.last_uploaded_at`</td>
-    <td>`DateTime`: Timestamp when the file was uploaded.</td>
-  </tr>
-
-  <tr>
-    <td>`metadata.parent_id`</td>
-    <td>`String`: ID of the record that owns the file.</td>
-  </tr>
-
-  <tr>
-    <td>`metadata.sha256sum`</td>
-    <td>`String`: SHA256 checksum of the uploaded file.</td>
-  </tr>
-
-  <tr>
-    <td>`metadata.size`</td>
-    <td>`Integer`: Size of the uploaded file in bytes.</td>
-  </tr>
-</tbody>
-</table>
+| Field Name | Description |
+|------------|-------------|
+| `workspaceId` | `String`: The workspace ID where the event occurred. |
+| `namespaceName` | `String`: Name of the application. |
+| `typeName` | `String`: Name of the type. |
+| `metadata.content_type` | `String`: MIME type of the uploaded file. |
+| `metadata.field_name` | `String`: Name of the file field that received the upload. |
+| `metadata.last_uploaded_at` | `DateTime`: Timestamp when the file was uploaded. |
+| `metadata.parent_id` | `String`: ID of the record that owns the file. |
+| `metadata.sha256sum` | `String`: SHA256 checksum of the uploaded file. |
+| `metadata.size` | `Integer`: Size of the uploaded file in bytes. |
 
 ## Pipeline
 
@@ -186,41 +66,13 @@ Below is a list of supported events and their payloads.
 
 `pipeline.resolver.executed`
 
-<table>
-<thead>
-  <tr>
-    <th>Field Name </th>
-    <th>Description</th>
-  </tr>
-</thead>
-
-<tbody>
-  <tr>
-    <td>`workspaceId`</td>
-    <td>`String`: The workspace ID where the event occurred.</td>
-  </tr>
-
-  <tr>
-    <td>`namespaceName`</td>
-    <td>`String`: Name of the application.</td>
-  </tr>
-
-  <tr>
-    <td>`resolverName`</td>
-    <td>`String`: Name of the pipeline resolver. </td>
-  </tr>
-
-  <tr>
-    <td>`succeeded.result`</td>
-    <td>`Object`: The result object contains `pipelines` and `resolver` data.</td>
-  </tr>
-
-  <tr>
-    <td>`failed.error`</td>
-    <td>`String`: The error message provides details about the cause of the error.</td>
-  </tr>
-</tbody>
-</table>
+| Field Name | Description |
+|------------|-------------|
+| `workspaceId` | `String`: The workspace ID where the event occurred. |
+| `namespaceName` | `String`: Name of the application. |
+| `resolverName` | `String`: Name of the pipeline resolver. |
+| `succeeded.result` | `Object`: The result object contains `pipelines` and `resolver` data. |
+| `failed.error` | `String`: The error message provides details about the cause of the error. |
 
 ## Built-in IdP
 
@@ -228,88 +80,28 @@ Below is a list of supported events and their payloads.
 
 `idp.user.created`
 
-<table>
-<thead>
-  <tr>
-    <th>Field Name </th>
-    <th>Description</th>
-  </tr>
-</thead>
-
-<tbody>
-  <tr>
-    <td>`workspaceId`</td>
-    <td>`String`: The workspace ID where the event occurred.</td>
-  </tr>
-
-  <tr>
-    <td>`namespaceName`</td>
-    <td>`String`: Name of the application.</td>
-  </tr>
-
-  <tr>
-    <td>`userId`</td>
-    <td>`String`: The ID of the created IdP user.</td>
-  </tr>
-</tbody>
-</table>
+| Field Name | Description |
+|------------|-------------|
+| `workspaceId` | `String`: The workspace ID where the event occurred. |
+| `namespaceName` | `String`: Name of the application. |
+| `userId` | `String`: The ID of the created IdP user. |
 
 ### User Updated
 
 `idp.user.updated`
 
-<table>
-<thead>
-  <tr>
-    <th>Field Name </th>
-    <th>Description</th>
-  </tr>
-</thead>
-
-<tbody>
-  <tr>
-    <td>`workspaceId`</td>
-    <td>`String`: The workspace ID where the event occurred.</td>
-  </tr>
-
-  <tr>
-    <td>`namespaceName`</td>
-    <td>`String`: Name of the application.</td>
-  </tr>
-
-  <tr>
-    <td>`userId`</td>
-    <td>`String`: The ID of the updated IdP user.</td>
-  </tr>
-</tbody>
-</table>
+| Field Name | Description |
+|------------|-------------|
+| `workspaceId` | `String`: The workspace ID where the event occurred. |
+| `namespaceName` | `String`: Name of the application. |
+| `userId` | `String`: The ID of the updated IdP user. |
 
 ### User Deleted
 
 `idp.user.deleted`
 
-<table>
-<thead>
-  <tr>
-    <th>Field Name </th>
-    <th>Description</th>
-  </tr>
-</thead>
-
-<tbody>
-  <tr>
-    <td>`workspaceId`</td>
-    <td>`String`: The workspace ID where the event occurred.</td>
-  </tr>
-
-  <tr>
-    <td>`namespaceName`</td>
-    <td>`String`: Name of the application.</td>
-  </tr>
-
-  <tr>
-    <td>`userId`</td>
-    <td>`String`: The ID of the deleted IdP user.</td>
-  </tr>
-</tbody>
-</table>
+| Field Name | Description |
+|------------|-------------|
+| `workspaceId` | `String`: The workspace ID where the event occurred. |
+| `namespaceName` | `String`: Name of the application. |
+| `userId` | `String`: The ID of the deleted IdP user. |
