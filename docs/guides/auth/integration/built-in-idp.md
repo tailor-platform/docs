@@ -115,7 +115,8 @@ The `user_auth_policy` block allows you to configure how users authenticate with
 - **Self-service password reset**: When `allow_self_password_reset` is `true`, a "Forgot Password?" link is displayed on the sign-in screen, allowing users to reset their own password. This option is disabled by default.
 - **Google OAuth**: When `allow_google_oauth` is `true`, a "Sign in with Google" button is displayed on the sign-in screen, allowing users to authenticate using their Google account. Requires `allowed_email_domains` to be set. See [Google OAuth](#google-oauth) for details.
 - **Allowed email domains**: When `allowed_email_domains` is set, only users with email addresses from the specified domains can sign in or be created. See [Allowed Email Domains](#allowed-email-domains) for details.
-- **Disable password authentication**: When `disable_password_auth` is `true`, password-based sign-in and password reset are disabled. Google OAuth becomes the sole authentication method. See [Disable Password Authentication](#disable-password-authentication) for details.
+- **Microsoft OAuth**: When `allow_microsoft_oauth` is `true`, a "Sign in with Microsoft" button is displayed on the sign-in screen, allowing users to authenticate using their Microsoft account. Requires `allowed_email_domains` and `disable_password_auth` to be set. See [Microsoft OAuth](#microsoft-oauth) for details.
+- **Disable password authentication**: When `disable_password_auth` is `true`, password-based sign-in and password reset are disabled. Google OAuth or Microsoft OAuth becomes the sole authentication method. See [Disable Password Authentication](#disable-password-authentication) for details.
 
 This flexibility allows you to choose the authentication method that best fits your application's requirements.
 
@@ -180,7 +181,7 @@ Users created via Google OAuth do not have a password set. They can only sign in
 :::
 
 :::warning
-`allow_google_oauth`, `allowed_email_domains`, and `disable_password_auth` are only available via the Terraform provider. These settings are not currently supported in CUE configurations.
+`allow_google_oauth`, `allow_microsoft_oauth`, `allowed_email_domains`, and `disable_password_auth` are only available via the Terraform provider. These settings are not currently supported in CUE configurations.
 :::
 
 To enable Google OAuth, set `allow_google_oauth` to `true` and specify `allowed_email_domains` in the `user_auth_policy` block:
@@ -204,6 +205,47 @@ allow_google_oauth requires allowed_email_domains to be set. This ensures that o
 
 :::warning
 `allow_google_oauth` cannot be enabled when `use_non_email_identifier` is `true`. Google OAuth requires email-based identifiers because Google accounts are identified by email addresses.
+:::
+
+### Microsoft OAuth
+
+The Built-in IdP supports "Sign in with Microsoft", allowing users to authenticate using their Microsoft accounts via Microsoft Entra ID. When enabled, a Microsoft Sign-In button is displayed on the sign-in screen.
+
+**How it works:**
+
+1. User clicks the "Sign in with Microsoft" button on the sign-in screen
+2. Microsoft authenticates the user and returns a verified ID token
+3. The Built-in IdP verifies the token and checks the user's identity
+4. If the user does not yet exist, a new IdP user is automatically created using the Microsoft account's preferred username (UPN) (without a password)
+5. The user is signed in and redirected to the application
+
+:::tip
+Users created via Microsoft OAuth do not have a password set. They can only sign in using Microsoft.
+:::
+
+
+To enable Microsoft OAuth, set `allowMicrosoftOauth` to `true`, specify `allowedEmailDomains`, and set `disablePasswordAuth` to `true` in the `userAuthPolicy` block:
+
+```typescript
+import { defineIdp } from "@tailor-platform/sdk";
+
+export const builtinIdp = defineIdp("builtin-idp", {
+  authorization: "user.role == 'admin'",
+  clients: ["main-client"],
+  userAuthPolicy: {
+    allowMicrosoftOauth: true,
+    allowedEmailDomains: ["example.com"],
+    disablePasswordAuth: true,
+  },
+});
+```
+
+:::tip
+`allowMicrosoftOauth` requires both `allowedEmailDomains` and `disablePasswordAuth` to be set. This ensures that only users from specified email domains can authenticate, and that Microsoft OAuth is the sole authentication method.
+:::
+
+:::warning
+`allowMicrosoftOauth` cannot be enabled when `useNonEmailIdentifier` is `true`. Microsoft OAuth requires email-based identifiers because Microsoft accounts are identified by their preferred username (UPN).
 :::
 
 ### Allowed Email Domains
@@ -235,7 +277,7 @@ export const builtinIdp = defineIdp("builtin-idp", {
 
 ### Disable Password Authentication
 
-You can disable password-based authentication entirely by setting `disable_password_auth` to `true`. When enabled, the sign-in screen displays only the "Sign in with Google" button, and all password-related operations are blocked.
+You can disable password-based authentication entirely by setting `disable_password_auth` to `true`. When enabled, the sign-in screen displays only the OAuth sign-in buttons (Google and/or Microsoft), and all password-related operations are blocked.
 
 **When `disable_password_auth` is enabled:**
 
@@ -243,7 +285,7 @@ You can disable password-based authentication entirely by setting `disable_passw
 - The "Forgot Password?" link is removed
 - Password-based sign-in attempts are rejected
 - The `_sendPasswordResetEmail` GraphQL mutation is excluded from the schema
-- Google OAuth becomes the sole authentication method
+- OAuth (Google and/or Microsoft) becomes the sole authentication method
 
 **Configuration:**
 
@@ -251,7 +293,7 @@ You can disable password-based authentication entirely by setting `disable_passw
 
 **Requirements:**
 
-- `allow_google_oauth` must be `true` (at least one authentication method must remain available)
+- `allow_google_oauth` or `allow_microsoft_oauth` must be `true` (at least one authentication method must remain available)
 - `allowed_email_domains` must be set (required by `allow_google_oauth`)
 - `allow_self_password_reset` must be `false` (cannot enable password reset when password authentication is disabled)
 
@@ -272,7 +314,7 @@ export const builtinIdp = defineIdp("builtin-idp", {
 ```
 
 :::warning
-When `disable_password_auth` is enabled, existing users who previously signed in with a password will need to use Google OAuth instead. Ensure that all users have Google accounts with email addresses in the allowed domains before enabling this setting.
+When `disable_password_auth` is enabled, existing users who previously signed in with a password will need to use Google OAuth or Microsoft OAuth instead. Ensure that all users have accounts with the configured OAuth provider and email addresses in the allowed domains before enabling this setting.
 :::
 
 ### Why Use the Built-In IdP
@@ -281,7 +323,7 @@ When `disable_password_auth` is enabled, existing users who previously signed in
 
 - **Centralized Configuration**: All authentication settings are managed through your application configuration, providing a single source of truth.
 
-- **Flexible Authentication**: Support for both email and username-based authentication through the `user_auth_policy` configuration, with optional Google OAuth integration for streamlined sign-in.
+- **Flexible Authentication**: Support for both email and username-based authentication through the `user_auth_policy` configuration, with optional Google OAuth and Microsoft OAuth integration for streamlined sign-in.
 
 For detailed configuration parameters for each resource, refer to the [Terraform provider documentation](https://registry.terraform.io/providers/tailor-platform/tailor/latest/docs/resources/idp).
 
