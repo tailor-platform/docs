@@ -1,6 +1,5 @@
 import { acronyms, excludedSections, customTitles } from "./constants.js";
 import fs from "node:fs";
-import path from "node:path";
 
 export type ToTitleOptions = {
   acronyms?: Record<string, string>; // token -> desired form
