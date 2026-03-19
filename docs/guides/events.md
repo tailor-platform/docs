@@ -8,7 +8,7 @@ The Tailor Platform offers a wide range of events that allow you to trigger spec
 
 Below is a list of supported events and their payloads.
 
-## Tailor DB
+## TailorDB
 
 ### Record Created
 
@@ -40,7 +40,7 @@ Below is a list of supported events and their payloads.
 
   <tr>
     <td>`newRecord`</td>
-    <td>`Object`: The new record added to Tailor DB.</td>
+    <td>`Object`: The new record added to TailorDB.</td>
   </tr>
 </tbody>
 </table>
@@ -75,12 +75,12 @@ Below is a list of supported events and their payloads.
 
   <tr>
     <td>`oldRecord`</td>
-    <td>`Object`: The old record in Tailor DB.</td>
+    <td>`Object`: The old record in TailorDB.</td>
   </tr>
 
   <tr>
     <td>`newRecord`</td>
-    <td>`Object`: The updated record in Tailor DB.</td>
+    <td>`Object`: The updated record in TailorDB.</td>
   </tr>
 </tbody>
 </table>

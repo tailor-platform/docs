@@ -5,7 +5,7 @@ doc_type: guide
 # Versioning with History Tables
 
 Some applications require preserving previous versions of data when updates or changes occur.
-Using [Tailor DB CDC](/guides/tailordb/advanced-settings/tailordb-cdc), you can capture and log data modifications in real-time, storing prior record versions in a dedicated history table.
+Using [TailorDB CDC](/guides/tailordb/advanced-settings/tailordb-cdc), you can capture and log data modifications in real-time, storing prior record versions in a dedicated history table.
 This approach preserves historical data and enables change monitoring and analysis over time.
 
 ## How to enable Data Versioning

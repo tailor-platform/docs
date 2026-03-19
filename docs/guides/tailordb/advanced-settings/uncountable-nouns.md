@@ -4,10 +4,10 @@ doc_type: guide
 
 # Plural form for uncountable nouns
 
-The `PluralForm` field accepts the plural form for an uncountable noun type in your Tailor DB.
+The `PluralForm` field accepts the plural form for an uncountable noun type in your TailorDB.
 This setting is necessary to access individual records when the type name is an uncountable noun.
 
-For example, to create type `userData` in the Tailor DB, configure the `PluralForm` in the settings as the following:
+For example, to create type `userData` in the TailorDB, configure the `PluralForm` in the settings as the following:
 
 ```typescript
 import { db } from "@tailor-platform/sdk";

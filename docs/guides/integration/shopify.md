@@ -12,8 +12,8 @@ You can integrate Shopify with Tailor Platform using triggers. Refer to [executo
 
 ## Automatically push new products to your Shopify store
 
-When you create a new product in the Tailor DB, you may want to seamlessly sync that data with your Shopify store.
-This integration guide will walk you through the steps to set up a connection between Tailor PF and Shopify, ensuring that every time a new product is added to the Tailor DB, it's automatically pushed to your Shopify storefront.
+When you create a new product in the TailorDB, you may want to seamlessly sync that data with your Shopify store.
+This integration guide will walk you through the steps to set up a connection between Tailor PF and Shopify, ensuring that every time a new product is added to the TailorDB, it's automatically pushed to your Shopify storefront.
 
 ### 1. Get the API key
 
@@ -84,7 +84,7 @@ tailor-sdk secret create --vault-name shopify-vault --name shopify-key --value {
 
 3. Add the trigger
 
-Below is an example of the trigger that will push new product to Shopify store when a product is added to the Tailor DB.
+Below is an example of the trigger that will push new product to Shopify store when a product is added to the TailorDB.
 
 ```typescript {{ title: 'executors/shopify-sync.ts' }}
 import { createExecutor, recordCreatedTrigger } from "@tailor-platform/sdk";
@@ -229,7 +229,7 @@ You have now successfully created the webhook to receive notifications in the Ta
 
 ### 3. Verify the trigger
 
-You can open the GraphQL playground to verify the product created in Shopify is added to Tailor DB.
+You can open the GraphQL playground to verify the product created in Shopify is added to TailorDB.
 
 ```bash
 # Open the GraphQL playground in the browser

@@ -1,4 +1,4 @@
-# Develop from Scratch with Tailor SDK
+# Develop from Scratch with Tailor Platform SDK
 
 Build a project management app with database types, auth, resolvers, and executors using TypeScript.
 
@@ -40,7 +40,7 @@ project-management/
 
 ## Additional Resources
 
-- [Tailor SDK Documentation](../../sdk/quickstart)
+- [Tailor Platform SDK Documentation](../../sdk/quickstart)
 - [TailorDB Service](../../sdk/services/tailordb)
 - [Resolver Service](../../sdk/services/resolver)
 - [Executor Service](../../sdk/services/executor)

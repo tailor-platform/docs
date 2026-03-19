@@ -235,7 +235,7 @@ tabs:
 
 # JavaScript
 
-Using JavaScript, implement robust validation logic, manipulate data structures, and perform efficient data transformations in Pipeline resolvers, Triggers and the Tailor DB.
+Using JavaScript, implement robust validation logic, manipulate data structures, and perform efficient data transformations in Pipeline resolvers, Triggers and TailorDB.
 
 Here are some examples of where you can utilize JavaScript:
 
@@ -276,7 +276,7 @@ You can write custom logic using JavaScript in the `URL` and `Body` fields in th
 :::tabs webhook-body
 :::
 
-## Tailor DB
+## TailorDB
 
 The example below demonstrates how to use JavaScript in `Hooks` to set a default value for the field. You can add custom logic to validate the input data and set default values.
 

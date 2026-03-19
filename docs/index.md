@@ -15,7 +15,7 @@ hero:
       text: Tutorials
       link: /tutorials/
     - theme: alt
-      text: Tailor SDK
+      text: Tailor Platform SDK
       link: /sdk/
     - theme: alt
       text: Start

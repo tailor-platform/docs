@@ -275,7 +275,7 @@ In this query, we apply both a filter and a sorting option to the products query
 
 By combining filters and sorting options in your GraphQL queries, you can retrieve data that is both relevant to your application and organized in a way that meets your specific needs. This flexibility allows you to tailor your queries to your requirements and optimize data retrieval and processing.
 
-You can also use AND, OR, NOT and nested queries. Find more about operators and nested filtering condition in [Tailor DB](/guides/tailordb/overview).
+You can also use AND, OR, NOT and nested queries. Find more about operators and nested filtering condition in [TailorDB](/guides/tailordb/overview).
 
 ## Pagination
 

@@ -4,7 +4,7 @@ doc_type: guide
 
 # Event-based Trigger
 
-In this trigger, you can specify the type of event that initiates it (e.g., Tailor DB data update and StateFlow creation) and outline the specific conditions or criteria for its execution.
+In this trigger, you can specify the type of event that initiates it (e.g., TailorDB data update and StateFlow creation) and outline the specific conditions or criteria for its execution.
 
 Refer [Supported Events](/guides/events) to learn about the different types of events supported in the Tailor Platform. Follow the [tutorial](/tutorials/setup-executor/event-based-trigger) for setup instructions.
 

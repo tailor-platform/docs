@@ -13,7 +13,7 @@ This provides a flexible way to extend your application's functionality with cus
 With Function service, you can:
 
 - Send HTTP requests to 3rd party applications
-- Access and execute SQL queries to Tailor DB
+- Access and execute SQL queries to TailorDB
 - Manage IdP users, secrets, files, and workflows via [built-in interfaces](/guides/function/builtin-interfaces)
 - Process data transformations
 - Implement custom business logic with npm packages
@@ -23,7 +23,7 @@ For more advanced use cases, you can refer to these sections:
 
 - [Built-in interfaces](/guides/function/builtin-interfaces) — all platform APIs available as global variables
 - [Sending HTTP request](/guides/function/sending-request)
-- [Accessing Tailor DB](/guides/function/accessing-tailordb)
+- [Accessing TailorDB](/guides/function/accessing-tailordb)
 
 ## How to write and deploy your code in Function service
 
@@ -196,6 +196,6 @@ For more advanced use cases, you can refer to these sections:
 
 - [Built-in interfaces](/guides/function/builtin-interfaces) — all platform APIs available as global variables (IdP, secrets, files, workflows, etc.)
 - [Sending HTTP request](/guides/function/sending-request)
-- [Accessing Tailor DB](/guides/function/accessing-tailordb)
+- [Accessing TailorDB](/guides/function/accessing-tailordb)
 
 For list of supported packages, please refer to [Appendix](/guides/function/appendix).
