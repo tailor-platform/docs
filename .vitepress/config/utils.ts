@@ -4,7 +4,27 @@ import fs from "node:fs";
 export type ToTitleOptions = {
   acronyms?: Record<string, string>; // token -> desired form
   keepLowercase?: Set<string>; // optional: "and", "of", etc.
+  filePath?: string; // optional: full file path to read frontmatter
 };
+
+// Extract title from markdown frontmatter
+function extractFrontmatterTitle(filePath: string): string | null {
+  try {
+    if (!fs.existsSync(filePath)) return null;
+
+    const content = fs.readFileSync(filePath, "utf-8");
+    const frontmatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
+
+    if (!frontmatterMatch) return null;
+
+    const frontmatter = frontmatterMatch[1];
+    const titleMatch = frontmatter.match(/^title:\s*(.+)$/m);
+
+    return titleMatch ? titleMatch[1].trim() : null;
+  } catch {
+    return null;
+  }
+}
 
 // Helper to get a readable title from filename or directory name
 export function toTitle(input: string, options: ToTitleOptions = {}): string {
@@ -12,6 +32,14 @@ export function toTitle(input: string, options: ToTitleOptions = {}): string {
   const normalizedInput = input.trim().replace(/\.md$/i, "");
   if (customTitles[normalizedInput]) {
     return customTitles[normalizedInput];
+  }
+
+  // Try to read title from frontmatter if file path is provided
+  if (options.filePath) {
+    const frontmatterTitle = extractFrontmatterTitle(options.filePath);
+    if (frontmatterTitle) {
+      return frontmatterTitle;
+    }
   }
 
   const allAcronyms: Record<string, string> = {
