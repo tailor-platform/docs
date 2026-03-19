@@ -47,6 +47,10 @@ export function generateSidebar(
   // Sort function that respects custom order
   const sortItems = (items: string[]) => {
     return items.sort((a, b) => {
+      // Always put "overview" first
+      if (a.toLowerCase() === "overview") return -1;
+      if (b.toLowerCase() === "overview") return 1;
+
       if (customOrder) {
         const indexA = customOrder.indexOf(a);
         const indexB = customOrder.indexOf(b);
@@ -74,8 +78,9 @@ export function generateSidebar(
 
   // Process files first
   for (const fileName of sortedFiles) {
+    const filePath = path.join(fullPath, fileName + ".md");
     items.push({
-      text: toTitle(fileName + ".md"),
+      text: toTitle(fileName + ".md", { filePath }),
       link: `${basePath}/${fileName}`,
     });
   }
@@ -87,8 +92,10 @@ export function generateSidebar(
     const subItems = generateSidebar(docsDir, subdirPath, subdirBasePath, depth + 1);
 
     if (subItems.length > 0) {
+      // Check if directory has an index.md to read title from
+      const dirIndexPath = path.join(fullPath, dirName, "index.md");
       items.push({
-        text: toTitle(dirName),
+        text: toTitle(dirName, { filePath: fs.existsSync(dirIndexPath) ? dirIndexPath : undefined }),
         collapsed: depth > 0,
         items: subItems,
       });
@@ -102,11 +109,11 @@ export function generateSidebar(
 export function generateSectionSidebar(docsDir: string, section: string): SidebarItem[] {
   const items = generateSidebar(docsDir, section, `/${section}`);
 
-  // Check if there's an index.md to add as overview
+  // Check if there's an index.md to add as overview (skip for app-shell)
   const indexPath = path.join(docsDir, section, "index.md");
-  if (fs.existsSync(indexPath)) {
+  if (fs.existsSync(indexPath) && section !== "app-shell") {
     items.unshift({
-      text: "Overview",
+      text: toTitle("index.md", { filePath: indexPath }),
       link: `/${section}/`,
     });
   }
