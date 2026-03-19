@@ -13,6 +13,7 @@ The Auth service is a comprehensive authentication and authorization solution th
 - **Access Control**: Control user access to resources based on roles and attributes
 - **Machine User Support**: Create service accounts for automated processes and API access
 - **Subgraph Integration**: Query user information directly through GraphQL when Auth is used as a subgraph
+- **Auth Hooks**: Run custom logic during authentication flows. See [Auth Hooks](/guides/auth/hook)
 
 ## Quick Start with SDK
 
@@ -122,6 +123,12 @@ The Auth service supports integration with major Identity Providers:
 These Identity Provider integrations are specifically for **user authentication** - enabling your end users to log into your application using their existing organizational credentials through Single Sign-On (SSO).
 
 For step-by-step tutorials on setting up authentication, see [Setting up Auth](/tutorials/setup-auth/overview).
+
+## Auth Hooks
+
+The Auth service supports hooks that let you run custom Functions at specific points in the authentication flow. For example, the `beforeLogin` hook runs after IdP authentication succeeds but before identity resolution, enabling use cases like Just-In-Time user provisioning.
+
+For configuration details and examples, see the [Auth Hooks guide](/guides/auth/hook).
 
 ## OAuth2 Connections for Functions
 
