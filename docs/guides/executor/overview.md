@@ -92,12 +92,12 @@ You can configure the following three types of triggers to execute the user defi
 
 ## Operation
 
-The `operation` property defines the action to be executed when the Trigger condition is met. You can describe the specific task or operation to be performed, such as querying Tailor DB, sending notifications, or triggering workflows.
+The `operation` property defines the action to be executed when the Trigger condition is met. You can describe the specific task or operation to be performed, such as querying TailorDB, sending notifications, or triggering workflows.
 There are five types of targets:
 
 1. [TailorGraphql](tailor-graphql-operation)
 
-This involves interaction with the Tailor DB and performs operations such as querying data or making changes (mutations).
+This involves interaction with the TailorDB and performs operations such as querying data or making changes (mutations).
 
 2. [Webhook](webhook-operation)
 

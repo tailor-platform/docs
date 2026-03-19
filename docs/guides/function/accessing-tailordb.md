@@ -2,11 +2,11 @@
 doc_type: guide
 ---
 
-# Accessing Tailor DB
+# Accessing TailorDB
 
-In order to access Tailor DB from Function service, you need to instantiate the `Client` object from the `tailordb` package.
+In order to access TailorDB from Function service, you need to instantiate the `Client` object from the `tailordb` package.
 `tailordb` exists in the Function service environment by default, so you can use it without any additional installation.
-Please specify the `namespace` of the Tailor DB you want to connect to when creating the `Client` object.
+Please specify the `namespace` of the TailorDB you want to connect to when creating the `Client` object.
 
 Here is the `Client` interface:
 
@@ -29,9 +29,9 @@ type Transaction = {
 
 Please refer to the [Supported SQL queries](#supported-sql-queries) for more information on the SQL syntax supported in `Client.queryObject`.
 
-## Sample codes to access Tailor DB in JavaScript
+## Sample codes to access TailorDB in JavaScript
 
-### Getting data from Tailor DB
+### Getting data from TailorDB
 
 ```js {{ title: 'get_data_function.js' }}
 globalThis.main = async function () {
@@ -49,7 +49,7 @@ globalThis.main = async function () {
 };
 ```
 
-### Inserting data to Tailor DB
+### Inserting data to TailorDB
 
 ```js {{ title: 'insert_data_function.js' }}
 globalThis.main = async function (args) {
@@ -194,7 +194,7 @@ npx tailor deploy
 
 ## Supported SQL queries
 
-Strictly speaking, the SQL statements here are executed via a proxy to Tailor DB.
+Strictly speaking, the SQL statements here are executed via a proxy to TailorDB.
 The SQL that can be issued is a subset of PostgreSQL, so the fundamental syntax follows PostgreSQL conventions.
 
 ### SELECT

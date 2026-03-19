@@ -37,7 +37,7 @@ Click `Create User` to create a new user.
 
 ![Tutorials – Set up identity provider](../../assets/auth0-create-user.png)
 
-### 2. Use a GraphQL query to create a user in the Tailor DB
+### 2. Use a GraphQL query to create a user in the TailorDB
 
 Get an access token to use it in the GraphQL playground to run queries.
 

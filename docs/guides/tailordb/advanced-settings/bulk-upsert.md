@@ -19,7 +19,7 @@ export const document = db
   });
 ```
 
-Tailor DB auto-generates `bulkUpsertDocuments`, allowing you to quickly bulk upsert data for Document.
+TailorDB auto-generates `bulkUpsertDocuments`, allowing you to quickly bulk upsert data for Document.
 Use the following query to upsert existing document resources:
 
 ```graphql {{ title: 'query' }}
@@ -35,7 +35,7 @@ mutation {
 
 If the input contains existing IDs, the data properties will be updated for those inputs. New data records will be created if the ID does not exist, is null, or is not passed as an input property.
 
-Here are examples of queries for creating new records in Tailor DB when using bulk upsert.
+Here are examples of queries for creating new records in TailorDB when using bulk upsert.
 
 ```graphql {{ title: 'query' }}
 mutation {
@@ -60,7 +60,7 @@ The maximum number of items that can be included in a single bulk upsert operati
 
 ## BulkUpsert with PluralForm settings
 
-When `PluralForm` is configured in the settings, as mentioned in the example below, Tailor DB auto-generates `bulkUpsertUserDataList` instead of `bulkUpsertUserData` for bulk upserting data of the `UserData` type. Refer [PluralForm](/guides/tailordb/advanced-settings/uncountable-nouns) to learn about its setting.
+When `PluralForm` is configured in the settings, as mentioned in the example below, TailorDB auto-generates `bulkUpsertUserDataList` instead of `bulkUpsertUserData` for bulk upserting data of the `UserData` type. Refer [PluralForm](/guides/tailordb/advanced-settings/uncountable-nouns) to learn about its setting.
 
 ```typescript
 import { db } from "@tailor-platform/sdk";

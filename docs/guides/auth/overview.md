@@ -320,7 +320,7 @@ const auth = defineAuth("my-auth", {
 ## Machine user
 
 A Machine user can manage users and application data, including creating, modifying, and deleting them.
-To add a Machine user to the application, you must first define the user roles in the Tailor DB, and then assign a specific role in the Auth service.
+To add a Machine user to the application, you must first define the user roles in the TailorDB, and then assign a specific role in the Auth service.
 
 Here is an example of a Machine user configuration with the SDK:
 

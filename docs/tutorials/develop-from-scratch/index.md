@@ -4,7 +4,7 @@ Learn how to build a complete application on the Tailor Platform from the ground
 
 <div class="cards-2">
   <Card title="🚀 SDK Tutorial" href="sdk/">
-    Build with TypeScript using the modern Tailor SDK. Type-safe development with streamlined workflows.
+    Build with TypeScript using the modern Tailor Platform SDK. Type-safe development with streamlined workflows.
   </Card>
 
   <Card title="⚙️ Terraform Tutorial" href="terraform/">

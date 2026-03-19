@@ -2,9 +2,9 @@
 
 Tailor Platform offers a powerful feature that allows you to generate GraphQL APIs from schema files. This makes it easy for your company to create a custom data schema that aligns perfectly with your business requirements.
 
-The main database in Tailor Platform, where you store and retrieve your data, is called Tailor DB. With Tailor DB, you can effortlessly modify existing data schemas (data models) in our templates or add new Types (equivalent to Tables in a Relational Database). The GraphQL endpoint will be automatically generated, eliminating the need for additional coding.
+The main database in Tailor Platform, where you store and retrieve your data, is called TailorDB. With TailorDB, you can effortlessly modify existing data schemas (data models) in our templates or add new Types (equivalent to Tables in a Relational Database). The GraphQL endpoint will be automatically generated, eliminating the need for additional coding.
 
-This tutorial introduces you to Tailor DB. In the subsequent tutorials, you'll learn how to add fields to existing types, how to create new types and how to validate fields for your application.
+This tutorial introduces you to TailorDB. In the subsequent tutorials, you'll learn how to add fields to existing types, how to create new types and how to validate fields for your application.
 
 ## What you'll learn
 

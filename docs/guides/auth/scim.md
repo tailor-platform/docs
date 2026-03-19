@@ -203,7 +203,7 @@ attributeMapping: [
 
 ## Complete Example
 
-Here is a complete example showing SCIM configuration with the Tailor SDK:
+Here is a complete example showing SCIM configuration with the Tailor Platform SDK:
 
 ```typescript
 import { defineAuth } from "@tailor-platform/sdk";

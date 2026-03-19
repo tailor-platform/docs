@@ -93,8 +93,8 @@ The SDK provides the following field type methods:
 
 Visit [tailordb types](https://registry.terraform.io/providers/tailor-platform/tailor/latest/docs/resources/tailordb_type) to learn more about the types.
 
-Here are the available list of data types in Tailor DB.
-For details about the filter, refer to [Tailor DB Filter](/guides/tailordb/filters) specification.
+Here are the available list of data types in TailorDB.
+For details about the filter, refer to [TailorDB Filter](/guides/tailordb/filters) specification.
 
 | Predefined Data Type | Type Description                                                                                                                            | Available Filters                          |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
@@ -115,8 +115,8 @@ As for the `Type` field, set one of the following data types as `tailordb.#<fiel
 
 For example, to set the `TypeString` data type to the `name` field, use the following setting:
 
-Here are the available list of data types in Tailor DB.
-For details about the filter, refer to [Tailor DB Filter](/guides/tailordb/filters) specification.
+Here are the available list of data types in TailorDB.
+For details about the filter, refer to [TailorDB Filter](/guides/tailordb/filters) specification.
 
 | Predefined Data Type | Type Description                                                                                                                            | Available Filters                          |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
@@ -135,7 +135,7 @@ Additionally, you can configure a field to automatically generate sequential num
 
 ## Auto-generated GraphQL data fields
 
-Besides the fields specified within the fields parameter, Tailor DB automatically generates the following system fields for each Type in the GraphQL Schema:
+Besides the fields specified within the fields parameter, TailorDB automatically generates the following system fields for each Type in the GraphQL Schema:
 
 Please be aware that these names are reserved for system use and cannot be employed as user-defined field names.
 

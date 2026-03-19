@@ -13,13 +13,13 @@ Here is a quick look at the console.
 
 ![Tailor Console](./assets/console-application-overview.png)
 
-## Tailor SDK
+## Tailor Platform SDK
 
 The `tailor-sdk` is the command-line interface for building, deploying, and managing applications on the Tailor Platform. It provides a comprehensive set of tools for working with TailorDB, Functions, Workflows and Auth.
 
 ### Installation
 
-The Tailor SDK requires Node.js 22 or later. You can use it in three ways:
+The Tailor Platform SDK requires Node.js 22 or later. You can use it in three ways:
 
 **1. With npx (recommended for quick start):**
 
