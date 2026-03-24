@@ -50,7 +50,6 @@ Configure the `beforeLogin` hook in `defineAuth` using the `hooks` property:
 ```typescript
 import { defineAuth, idp, secrets } from "@tailor-platform/sdk";
 import { user } from "./tailordb/user";
-import { beforeLoginHandler } from "./functions/beforeLogin";
 
 const auth = defineAuth("my-auth", {
   idProvider: idp.oidc("my-idp", {
@@ -70,7 +69,9 @@ const auth = defineAuth("my-auth", {
   },
   hooks: {
     beforeLogin: {
-      handler: beforeLoginHandler,
+      handler: async ({ claims, idpConfigName }) => {
+        // Your custom logic here
+      },
       invoker: "hook-invoker",
     },
   },
@@ -97,33 +98,51 @@ The hook handler receives the following arguments:
 
 ## Example: JIT User Provisioning
 
-The following handler creates a user record in TailorDB when a user logs in for the first time:
+The following example configures a `beforeLogin` hook inline in `defineAuth` that creates a user record in TailorDB when a user logs in for the first time:
 
-```typescript {{title:'functions/beforeLogin.ts'}}
-import { fn } from "@tailor-platform/sdk";
+```typescript
+import { defineAuth, idp, secrets } from "@tailor-platform/sdk";
+import { user } from "./tailordb/user";
 
-export const beforeLoginHandler = fn.handler(
-  "beforeLoginHandler",
-  async ({ args }) => {
-    const { claims } = args;
+const auth = defineAuth("my-auth", {
+  idProvider: idp.oidc("my-idp", {
+    clientId: "<client-id>",
+    clientSecret: secrets.value("default", "oidc-client-secret"),
+    providerUrl: "<your_auth_provider_url>",
+  }),
+  userProfile: {
+    type: user,
+    usernameField: "email",
+    attributes: { roles: true },
+  },
+  machineUsers: {
+    "hook-invoker": {
+      attributes: { role: "ADMIN" },
+    },
+  },
+  hooks: {
+    beforeLogin: {
+      handler: async ({ claims, idpConfigName }) => {
+        const claimName = claims.name;
+        if (!claimName) {
+          throw new Error("name claim is required");
+        }
 
-    const claimName = claims.name;
-    if (!claimName) {
-      throw new Error("name claim is required");
-    }
-
-    // JIT provisioning: create user record in TailorDB if not exists
-    const client = new tailordb.Client({ namespace: "my-db" });
-    await client.connect();
-    await client.queryObject(
-      `INSERT INTO User (email, name, role)
-       VALUES ($1, $2, 'USER')
-       ON CONFLICT (email) DO NOTHING`,
-      [claimName, claimName]
-    );
-    await client.end();
-  }
-);
+        // JIT provisioning: create user record in TailorDB if not exists
+        const client = new tailordb.Client({ namespace: "my-db" });
+        await client.connect();
+        await client.queryObject(
+          `INSERT INTO User (email, name, role)
+           VALUES ($1, $2, 'USER')
+           ON CONFLICT (email) DO NOTHING`,
+          [claimName, claimName]
+        );
+        await client.end();
+      },
+      invoker: "hook-invoker",
+    },
+  },
+});
 ```
 
 ## Error Handling
