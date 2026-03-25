@@ -53,14 +53,20 @@ tailor-sdk apply --env-file .env --env-file .env.production
 
 You can use environment variables to configure workspace and authentication:
 
-| Variable                          | Description                                                                 |
-| --------------------------------- | --------------------------------------------------------------------------- |
-| `TAILOR_PLATFORM_WORKSPACE_ID`    | Workspace ID for deployment commands                                        |
-| `TAILOR_PLATFORM_TOKEN`           | Authentication token (alternative to `login`)                               |
-| `TAILOR_TOKEN`                    | **Deprecated.** Use `TAILOR_PLATFORM_TOKEN` instead                         |
-| `TAILOR_PLATFORM_PROFILE`         | Workspace profile name                                                      |
-| `TAILOR_PLATFORM_SDK_CONFIG_PATH` | Path to SDK config file                                                     |
-| `VISUAL` / `EDITOR`               | Preferred editor for commands that open files (e.g., `vim`, `code`, `nano`) |
+| Variable                                     | Description                                                                 |
+| -------------------------------------------- | --------------------------------------------------------------------------- |
+| `TAILOR_PLATFORM_WORKSPACE_ID`               | Workspace ID for deployment commands                                        |
+| `TAILOR_PLATFORM_ORGANIZATION_ID`            | Organization ID for organization commands                                   |
+| `TAILOR_PLATFORM_FOLDER_ID`                  | Folder ID for folder commands                                               |
+| `TAILOR_PLATFORM_TOKEN`                      | Authentication token (alternative to `login`)                               |
+| `TAILOR_TOKEN`                               | **Deprecated.** Use `TAILOR_PLATFORM_TOKEN` instead                         |
+| `TAILOR_PLATFORM_PROFILE`                    | Workspace profile name                                                      |
+| `TAILOR_PLATFORM_SDK_CONFIG_PATH`            | Path to SDK config file                                                     |
+| `TAILOR_PLATFORM_MACHINE_USER_CLIENT_ID`     | Client ID for `login --machineuser`                                         |
+| `TAILOR_PLATFORM_MACHINE_USER_CLIENT_SECRET` | Client secret for `login --machineuser`                                     |
+| `VISUAL` / `EDITOR`                          | Preferred editor for commands that open files (e.g., `vim`, `code`, `nano`) |
+| `TAILOR_CRASH_REPORTS_LOCAL`                 | Local crash log writing: `on` (default) or `off`                            |
+| `TAILOR_CRASH_REPORTS_REMOTE`                | Automatic crash report submission: `off` (default) or `on`                  |
 
 ### Authentication Token Priority
 
@@ -125,9 +131,25 @@ Commands for authentication and user management.
 | [user pat delete](cli/user.md#user-pat-delete) | Delete a personal access token |
 | [user pat update](cli/user.md#user-pat-update) | Update a personal access token |
 
-### [Workspace Commands](cli/workspace)
+### Workspace & Organization Commands
 
-Commands for managing workspaces and profiles.
+Commands for managing workspaces, profiles, organizations, and folders.
+
+**[Organization Commands](cli/organization)**
+
+| Command                                                                        | Description                                     |
+| ------------------------------------------------------------------------------ | ----------------------------------------------- |
+| [organization list](cli/organization.md#organization-list)                   | List organizations you belong to                |
+| [organization get](cli/organization.md#organization-get)                     | Show detailed information about an organization |
+| [organization update](cli/organization.md#organization-update)               | Update an organization's name                   |
+| [organization tree](cli/organization.md#organization-tree)                   | Display organization folder hierarchy as a tree |
+| [organization folder list](cli/organization.md#organization-folder-list)     | List folders in an organization                 |
+| [organization folder get](cli/organization.md#organization-folder-get)       | Show detailed information about a folder        |
+| [organization folder create](cli/organization.md#organization-folder-create) | Create a new folder in an organization          |
+| [organization folder update](cli/organization.md#organization-folder-update) | Update a folder's name                          |
+| [organization folder delete](cli/organization.md#organization-folder-delete) | Delete a folder from an organization            |
+
+**[Workspace Commands](cli/workspace)**
 
 | Command                                                 | Description            |
 | ------------------------------------------------------- | ---------------------- |
@@ -202,6 +224,23 @@ Commands for managing and deploying static websites.
 | [staticwebsite deploy](cli/staticwebsite.md#staticwebsite-deploy) | Deploy a static website from a local build directory |
 | [staticwebsite list](cli/staticwebsite.md#staticwebsite-list)     | List static websites in a workspace                  |
 | [staticwebsite get](cli/staticwebsite.md#staticwebsite-get)       | Get details of a static website                      |
+
+### [Crash Report Commands](cli/crash-report)
+
+Commands for managing crash reports.
+
+| Command                                                      | Description                                   |
+| ------------------------------------------------------------ | --------------------------------------------- |
+| [crash-report list](cli/crash-report.md#crash-report-list) | List local crash report files                 |
+| [crash-report send](cli/crash-report.md#crash-report-send) | Submit a crash report to help improve the SDK |
+
+### [Setup Commands](cli/setup)
+
+Commands for setting up project infrastructure.
+
+| Command                                     | Description                                     |
+| ------------------------------------------- | ----------------------------------------------- |
+| [setup github](cli/setup.md#setup-github) | Generate GitHub Actions workflow for deployment |
 
 ### [Completion](cli/completion)
 
