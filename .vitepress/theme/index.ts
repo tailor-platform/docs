@@ -6,6 +6,7 @@ import GitHubIcon from "./components/icons/GitHubIcon.vue";
 import Tag from "./components/Tag.vue";
 import DeprecatedTag from "./components/DeprecatedTag.vue";
 import PreviewTag from "./components/PreviewTag.vue";
+import ReactDemo from "./components/ReactDemo.vue";
 
 // Tailor brand theme styles (order matters!)
 import "./styles/vars.css"; // Brand colors & CSS variables (must be first)
@@ -17,6 +18,7 @@ import "./styles/tables.css"; // Table styling
 import "./styles/cards.css";
 import "./styles/tabs.css";
 import "./styles/search.css";
+import "./styles/demo.css";
 
 import { onMounted } from "vue";
 
@@ -29,6 +31,7 @@ const theme: Theme = {
     app.component("Tag", Tag);
     app.component("DeprecatedTag", DeprecatedTag);
     app.component("PreviewTag", PreviewTag);
+    app.component("ReactDemo", ReactDemo);
   },
   setup() {
     onMounted(() => {

@@ -15,6 +15,8 @@ import { Combobox } from "@tailor-platform/app-shell";
 
 ## Basic Usage
 
+<!-- demo: combobox-basic -->
+
 ```tsx
 <Combobox
   items={["Apple", "Banana", "Cherry"]}

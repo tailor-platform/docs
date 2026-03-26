@@ -41,7 +41,7 @@ export function generateSidebar(
 
   // Get directories (excluding hidden and assets)
   const dirs = entries
-    .filter((e) => e.isDirectory() && !e.name.startsWith(".") && e.name !== "assets")
+    .filter((e) => e.isDirectory() && !e.name.startsWith(".") && e.name !== "assets" && e.name !== "demos")
     .map((e) => e.name);
 
   // Sort function that respects custom order

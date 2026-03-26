@@ -15,6 +15,8 @@ import { Table } from "@tailor-platform/app-shell";
 
 ## Basic Usage
 
+<!-- demo: table-basic -->
+
 ```tsx
 <Table.Root>
   <Table.Header>

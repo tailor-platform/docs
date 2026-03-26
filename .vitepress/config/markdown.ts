@@ -4,6 +4,20 @@ import type Token from "markdown-it/lib/token.mjs";
 import type { Options } from "markdown-it";
 
 export function configureMarkdown(md: MarkdownIt) {
+  // Transform <!-- demo: name --> HTML comments into <ReactDemo> Vue components
+  const defaultHtmlBlockRenderer = md.renderer.rules.html_block ||
+    function (tokens: Token[], idx: number) { return tokens[idx].content; };
+
+  md.renderer.rules.html_block = (tokens, idx, options, env, self) => {
+    const content = tokens[idx].content.trim();
+    const match = content.match(/^<!--\s*demo:\s*(\S+)\s*-->$/);
+    if (match) {
+      const demoName = match[1];
+      return `<ReactDemo name="${demoName}" />\n`;
+    }
+    return defaultHtmlBlockRenderer(tokens, idx, options, env, self);
+  };
+
   md.use(container, "tabs", {
     render(
       tokens: Token[],

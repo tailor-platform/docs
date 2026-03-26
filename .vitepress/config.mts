@@ -1,5 +1,6 @@
 import { defineConfig } from "vitepress";
 import { withMermaid } from "vitepress-plugin-mermaid";
+import react from "@vitejs/plugin-react";
 import path from "node:path";
 import { generateNav } from "./config/nav.js";
 import { generateAllSidebars } from "./config/sidebar.js";
@@ -18,8 +19,9 @@ export default withMermaid(
     head: [["link", { rel: "icon", href: "/favicon.png" }]],
 
     vite: {
+      plugins: [react({ include: /\.demo\.tsx$/ })],
       optimizeDeps: {
-        include: ["mermaid"],
+        include: ["mermaid", "react", "react-dom"],
       },
     },
 

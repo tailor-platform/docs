@@ -15,6 +15,8 @@ import { Button } from "@tailor-platform/app-shell";
 
 ## Basic Usage
 
+<!-- demo: button-basic -->
+
 ```tsx
 <Button>Click me</Button>
 <Button variant="outline">Outline</Button>
