@@ -68,13 +68,13 @@ export const product = db
 The SDK supports the following field types:
 
 | Method          | TailorDB Type | TypeScript Type |
-| --------------- | ------------- | --------------- | ---- |
+| --------------- | ------------- | --------------- |
 | `db.string()`   | String        | string          |
 | `db.int()`      | Integer       | number          |
 | `db.float()`    | Float         | number          |
 | `db.bool()`     | Boolean       | boolean         |
 | `db.date()`     | Date          | string          |
-| `db.datetime()` | DateTime      | string          | Date |
+| `db.datetime()` | DateTime      | string          |
 | `db.time()`     | Time          | string          |
 | `db.uuid()`     | UUID          | string          |
 | `db.enum()`     | Enum          | string          |
