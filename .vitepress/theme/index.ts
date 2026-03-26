@@ -19,6 +19,7 @@ import "./styles/tabs.css";
 import "./styles/search.css";
 
 import { onMounted } from "vue";
+import { shouldRedirect } from "../config/redirects";
 
 const theme: Theme = {
   extends: DefaultTheme,
@@ -32,6 +33,13 @@ const theme: Theme = {
   },
   setup() {
     onMounted(() => {
+      // Check for redirects on 404 pages
+      const redirectPath = shouldRedirect(window.location.pathname);
+      if (redirectPath) {
+        window.location.href = redirectPath;
+        return;
+      }
+
       document.addEventListener("click", (e) => {
         const btn = (e.target as HTMLElement).closest(".vp-tab-btn");
         if (!btn) return;
