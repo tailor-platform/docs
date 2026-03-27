@@ -76,7 +76,7 @@ export const excludedSections: string[] = ["public"];
 // Custom title overrides for sections/folders
 export const customTitles: Record<string, string> = {
   "app-shell": "AppShell",
-  // Add more custom titles here as needed
+  "wait-resolve": "Wait / Resolve",
 };
 
 // Define custom ordering for sidebar items within sections
