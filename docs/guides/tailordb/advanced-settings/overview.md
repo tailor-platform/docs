@@ -10,7 +10,7 @@ These features include:
 - [Aggregating values](aggregation)
 - [Bulk upsert](bulk-upsert)
 - [Plural form for uncountable nouns](uncountable-nouns)
-- [Tailor DB Change Data Capture(CDC)](tailordb-cdc) - Publish record events for database triggers
+- [TailorDB Change Data Capture(CDC)](tailordb-cdc) - Publish record events for database triggers
 
 Below is a table listing all the available `settings`, with each field and its corresponding type.
 
@@ -72,7 +72,7 @@ See [GraphQL Directives](https://graphql.org/learn/queries/#directives) for more
 ## Extends
 
 The `Extends` option enables the extension of the types defined in other sub-graphs, like StateFlow.
-With this option enabled, CRUD GraphQL queries become available in Tailor DB.
+With this option enabled, CRUD GraphQL queries become available in TailorDB.
 To make this work, the directive of `@key(fields: "id")` must be defined.
 
 For example, if we want to extend State resource in StateFlow, we can define the `extend` and directives in the schema as follows:

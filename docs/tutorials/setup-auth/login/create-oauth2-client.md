@@ -1,6 +1,6 @@
 # Using OAuth2 to log in to the Tailor PF app
 
-In this tutorial, you'll learn how to set up secure user access to your Tailor PF app using OAuth2 authentication with the Tailor SDK.
+In this tutorial, you'll learn how to set up secure user access to your Tailor PF app using OAuth2 authentication with the Tailor Platform SDK.
 
 ## Prerequisites
 

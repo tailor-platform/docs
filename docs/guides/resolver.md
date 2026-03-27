@@ -70,8 +70,6 @@ createResolver({
 
 ## Overview
 
-![Pipeline Resolver Architecture](./assets/pipeline-resolver.png)
-
 When a request resolves to a pipeline, it goes through its steps sequentially.
 As it proceeds through those, the results of each step are passed as arguments to the next.
 Each step can use the results of its caller using `args`, or use the results of any prior step using `context`.

@@ -1,12 +1,12 @@
 # SDK
 
-Learn how to build apps with the Tailor SDK.
+Learn how to build apps with the Tailor Platform SDK.
 
 ## Quick Links
 
 ### Documentation
 
-- [Quickstart](quickstart) - Get started with the Tailor SDK quickly
+- [Quickstart](quickstart) - Get started with the Tailor Platform SDK quickly
 - [Configuration](configuration) - SDK configuration options and settings
 - [Testing](testing) - Testing strategies and best practices
 - [CLI Reference](cli-reference) - Complete CLI command reference

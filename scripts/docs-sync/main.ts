@@ -130,8 +130,8 @@ for (const file of config.removeFiles) {
   fs.rmSync(path.join(config.dst, file), { force: true });
 }
 
-// 4. Restore index.md
-if (indexBackup) {
+// 4. Restore index.md (skip for app-shell as we'll use introduction.md)
+if (indexBackup && configName !== "app-shell") {
   fs.writeFileSync(indexBackupPath, indexBackup, "utf8");
 }
 
@@ -157,5 +157,18 @@ walk(config.dst)
     content = stripNonAllowedLinks(content);
     fs.writeFileSync(f, content);
   });
+
+// 7. For app-shell: rename introduction.md to index.md
+if (configName === "app-shell") {
+  const introPath = path.join(config.dst, "introduction.md");
+  const indexPath = path.join(config.dst, "index.md");
+
+  if (fs.existsSync(introPath)) {
+    fs.renameSync(introPath, indexPath);
+    console.log("Renamed introduction.md to index.md");
+  } else {
+    console.warn("introduction.md not found, skipping rename");
+  }
+}
 
 console.log(`${config.label} docs synced`);

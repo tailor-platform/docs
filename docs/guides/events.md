@@ -8,7 +8,7 @@ The Tailor Platform offers a wide range of events that allow you to trigger spec
 
 Below is a list of supported events and their payloads.
 
-## Tailor DB
+## TailorDB
 
 ### Record Created
 
@@ -73,6 +73,17 @@ Below is a list of supported events and their payloads.
 | `resolverName` | `String`: Name of the pipeline resolver. |
 | `succeeded.result` | `Object`: The result object contains `pipelines` and `resolver` data. |
 | `failed.error` | `String`: The error message provides details about the cause of the error. |
+
+## Auth
+
+### Access Token Issued
+
+`auth.access_token.issued`
+
+| Field Name | Description |
+|------------|-------------|
+| `workspaceId` | `String`: The workspace ID where the event occurred. |
+| `namespaceName` | `String`: Name of the application. |
 
 ## Built-in IdP
 

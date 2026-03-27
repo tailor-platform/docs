@@ -2,7 +2,7 @@
 
 CSV files are plain text files that contain tabular data, with each field separated by a comma.
 
-To import data from a CSV file to the Tailor DB, you can use the [Console](https://console.tailor.tech).
+To import data from a CSV file to the TailorDB, you can use the [Console](https://console.tailor.tech).
 
 ## 1. Select workspace
 
@@ -24,7 +24,7 @@ Here you can download the template by clicking on the button `Download Template`
 id,name,description,status,startDate,endDate,budget,priority,createdAt,updatedAt
 ```
 
-Add the following data to the example.csv to create a new product in Tailor DB.
+Add the following data to the example.csv to create a new product in TailorDB.
 
 ```
 Website Redesign,Complete overhaul of company website with modern UI/UX,IN_PROGRESS,2024-01-15,2024-06-30,2024-01-10T10:00:00Z,2024-02-09T15:30:00Z

@@ -29,7 +29,7 @@ export const payroll = db
   });
 ```
 
-Tailor DB auto-generates `aggregatePayrolls`, allowing you to quickly retrieve summarized results for Payroll.\
+TailorDB auto-generates `aggregatePayrolls`, allowing you to quickly retrieve summarized results for Payroll.\
 Based on the `payroll` type, here's the sample query to aggregate the payroll data:
 
 ```graphql {{ title: 'query' }}

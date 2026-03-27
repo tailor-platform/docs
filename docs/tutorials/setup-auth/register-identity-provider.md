@@ -1,6 +1,6 @@
 # Register Identity provider with Auth service
 
-To enable authentication through an identity provider, you need to register it with the Auth service. In this tutorial, you'll learn how to register IdPs for different authentication protocols using the Tailor SDK.
+To enable authentication through an identity provider, you need to register it with the Auth service. In this tutorial, you'll learn how to register IdPs for different authentication protocols using the Tailor Platform SDK.
 
 ## Prerequisites
 

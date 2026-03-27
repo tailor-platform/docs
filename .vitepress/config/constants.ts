@@ -22,14 +22,11 @@ export const navItemOrder: Record<string, string[]> = {
   reference: ["api", "platform", "concepts", "infrastructure"],
   "getting-started": ["quickstart", "core-concepts", "console"],
   "app-shell": [
-    "index",
+    "introduction",
+    "quickstart",
+    "concepts",
+    "components",
     "api",
-    "authentication",
-    "file-based-routing",
-    "module-resource-definition",
-    "routing-and-navigation",
-    "sidebar-navigation",
-    "styles",
     "changelog",
   ],
 };
@@ -90,13 +87,11 @@ export const defaultSidebarOrder: string[] = ["overview", "quickstart"];
 export const sidebarItemOrder: Record<string, string[]> = {
   function: ["overview", "builtin-interfaces"],
   "app-shell": [
+    "introduction",
+    "quickstart",
+    "concepts",
+    "components",
     "api",
-    "authentication",
-    "file-based-routing",
-    "module-resource-definition",
-    "routing-and-navigation",
-    "sidebar-navigation",
-    "styles",
     "changelog",
   ],
 };
