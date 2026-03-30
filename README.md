@@ -68,6 +68,19 @@ docs/
 └── scripts/             # Utility scripts
 ```
 
+## How to Update Release Notes
+
+1. **Generate narratives**:
+
+```bash
+o-tailor-release-digest --output json --days 7 --output-file docs/docs/changelog/narratives.json
+```
+
+2. **Merge into data.json**:
+```bash
+node scripts/merge-narratives.js
+```
+
 ## Contributing
 
 When adding new documentation:

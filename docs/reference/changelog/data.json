@@ -1,0 +1,256 @@
+{
+  "lastUpdated": "2026-03-29T20:15:00Z",
+  "totalEntries": 10,
+  "entries": [
+    {
+      "id": "sdk-@tailor-platform/sdk@1.33.0",
+      "product": "SDK",
+      "version": "@tailor-platform/sdk@1.33.0",
+      "versionType": "minor",
+      "title": "Multi-event executor triggers and improved deployment planning",
+      "date": "2026-03-29",
+      "githubUrl": "https://github.com/tailor-platform/sdk/releases/tag/%40tailor-platform/sdk%401.33.0",
+      "body": "Single executors can now handle multiple event types (create/update/delete) using the new `events` array parameter\n\nDeployment plans now show which resources are unchanged, making it clearer what will actually change\n\nBidirectional foreign keys between IDP users and userProfile types ensure seed data validation catches mismatches in both directions\n\nJSDoc documentation added to public APIs for better IDE autocomplete and inline help",
+      "bodyHtml": "<ul><li>Single executors can now handle multiple event types (create/update/delete) using the new `events` array parameter</li><li>Deployment plans now show which resources are unchanged, making it clearer what will actually change</li><li>Bidirectional foreign keys between IDP users and userProfile types ensure seed data validation catches mismatches in both directions</li><li>JSDoc documentation added to public APIs for better IDE autocomplete and inline help</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "Multi-event executor triggers and improved deployment planning",
+        "impact": "Simpler event handling and better visibility into infrastructure changes",
+        "details": [
+          "Single executors can now handle multiple event types (create/update/delete) using the new `events` array parameter",
+          "Deployment plans now show which resources are unchanged, making it clearer what will actually change",
+          "Bidirectional foreign keys between IDP users and userProfile types ensure seed data validation catches mismatches in both directions",
+          "JSDoc documentation added to public APIs for better IDE autocomplete and inline help"
+        ],
+        "migration": null,
+        "breaking": false
+      }
+    },
+    {
+      "id": "sdk-@tailor-platform/sdk@1.32.0",
+      "product": "SDK",
+      "version": "@tailor-platform/sdk@1.32.0",
+      "versionType": "minor",
+      "title": "Resolver validation errors now include field-level paths",
+      "date": "2026-03-26",
+      "githubUrl": "https://github.com/tailor-platform/sdk/releases/tag/%40tailor-platform/sdk%401.32.0",
+      "body": "Resolver input validation now uses TailorErrors instead of generic Error objects\n\nPlatform runtime expands validation issues into individual GraphQL errors with full field paths\n\nEach invalid field gets its own error entry with the exact path to the problem\n\nWorks seamlessly with the existing GraphQL error format your clients already handle",
+      "bodyHtml": "<ul><li>Resolver input validation now uses TailorErrors instead of generic Error objects</li><li>Platform runtime expands validation issues into individual GraphQL errors with full field paths</li><li>Each invalid field gets its own error entry with the exact path to the problem</li><li>Works seamlessly with the existing GraphQL error format your clients already handle</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "Resolver validation errors now include field-level paths",
+        "impact": "API consumers get precise error messages pointing to exactly which field failed validation",
+        "details": [
+          "Resolver input validation now uses TailorErrors instead of generic Error objects",
+          "Platform runtime expands validation issues into individual GraphQL errors with full field paths",
+          "Each invalid field gets its own error entry with the exact path to the problem",
+          "Works seamlessly with the existing GraphQL error format your clients already handle"
+        ],
+        "migration": null,
+        "breaking": false
+      }
+    },
+    {
+      "id": "sdk-@tailor-platform/sdk@1.31.0",
+      "product": "SDK",
+      "version": "@tailor-platform/sdk@1.31.0",
+      "versionType": "minor",
+      "title": "Bun runtime support and secure OS keyring token storage",
+      "date": "2026-03-25",
+      "githubUrl": "https://github.com/tailor-platform/sdk/releases/tag/%40tailor-platform/sdk%401.31.0",
+      "body": "CLI now works natively with Bun and Deno runtimes without requiring tsx transpilation\n\nSet TAILOR_USE_KEYRING=1 to store tokens in OS-native secure storage (macOS Keychain, Windows Credential Manager, Linux Secret Service)\n\nDynamic import for connect-node transport enables Bun runtime compatibility\n\nExpanded CI test matrix validates CLI across multiple OS, Node versions, package managers, and runtimes",
+      "bodyHtml": "<ul><li>CLI now works natively with Bun and Deno runtimes without requiring tsx transpilation</li><li>Set TAILOR_USE_KEYRING=1 to store tokens in OS-native secure storage (macOS Keychain, Windows Credential Manager, Linux Secret Service)</li><li>Dynamic import for connect-node transport enables Bun runtime compatibility</li><li>Expanded CI test matrix validates CLI across multiple OS, Node versions, package managers, and runtimes</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "Bun runtime support and secure OS keyring token storage",
+        "impact": "Faster CLI execution with Bun and optional secure credential storage for enterprise users",
+        "details": [
+          "CLI now works natively with Bun and Deno runtimes without requiring tsx transpilation",
+          "Set TAILOR_USE_KEYRING=1 to store tokens in OS-native secure storage (macOS Keychain, Windows Credential Manager, Linux Secret Service)",
+          "Dynamic import for connect-node transport enables Bun runtime compatibility",
+          "Expanded CI test matrix validates CLI across multiple OS, Node versions, package managers, and runtimes"
+        ],
+        "migration": "Token storage remains file-based by default for backward compatibility. To enable OS keyring storage, set the TAILOR_USE_KEYRING=1 environment variable.",
+        "breaking": false
+      }
+    },
+    {
+      "id": "sdk-@tailor-platform/sdk@1.30.0",
+      "product": "SDK",
+      "version": "@tailor-platform/sdk@1.30.0",
+      "versionType": "minor",
+      "title": "Organization and folder management commands",
+      "date": "2026-03-23",
+      "githubUrl": "https://github.com/tailor-platform/sdk/releases/tag/%40tailor-platform/sdk%401.30.0",
+      "body": "New CLI commands: organization list/get/update/tree for managing organizations\n\nNew CLI commands: organization folder list/get/create/update/delete for folder operations\n\nProgrammatic API exports available for building custom tooling\n\nRead-only arrays can now be passed directly to db.enum() and t.enum() without spread workarounds",
+      "bodyHtml": "<ul><li>New CLI commands: organization list/get/update/tree for managing organizations</li><li>New CLI commands: organization folder list/get/create/update/delete for folder operations</li><li>Programmatic API exports available for building custom tooling</li><li>Read-only arrays can now be passed directly to db.enum() and t.enum() without spread workarounds</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "Organization and folder management commands",
+        "impact": "Programmatic access to organization hierarchy and folder structure",
+        "details": [
+          "New CLI commands: organization list/get/update/tree for managing organizations",
+          "New CLI commands: organization folder list/get/create/update/delete for folder operations",
+          "Programmatic API exports available for building custom tooling",
+          "Read-only arrays can now be passed directly to db.enum() and t.enum() without spread workarounds"
+        ],
+        "migration": null,
+        "breaking": false
+      }
+    },
+    {
+      "id": "sdk-@tailor-platform/sdk@1.29.0",
+      "product": "SDK",
+      "version": "@tailor-platform/sdk@1.29.0",
+      "versionType": "minor",
+      "title": "Machine user authentication for CI/CD pipelines",
+      "date": "2026-03-22",
+      "githubUrl": "https://github.com/tailor-platform/sdk/releases/tag/%40tailor-platform/sdk%401.29.0",
+      "body": "New login --machineuser flag authenticates with client ID and secret for non-interactive environments\n\nSupports --client-id and --client-secret options or TAILOR_PLATFORM_MACHINE_USER_CLIENT_ID/CLIENT_SECRET environment variables\n\nClient secret is prompted securely when omitted, preventing credential leaks in shell history\n\nToken is stored in platform config for automatic use by subsequent SDK commands",
+      "bodyHtml": "<ul><li>New login --machineuser flag authenticates with client ID and secret for non-interactive environments</li><li>Supports --client-id and --client-secret options or TAILOR_PLATFORM_MACHINE_USER_CLIENT_ID/CLIENT_SECRET environment variables</li><li>Client secret is prompted securely when omitted, preventing credential leaks in shell history</li><li>Token is stored in platform config for automatic use by subsequent SDK commands</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "Machine user authentication for CI/CD pipelines",
+        "impact": "Automated deployments can now authenticate using platform machine users instead of personal credentials",
+        "details": [
+          "New login --machineuser flag authenticates with client ID and secret for non-interactive environments",
+          "Supports --client-id and --client-secret options or TAILOR_PLATFORM_MACHINE_USER_CLIENT_ID/CLIENT_SECRET environment variables",
+          "Client secret is prompted securely when omitted, preventing credential leaks in shell history",
+          "Token is stored in platform config for automatic use by subsequent SDK commands"
+        ],
+        "migration": null,
+        "breaking": false
+      }
+    },
+    {
+      "id": "appshell-@tailor-platform/app-shell-vite-plugin@0.2.0",
+      "product": "AppShell",
+      "version": "@tailor-platform/app-shell-vite-plugin@0.2.0",
+      "versionType": "minor",
+      "title": "Entrypoint option eliminates circular dependency errors",
+      "date": "2026-03-23",
+      "githubUrl": "https://github.com/tailor-platform/app-shell/releases/tag/%40tailor-platform/app-shell-vite-plugin%400.2.0",
+      "body": "New entrypoint option in appShellRoutes() plugin limits module interception to a single file\n\nEliminates circular module dependencies that previously caused TDZ errors at runtime\n\nRecommended to set entrypoint: 'src/App.tsx' in your vite.config for safer builds\n\nOnly imports from the entrypoint file are replaced with pages-injected AppShell",
+      "bodyHtml": "<ul><li>New entrypoint option in appShellRoutes() plugin limits module interception to a single file</li><li>Eliminates circular module dependencies that previously caused TDZ errors at runtime</li><li>Recommended to set entrypoint: 'src/App.tsx' in your vite.config for safer builds</li><li>Only imports from the entrypoint file are replaced with pages-injected AppShell</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "Entrypoint option eliminates circular dependency errors",
+        "impact": "Prevents temporal dead zone errors caused by circular imports in page components",
+        "details": [
+          "New entrypoint option in appShellRoutes() plugin limits module interception to a single file",
+          "Eliminates circular module dependencies that previously caused TDZ errors at runtime",
+          "Recommended to set entrypoint: 'src/App.tsx' in your vite.config for safer builds",
+          "Only imports from the entrypoint file are replaced with pages-injected AppShell"
+        ],
+        "migration": "Add entrypoint option to appShellRoutes() in your vite.config.ts to avoid potential circular import issues.",
+        "breaking": false
+      }
+    },
+    {
+      "id": "platform-core-service/gateway@2026.03.26-0",
+      "product": "Platform Core",
+      "version": "service/gateway@2026.03.26-0",
+      "versionType": "minor",
+      "title": "Federation composition engine in shadow mode",
+      "date": "2026-03-26",
+      "githubUrl": "https://github.com/tailor-inc/platform-core-services/releases/tag/service/gateway%402026.03.26-0",
+      "body": "New federation composition engine runs in shadow mode alongside existing implementation\n\nEnables safe validation of federation changes before switching over\n\nOTel collector sidecar resources increased for gateway-d to handle additional telemetry\n\nShadow mode lets platform team compare composition results without affecting production traffic",
+      "bodyHtml": "<ul><li>New federation composition engine runs in shadow mode alongside existing implementation</li><li>Enables safe validation of federation changes before switching over</li><li>OTel collector sidecar resources increased for gateway-d to handle additional telemetry</li><li>Shadow mode lets platform team compare composition results without affecting production traffic</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "Federation composition engine in shadow mode",
+        "impact": "Next-generation GraphQL federation engine running in parallel for safe testing",
+        "details": [
+          "New federation composition engine runs in shadow mode alongside existing implementation",
+          "Enables safe validation of federation changes before switching over",
+          "OTel collector sidecar resources increased for gateway-d to handle additional telemetry",
+          "Shadow mode lets platform team compare composition results without affecting production traffic"
+        ],
+        "migration": null,
+        "breaking": false
+      }
+    },
+    {
+      "id": "platform-core-service/auth@2026.03.26-0",
+      "product": "Platform Core",
+      "version": "service/auth@2026.03.26-0",
+      "versionType": "minor",
+      "title": "AuthConnection status monitoring and organization cleanup",
+      "date": "2026-03-26",
+      "githubUrl": "https://github.com/tailor-inc/platform-core-services/releases/tag/service/auth%402026.03.26-0",
+      "body": "AuthConnection objects now expose a status field for monitoring SSO configuration health\n\nDeleted organizations are now fully purged across auth, PAM, and operator services\n\nPrevents orphaned data and credential leaks from deleted organizations\n\nStatus field enables automated alerting on broken SSO integrations",
+      "bodyHtml": "<ul><li>AuthConnection objects now expose a status field for monitoring SSO configuration health</li><li>Deleted organizations are now fully purged across auth, PAM, and operator services</li><li>Prevents orphaned data and credential leaks from deleted organizations</li><li>Status field enables automated alerting on broken SSO integrations</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "AuthConnection status monitoring and organization cleanup",
+        "impact": "Monitor SSO connection health and ensure deleted organizations are fully purged",
+        "details": [
+          "AuthConnection objects now expose a status field for monitoring SSO configuration health",
+          "Deleted organizations are now fully purged across auth, PAM, and operator services",
+          "Prevents orphaned data and credential leaks from deleted organizations",
+          "Status field enables automated alerting on broken SSO integrations"
+        ],
+        "migration": null,
+        "breaking": false
+      }
+    },
+    {
+      "id": "platform-core-service/pipeline@2026.03.26-0",
+      "product": "Platform Core",
+      "version": "service/pipeline@2026.03.26-0",
+      "versionType": "minor",
+      "title": "GraphQL alias support in TailorErrors paths",
+      "date": "2026-03-26",
+      "githubUrl": "https://github.com/tailor-inc/platform-core-services/releases/tag/service/pipeline%402026.03.26-0",
+      "body": "TailorErrors path field now includes GraphQL aliases when present in the original query\n\nMakes it easier to correlate errors with the exact field in your query\n\nParticularly helpful when querying the same field multiple times with different aliases\n\nWorks seamlessly with existing error handling code",
+      "bodyHtml": "<ul><li>TailorErrors path field now includes GraphQL aliases when present in the original query</li><li>Makes it easier to correlate errors with the exact field in your query</li><li>Particularly helpful when querying the same field multiple times with different aliases</li><li>Works seamlessly with existing error handling code</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "GraphQL alias support in TailorErrors paths",
+        "impact": "Error paths correctly reference GraphQL aliases used in queries",
+        "details": [
+          "TailorErrors path field now includes GraphQL aliases when present in the original query",
+          "Makes it easier to correlate errors with the exact field in your query",
+          "Particularly helpful when querying the same field multiple times with different aliases",
+          "Works seamlessly with existing error handling code"
+        ],
+        "migration": null,
+        "breaking": false
+      }
+    },
+    {
+      "id": "platform-core-service/operator@2026.03.26-0",
+      "product": "Platform Core",
+      "version": "service/operator@2026.03.26-0",
+      "versionType": "minor",
+      "title": "Human-in-the-loop workflows with wait/resolve API",
+      "date": "2026-03-26",
+      "githubUrl": "https://github.com/tailor-inc/platform-core-services/releases/tag/service/operator%402026.03.26-0",
+      "body": "New wait/resolve API enables workflows to request human intervention at any step\n\nWorkflows pause automatically and resume when a human provides input or approval\n\nUseful for approval gates, manual data entry, or quality checks in automated processes\n\nWorkspace subset routing support added for better multi-tenant isolation",
+      "bodyHtml": "<ul><li>New wait/resolve API enables workflows to request human intervention at any step</li><li>Workflows pause automatically and resume when a human provides input or approval</li><li>Useful for approval gates, manual data entry, or quality checks in automated processes</li><li>Workspace subset routing support added for better multi-tenant isolation</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "Human-in-the-loop workflows with wait/resolve API",
+        "impact": "Workflows can now pause for human approval before continuing execution",
+        "details": [
+          "New wait/resolve API enables workflows to request human intervention at any step",
+          "Workflows pause automatically and resume when a human provides input or approval",
+          "Useful for approval gates, manual data entry, or quality checks in automated processes",
+          "Workspace subset routing support added for better multi-tenant isolation"
+        ],
+        "migration": null,
+        "breaking": false
+      }
+    }
+  ]
+}
