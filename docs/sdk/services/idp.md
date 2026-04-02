@@ -77,6 +77,26 @@ defineIdp("my-idp", {
 });
 ```
 
+### emailConfig
+
+Optional email configuration defaults for emails sent by the IdP (e.g., password reset emails). Per-request values take priority over namespace defaults.
+
+```typescript
+defineIdp("my-idp", {
+  authorization: "loggedIn",
+  clients: ["default-client"],
+  emailConfig: {
+    fromName: "My App",
+    passwordResetSubject: "Reset your password",
+  },
+});
+```
+
+**Fields:**
+
+- `fromName` (string, optional) — Default sender display name for emails (e.g., `My App <no-reply@idp.erp.dev>`). Max 200 characters. When omitted, falls back to `"Tailor Platform IdP"`.
+- `passwordResetSubject` (string, optional) — Default subject line for password reset emails. Max 200 characters. When omitted, falls back to the localized default subject.
+
 ## Using idp.provider()
 
 The `idp.provider()` method creates a type-safe reference to the IdP for use in Auth configuration. The client name is validated at compile time against the clients defined in the IdP.
