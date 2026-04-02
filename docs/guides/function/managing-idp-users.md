@@ -65,6 +65,8 @@ interface UpdateUserInput {
 interface SendPasswordResetEmailInput {
   userId: string;
   redirectUri: string;
+  fromName?: string;
+  subject?: string;
 }
 
 class Client {
@@ -307,6 +309,8 @@ export default async (args) => {
   const success = await idpClient.sendPasswordResetEmail({
     userId: args.userId,
     redirectUri: "https://your-app.com/reset-password-complete",
+    fromName: "My App Support",
+    subject: "Password Reset for Your My App Account",
   });
 
   return {
@@ -315,8 +319,15 @@ export default async (args) => {
 };
 ```
 
+**Input fields:**
+
+- `userId` (string, required) — The ID of the user to send the password reset email to.
+- `redirectUri` (string, required) — The URL to redirect the user to after password reset. Must be a valid absolute URL with `http` or `https` scheme.
+- `fromName` (string, optional) — Overrides the sender display name for this email. When omitted, falls back to the namespace-level `emailConfig.fromName`, then to `"Tailor Platform IdP"`.
+- `subject` (string, optional) — Overrides the email subject line for this email. When omitted, falls back to the namespace-level `emailConfig.passwordResetSubject`, then to the localized default.
+
 :::tip
-Password reset emails are sent from `no-reply@idp.erp.dev`. The `redirectUri` must be a valid absolute URL with `http` or `https` scheme.
+Password reset emails are sent from `no-reply@idp.erp.dev`.
 :::
 
 ## Related Documentation

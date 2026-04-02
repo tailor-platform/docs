@@ -51,6 +51,8 @@ await client.deleteUser(userId);
 await client.sendPasswordResetEmail({
   userId: user.id,
   redirectUri: "https://app.example.com/reset",
+  fromName: "My App Support", // optional: overrides namespace default
+  subject: "Reset your password", // optional: overrides namespace default
 });
 ```
 

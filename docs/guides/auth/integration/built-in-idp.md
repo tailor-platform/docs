@@ -37,6 +37,10 @@ const idp = defineIdp("builtin-idp", {
     useNonEmailIdentifier: false,
     allowSelfPasswordReset: true,
   },
+  emailConfig: {
+    fromName: "My App Support",
+    passwordResetSubject: "Reset your My App password",
+  },
 });
 
 // 2. Configure Auth service to use the Built-in IdP
@@ -317,6 +321,38 @@ export const builtinIdp = defineIdp("builtin-idp", {
 When `disable_password_auth` is enabled, existing users who previously signed in with a password will need to use Google OAuth or Microsoft OAuth instead. Ensure that all users have accounts with the configured OAuth provider and email addresses in the allowed domains before enabling this setting.
 :::
 
+### Email Configuration
+
+The Built-in IdP allows you to customize the sender name and subject line for emails sent by the IdP (such as password reset emails). You can configure namespace-level defaults using the `emailConfig` option, and optionally override them per request.
+
+**Priority chain** (highest to lowest):
+
+1. **Per-request parameter** — `fromName` / `subject` passed in `_sendPasswordResetEmail` or `tailor.idp.sendPasswordResetEmail`
+2. **Namespace default** — configured in `emailConfig`
+3. **Hardcoded default** — `"Tailor Platform IdP"` for sender name, localized default for subject
+
+**Configuration:**
+
+- `fromName` (string, optional) — Default sender display name for emails. Max 200 characters. When omitted, falls back to `"Tailor Platform IdP"`.
+- `passwordResetSubject` (string, optional) — Default subject line for password reset emails. Max 200 characters. When omitted, falls back to the localized default subject.
+
+**Example Configuration:**
+
+```typescript
+import { defineIdp } from "@tailor-platform/sdk";
+
+export const builtinIdp = defineIdp("builtin-idp", {
+  authorization: "user.role == 'admin'",
+  clients: ["main-client"],
+  emailConfig: {
+    fromName: "My App Support",
+    passwordResetSubject: "Reset your My App password",
+  },
+});
+```
+
+With this configuration, password reset emails will be sent as `My App Support <no-reply@idp.erp.dev>` with the subject "Reset your My App password", unless overridden per request.
+
 ### Why Use the Built-In IdP
 
 - **Unified API with Automatic Schema Generation**: When registered as subgraphs, both services automatically contribute their schemas to your application's GraphQL API, making all authentication and user management operations available through a single GraphQL endpoint and simplifying client integration.
@@ -517,12 +553,21 @@ Variables:
 {
   "input": {
     "userId": "user-id-here",
-    "redirectUri": "https://your-app.com/reset-password-complete"
+    "redirectUri": "https://your-app.com/reset-password-complete",
+    "fromName": "My App Support",
+    "subject": "Password Reset for Your My App Account"
   }
 }
 ```
 
-Password reset emails are sent from `no-reply@idp.erp.dev`. The `redirectUri` must be a valid absolute URL with `http` or `https` scheme. This operation is only available when `use_non_email_identifier` is set to `false` (the default), as it requires users to have email addresses.
+**Input fields:**
+
+- `userId` (ID!, required) — The ID of the user to send the password reset email to.
+- `redirectUri` (String!, required) — The URL to redirect the user to after they reset their password. Must be a valid absolute URL with `http` or `https` scheme.
+- `fromName` (String, optional) — Overrides the sender display name for this email. When omitted, falls back to the namespace-level `emailConfig.fromName`, then to `"Tailor Platform IdP"`.
+- `subject` (String, optional) — Overrides the email subject line for this email. When omitted, falls back to the namespace-level `emailConfig.passwordResetSubject`, then to the localized default.
+
+Password reset emails are sent from `no-reply@idp.erp.dev`. This operation is only available when `use_non_email_identifier` is set to `false` (the default), as it requires users to have email addresses.
 
 User management operations are available only when the IdP service is registered as a subgraph in your application configuration. The GraphQL schema is automatically generated based on the IdP service specification.
 
