@@ -4,7 +4,7 @@ Accurate and valid data is essential to ensure the success of any application. T
 
 This tutorial demonstrates how to apply data validation rules to your fields using the SDK.
 
-- See [Core Concepts](/getting-started/core-concepts) to get an overview of Workspace, Organization, Application and Service.
+- See [Core Concepts](/getting-started/core-concepts/) to get an overview of Workspace, Organization, Application and Service.
 - To follow along with this tutorial, first complete the [SDK Quickstart](../../sdk/quickstart) and the [Data Schema Basics](data-schema-basics) tutorial.
 
 ## Tutorial Steps

@@ -4,7 +4,7 @@ Tailor Platform makes it easy to modify data schemas. With TailorDB, you can mod
 
 This tutorial demonstrates how to add a new field to an existing data type using the SDK.
 
-- See [Core Concepts](/getting-started/core-concepts) to get an overview of Workspace, Organization, Application and Service.
+- See [Core Concepts](/getting-started/core-concepts/) to get an overview of Workspace, Organization, Application and Service.
 - To follow along with this tutorial, first complete the [SDK Quickstart](../../sdk/quickstart) and the [Data Schema Basics](data-schema-basics) tutorial.
 
 ## TailorDB

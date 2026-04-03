@@ -12,7 +12,7 @@ Workflows provide:
 - Access to TailorDB via Kysely query builder
 - Job triggering to compose multi-step logic
 
-For the official Tailor Platform documentation, see [Workflow Guide](/guides/workflow).
+For the official Tailor Platform documentation, see [Workflow Guide](/guides/workflow/).
 
 ## Workflow Rules
 

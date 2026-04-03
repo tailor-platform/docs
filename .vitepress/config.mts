@@ -13,7 +13,10 @@ export default withMermaid(
     description: "Platform Documentation",
     base: "/",
     srcDir: "docs",
-    ignoreDeadLinks: true,
+    ignoreDeadLinks: [
+      // Ignore localhost URLs used in examples
+      /^http:\/\/localhost/,
+    ],
 
     head: [["link", { rel: "icon", href: "/favicon.png" }]],
 
