@@ -21,10 +21,10 @@ Learn how to build a complete application on the Tailor Platform from the ground
 
 After completing a develop-from-scratch tutorial, explore:
 
-- [Data Schema Management](../manage-data-schema/) - Advanced schema patterns
-- [Setup Authentication](../setup-auth/) - Identity providers and OAuth2
+- [Data Schema Management](../manage-data-schema/overview) - Advanced schema patterns
+- [Setup Authentication](../setup-auth/overview) - Identity providers and OAuth2
 - [Resolvers](../resolver) - Custom business logic
-- [Executors](../setup-executor/) - Event-driven automation
+- [Executors](../setup-executor/overview) - Event-driven automation
 - [Application Endpoints](../app-endpoint) - Expose your services
 
 ## Need Help?

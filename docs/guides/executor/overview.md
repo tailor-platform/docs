@@ -125,4 +125,4 @@ You can view the number of attempts for each job created for an executor in the 
 
 For more details on the number of attempts, refer to the [Verify the trigger](/tutorials/setup-executor/event-based-trigger#5verifythetrigger) section of the event-based trigger tutorial.
 
-Additionally, executor operations are subject to a recursive call depth limit of 10 levels when triggering other platform services. See [Platform Limits](/reference/platform-limits#recursive-call-detection) for more details.
+Additionally, executor operations are subject to a recursive call depth limit of 10 levels when triggering other platform services. See [Platform Limits](/reference/platform/platform-limits#recursive-call-detection) for more details.

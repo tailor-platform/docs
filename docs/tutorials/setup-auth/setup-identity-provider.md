@@ -5,7 +5,7 @@ The [Auth service](/guides/auth/overview) works with an identity provider (IdP) 
 ## Prerequisite
 
 - Complete [Quickstart](/getting-started/quickstart)&#x20;
-- See [Core concepts](/getting-started/core-concepts) to get an overview of Workspace, Organization, Application and Service.
+- See [Core concepts](/getting-started/core-concepts/) to get an overview of Workspace, Organization, Application and Service.
 
 Before configuring the Auth service for authentication, you need to set up an identity provider.
 

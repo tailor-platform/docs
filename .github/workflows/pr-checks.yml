@@ -34,6 +34,9 @@ jobs:
       - name: Format check
         run: pnpm fmt
 
+      - name: Build
+        run: pnpm build
+
   typo-check:
     runs-on: ubuntu-latest
     steps:

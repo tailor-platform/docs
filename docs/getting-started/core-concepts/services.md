@@ -67,7 +67,7 @@ Job orchestration service (Preview):
 - **Conditional branching**
 - **Retry and error handling**
 
-[Learn more about Workflow →](/guides/workflow)
+[Learn more about Workflow →](/guides/workflow/)
 
 ### Secret Manager
 

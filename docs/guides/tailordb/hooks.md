@@ -16,7 +16,7 @@ You can perform calculations using other fields within the same record. For exam
 2. Adding user context:
 
 Hooks allow the addition of current user context to the record. For instance, a field like `createdById` can be populated with the `user.id`.\
-Additionally, you can utilize user attributes, an array of UUIDs configured in the `AttributesFields` in the Auth service. A typical use case for `user.attributes` involves validation. Refer to this [example](/guides/tailordb/validations/#exampledemonstratinghowtouseuserattributes).
+Additionally, you can utilize user attributes, an array of UUIDs configured in the `AttributesFields` in the Auth service. A typical use case for `user.attributes` involves validation. Refer to this [example](/guides/tailordb/validations#exampledemonstratinghowtouseuserattributes).
 
 Furthermore, the field updates itself whenever a new record is created or an existing one is updated.\
 This ensures data consistency without manual recalculations, similar to calculated fields in a database, and helps you avoid writing complex logic in [Pipeline](/guides/resolver).
