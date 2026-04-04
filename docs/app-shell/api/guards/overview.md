@@ -350,3 +350,4 @@ const checkPermission: Guard = async ({ context }) => {
 - [hidden()](hidden) - Hide/deny access guard function
 - [redirectTo()](redirect-to) - Redirect guard function
 - [WithGuard Component](../../components/with-guard) - Component-level guards
+- [Guards & Permissions Guide](../../guides/guards-permissions) - Detailed tutorial
