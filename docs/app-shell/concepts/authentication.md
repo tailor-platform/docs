@@ -49,7 +49,7 @@ The above code will:
 - Show the `guardComponent` while loading or when unauthenticated
 - Handle token management and session persistence automatically
 
-See the [useAuth](../api/use-auth) for more details.
+See the [API](api.md#authprovider) for more details.
 
 ## Authentication Hook
 
@@ -89,7 +89,7 @@ The `authState` object contains:
 | `isAuthenticated` | `boolean`      | Whether user is authenticated                   |
 | `user`            | `User \| null` | Current user object (null if not authenticated) |
 
-See the [useAuth API](../api/use-auth) for more details.
+See the [API](api.md#useauth) for more details.
 
 ## Extending User Type
 
@@ -244,7 +244,7 @@ function App() {
 | `getAppUri()`     | `() => string` | Returns the `appUri` used to create this client                           |
 | `fetch`           | `typeof fetch` | Authenticated fetch with built-in DPoP proof generation and token refresh |
 
-See the [useAuth API](../api/use-auth) for more details.
+See the [API](api.md#createauthclient) for more details.
 
 ## Integration with AppShell
 

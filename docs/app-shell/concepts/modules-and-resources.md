@@ -107,7 +107,7 @@ The same applies to resources: a `defineResource()` call without a `component` m
 
 Guards on component-less modules and resources execute correctly. For example, a `redirectTo()` guard will fire as expected. If all guards return `pass()`, the route falls back to a 404 (since there is no component to render).
 
-> Read more about [client-side navigation](routing-navigation) in AppShell apps
+> Read more about [client-side navigation](routing-and-navigation) in AppShell apps
 
 ## Route Guards
 
@@ -117,7 +117,7 @@ Both modules and resources support `guards` - an array of functions that control
 - Reusability: Share common guards across routes
 - Semantic constraints: Clear `pass()`, `hidden()`, or `redirectTo()` results
 
-See the [Route Guards documentation](../api/guards/overview) in the API reference for full details.
+See the [Route Guards documentation](api.md#route-guards) in the API reference for full details.
 
 ### Guard Examples
 
