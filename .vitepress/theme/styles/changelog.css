@@ -1,0 +1,195 @@
+/* Changelog page layout */
+.changelog-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+/* Badges */
+.product-badge,
+.version-badge,
+.breaking-badge {
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Product badge — per-product colour coding */
+.product-badge {
+  color: white;
+}
+
+.product-badge[data-product="sdk"] {
+  background: #3b82f6;
+}
+
+.product-badge[data-product="appshell"] {
+  background: #8b5cf6;
+}
+
+.product-badge[data-product="platform-core"] {
+  background: #06b6d4;
+}
+
+/* Version badge — colour varies by semver bump type */
+.version-badge {
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+  border: 1px solid var(--vp-c-divider);
+}
+
+.version-badge[data-type="major"] {
+  background: #fef2f2;
+  color: #991b1b;
+  border-color: #fecaca;
+}
+
+.version-badge[data-type="minor"] {
+  background: #eff6ff;
+  color: #1e40af;
+  border-color: #bfdbfe;
+}
+
+/* Breaking change badge */
+.breaking-badge {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* Footer tags */
+.entry-tag {
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-2);
+  border: 1px solid var(--vp-c-divider);
+}
+
+/* Meta row */
+.entry-date {
+  font-weight: 500;
+}
+
+.entry-separator {
+  opacity: 0.5;
+}
+
+.entry-github-link {
+  color: var(--vp-c-text-2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.entry-github-link:hover {
+  color: var(--vp-c-brand);
+}
+
+/* Entry title */
+.entry-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+
+/* Narrative block */
+.entry-narrative {
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.narrative-summary,
+.narrative-impact,
+.narrative-details {
+  margin-bottom: 1rem;
+}
+
+.narrative-summary:last-child,
+.narrative-impact:last-child,
+.narrative-details:last-child {
+  margin-bottom: 0;
+}
+
+.narrative-summary strong,
+.narrative-impact strong,
+.narrative-details strong {
+  color: var(--vp-c-text-1);
+  font-weight: 600;
+}
+
+.narrative-details ul {
+  margin: 0.5rem 0 0 0;
+  padding-left: 1.5rem;
+}
+
+.narrative-details li {
+  margin-bottom: 0.25rem;
+  color: var(--vp-c-text-2);
+}
+
+.narrative-migration {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #991b1b;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--vp-c-text-2);
+}
+
+/* Load more */
+.load-more {
+  text-align: center;
+  margin: 3rem 0;
+}
+
+.load-more-btn {
+  padding: 0.75rem 2rem;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 6px;
+  color: var(--vp-c-text-1);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9375rem;
+}
+
+.load-more-btn:hover {
+  border-color: var(--vp-c-brand);
+  color: var(--vp-c-brand);
+}
+
+.load-more-btn .remaining {
+  opacity: 0.7;
+  margin-left: 0.5rem;
+}
+
+/* Footer */
+.changelog-footer {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--vp-c-divider);
+  text-align: center;
+  color: var(--vp-c-text-2);
+  font-size: 0.875rem;
+}
+
+.changelog-footer .stats {
+  margin-bottom: 0.5rem;
+}
+
+.changelog-footer .last-updated {
+  opacity: 0.7;
+}
