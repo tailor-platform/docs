@@ -4,7 +4,7 @@ With Tailor Platform's TailorDB, you can easily add new types (data models) to y
 
 This tutorial demonstrates how to create a new data schema using the SDK.
 
-- See [Core Concepts](/getting-started/core-concepts) to get an overview of Workspace, Organization, Application and Service.
+- See [Core Concepts](/getting-started/core-concepts/) to get an overview of Workspace, Organization, Application and Service.
 - To follow along with this tutorial, first complete the [SDK Quickstart](../../sdk/quickstart) and the [Data Schema Basics](data-schema-basics) tutorial.
 
 ## Tutorial Steps

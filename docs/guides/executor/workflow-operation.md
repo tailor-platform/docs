@@ -6,7 +6,7 @@ doc_type: guide
 
 The Workflow operation enables triggering workflows from the Executor service. This operation type is ideal for automatically starting workflows in response to events, webhooks, or scheduled tasks.
 
-For more details on workflows, refer to the [Workflow Service](/guides/workflow) documentation.
+For more details on workflows, refer to the [Workflow Service](/guides/workflow/) documentation.
 
 ## Configuration Example
 
@@ -105,7 +105,7 @@ Workflow operations are ideal for:
 
 ## Related Documentation
 
-- [Workflow Service Overview](/guides/workflow)
+- [Workflow Service Overview](/guides/workflow/)
 - [Creating Workflows](/guides/workflow/creating-workflows)
 - [Triggering Workflows](/guides/workflow/triggering-workflow)
 - [Monitoring Executions](/guides/workflow/monitoring-executions)
