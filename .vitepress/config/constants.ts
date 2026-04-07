@@ -19,7 +19,7 @@ export const navItemOrder: Record<string, string[]> = {
     "develop-from-scratch",
   ],
   sdk: ["quickstart", "cli", "services", "generator"],
-  reference: ["api", "platform", "concepts", "infrastructure", "security", "changelog"],
+  reference: ["changelog","security", "api", "platform", "concepts", "infrastructure"],
   "getting-started": ["quickstart", "core-concepts", "console"],
   "app-shell": [
     "introduction",
@@ -86,7 +86,7 @@ export const defaultSidebarOrder: string[] = ["overview", "quickstart"];
 // Section-specific overrides (only if you need different ordering for a specific section)
 export const sidebarItemOrder: Record<string, string[]> = {
   function: ["overview", "builtin-interfaces"],
-  reference: ["api", "platform", "concepts", "infrastructure", "security", "changelog"],
+  reference: ["changelog","api", "platform", "concepts", "infrastructure", "security"],
   "app-shell": [
     "introduction",
     "quickstart",

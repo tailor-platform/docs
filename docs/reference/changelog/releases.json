@@ -1,6 +1,194 @@
 {
-  "lastUpdated": "2026-03-29T20:15:00Z",
+  "lastUpdated": "2026-04-06T12:00:00Z",
   "entries": [
+    {
+      "id": "platform-core-cmd/tailorctl@v2.9.1",
+      "product": "Platform Core",
+      "version": "cmd/tailorctl@v2.9.1",
+      "versionType": "minor",
+      "title": "IdP permission management, typed executor event configs, and AuthConnection status",
+      "date": "2026-04-06",
+      "githubUrl": "https://github.com/tailor-inc/platform-core-services/releases/tag/cmd/tailorctl%40v2.9.1",
+      "body": "New IdP permission management in tailorctl and terraform-provider-tailor for configuring identity provider access rules\n\nExecutor triggers now accept typed event configs, enabling strongly-typed event-driven workflows\n\nAuthConnection objects expose a status field for monitoring SSO configuration health\n\nPipeline UpdateNamespace correctly persists zero-value fields, allowing fields to be cleared via SDL updates",
+      "bodyHtml": "<ul><li>New IdP permission management in tailorctl and terraform-provider-tailor for configuring identity provider access rules</li><li>Executor triggers now accept typed event configs, enabling strongly-typed event-driven workflows</li><li>AuthConnection objects expose a status field for monitoring SSO configuration health</li><li>Pipeline UpdateNamespace correctly persists zero-value fields, allowing fields to be cleared via SDL updates</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "tailorctl and Terraform provider now support IdP permissions; executor triggers support typed event configurations",
+        "impact": "Configure identity provider permissions via CLI and Terraform IaC; executor triggers can process strongly-typed event payloads",
+        "details": [
+          "New IdP permission management in both tailorctl and terraform-provider-tailor for configuring identity provider access rules",
+          "Executor triggers now accept typed event configs, enabling strongly-typed event-driven workflows",
+          "AuthConnection objects expose a status field for monitoring SSO configuration health",
+          "Pipeline UpdateNamespace correctly persists zero-value fields, allowing fields to be cleared via SDL updates"
+        ],
+        "migration": null
+      }
+    },
+    {
+      "id": "platform-core-service/routing@2026.04.06-0",
+      "product": "Platform Core",
+      "version": "service/routing@2026.04.06-0",
+      "versionType": "minor",
+      "title": "Default workspace routing subset renamed to 'shared01'",
+      "date": "2026-04-06",
+      "githubUrl": "https://github.com/tailor-inc/platform-core-services/releases/tag/service/routing%402026.04.06-0",
+      "body": "Default subset renamed from 'default' to 'shared01' in workspace routing configuration\n\nAutomatic database migration renames existing 'default' subset entries to 'shared01'\n\nTailor-Subset header is now propagated across all internal service-to-service calls for consistent subset isolation",
+      "bodyHtml": "<ul><li>Default subset renamed from 'default' to 'shared01' in workspace routing configuration</li><li>Automatic database migration renames existing 'default' subset entries to 'shared01'</li><li>Tailor-Subset header is now propagated across all internal service-to-service calls for consistent subset isolation</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "Default workspace routing subset renamed from 'default' to 'shared01'",
+        "impact": "Workspace routing now uses 'shared01' as the default subset; the Tailor-Subset header is propagated across all internal service calls",
+        "details": [
+          "Default subset renamed from 'default' to 'shared01' in workspace routing configuration",
+          "Automatic database migration renames existing 'default' subset entries to 'shared01'",
+          "Tailor-Subset header is now propagated across all internal service-to-service calls for consistent subset isolation"
+        ],
+        "migration": null
+      }
+    },
+    {
+      "id": "platform-core-service/function-runtime@2026.04.04-0",
+      "product": "Platform Core",
+      "version": "service/function/runtime@2026.04.04-0",
+      "versionType": "patch",
+      "title": "Critical fix for V8 GC crash and increased Envoy sidecar resources",
+      "date": "2026-04-04",
+      "githubUrl": "https://github.com/tailor-inc/platform-core-services/releases/tag/service/function/runtime%402026.04.04-0",
+      "body": "Fixed use-after-free bug in V8 GC epilogue callback that caused intermittent function runtime crashes\n\nIncreased CPU and memory resources for critically under-provisioned Envoy sidecar containers\n\nFunction execution stability improved under concurrent workloads",
+      "bodyHtml": "<ul><li>Fixed use-after-free bug in V8 GC epilogue callback that caused intermittent function runtime crashes</li><li>Increased CPU and memory resources for critically under-provisioned Envoy sidecar containers</li><li>Function execution stability improved under concurrent workloads</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "Critical fix for V8 garbage collector crash and increased Envoy sidecar resources",
+        "impact": "JavaScript functions are significantly more stable with reduced risk of intermittent crashes under load",
+        "details": [
+          "Fixed use-after-free bug in V8 GC epilogue callback that caused intermittent function runtime crashes",
+          "Increased CPU and memory resources for critically under-provisioned Envoy sidecar containers",
+          "Function execution stability improved under concurrent workloads"
+        ],
+        "migration": null
+      }
+    },
+    {
+      "id": "appshell-@tailor-platform/app-shell@0.33.0",
+      "product": "AppShell",
+      "version": "@tailor-platform/app-shell@0.33.0",
+      "versionType": "minor",
+      "title": "Dynamic breadcrumb overrides, Combobox.Async initial items, and portal z-index fix",
+      "date": "2026-04-03",
+      "githubUrl": "https://github.com/tailor-platform/app-shell/releases/tag/%40tailor-platform/app-shell%400.33.0",
+      "body": "Breaking: AsyncFetcherFn query parameter is now string | null — handle null to return initial items when the dropdown opens\n\nNew useOverrideBreadcrumb hook lets page components display data-driven titles in breadcrumbs\n\nFix guards in appShellPageProps now correctly apply in file-based routing\n\nFix portal components (Menu, Select, Combobox, Autocomplete, Tooltip) rendering behind the sidebar",
+      "bodyHtml": "<ul><li><strong>Breaking:</strong> AsyncFetcherFn query parameter is now <code>string | null</code> — handle null to return initial items when the dropdown opens</li><li>New useOverrideBreadcrumb hook lets page components display data-driven titles in breadcrumbs</li><li>Fix: guards in appShellPageProps now correctly apply in file-based routing</li><li>Fix: portal components (Menu, Select, Combobox, Autocomplete, Tooltip) rendering behind the sidebar</li></ul>",
+      "breaking": true,
+      "tags": [],
+      "narrative": {
+        "summary": "AsyncFetcherFn now receives null on first open; useOverrideBreadcrumb hook for dynamic breadcrumb titles",
+        "impact": "Async comboboxes can show initial items on open; page components can set data-driven breadcrumb titles; portal components no longer render behind the sidebar",
+        "details": [
+          "BREAKING: AsyncFetcherFn query parameter is now string | null — return initial/default items when query is null (dropdown just opened or cleared)",
+          "useAsync calls fetcher(null) automatically on first open so Combobox.Async shows items immediately without requiring user input",
+          "New useOverrideBreadcrumb hook lets page components display data-driven titles (e.g. record names from API queries) in breadcrumbs",
+          "Guards defined via appShellPageProps now correctly apply in file-based routing",
+          "Portal-based components (Menu, Select, Combobox, Autocomplete, Tooltip) fixed to render above the sidebar using CSS custom property z-index values"
+        ],
+        "migration": "Update AsyncFetcherFn to handle query: string | null. When query is null the dropdown was just opened or cleared — return initial/default items, or return an empty array to wait for user input before showing results."
+      }
+    },
+    {
+      "id": "sdk-@tailor-platform/sdk@1.34.0",
+      "product": "SDK",
+      "version": "@tailor-platform/sdk@1.34.0",
+      "versionType": "minor",
+      "title": "Auth connection support for managing OAuth2 connections with external providers",
+      "date": "2026-04-03",
+      "githubUrl": "https://github.com/tailor-platform/sdk/releases/tag/%40tailor-platform/sdk%401.34.0",
+      "body": "New auth connection API for creating and managing OAuth2 connections with external identity providers\n\nDeploy logic now delegates to the shared tailor-platform/actions/deploy composite action, eliminating locally generated deploy scripts",
+      "bodyHtml": "<ul><li>New auth connection API for creating and managing OAuth2 connections with external identity providers</li><li>Deploy logic now delegates to the shared tailor-platform/actions/deploy composite action, eliminating locally generated deploy scripts</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "Auth connection support for managing OAuth2 connections with external providers",
+        "impact": "Programmatically create and manage OAuth2 connections; deploy workflows use a centralized action reducing per-project boilerplate",
+        "details": [
+          "New auth connection API for creating and managing OAuth2 connections with external identity providers",
+          "Deploy logic now delegates to the shared tailor-platform/actions/deploy composite action, eliminating locally generated deploy scripts"
+        ],
+        "migration": null
+      }
+    },
+    {
+      "id": "sdk-@tailor-platform/sdk@1.33.2",
+      "product": "SDK",
+      "version": "@tailor-platform/sdk@1.33.2",
+      "versionType": "patch",
+      "title": "Fix SQL query command rewriting user input",
+      "date": "2026-04-03",
+      "githubUrl": "https://github.com/tailor-platform/sdk/releases/tag/%40tailor-platform/sdk%401.33.2",
+      "body": "Fixed SQL query command rewriting user-provided SQL, which broke INSERT/UPDATE statements and PascalCase table names",
+      "bodyHtml": "<ul><li>Fixed SQL query command rewriting user-provided SQL, which broke INSERT/UPDATE statements and PascalCase table names</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "SQL query command no longer rewrites user-provided SQL input",
+        "impact": "INSERT/UPDATE statements and PascalCase table names now execute correctly without being silently modified",
+        "details": [
+          "Fixed a bug where the SQL query command was rewriting user-provided SQL, breaking INSERT/UPDATE statements",
+          "PascalCase table names are now preserved as-is instead of being lowercased or transformed"
+        ],
+        "migration": null
+      }
+    },
+    {
+      "id": "sdk-@tailor-platform/sdk@1.33.1",
+      "product": "SDK",
+      "version": "@tailor-platform/sdk@1.33.1",
+      "versionType": "patch",
+      "title": "Fix Kysely type generation for date/datetime fields in nested objects",
+      "date": "2026-04-02",
+      "githubUrl": "https://github.com/tailor-platform/sdk/releases/tag/%40tailor-platform/sdk%401.33.1",
+      "body": "Fixed Kysely type generation for date/datetime fields inside nested objects (db.object())\n\nAdded ObjectColumnType<T> helper for correct Insertable/Selectable type expansion\n\nNullable fields inside nested objects are now optional for inserts and required for selects",
+      "bodyHtml": "<ul><li>Fixed Kysely type generation for date/datetime fields inside nested objects (db.object())</li><li>Added ObjectColumnType&lt;T&gt; helper for correct Insertable/Selectable type expansion</li><li>Nullable fields inside nested objects are now optional for inserts and required for selects</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "Kysely type generation correctly handles date/datetime fields inside nested objects",
+        "impact": "TypeScript types for nested objects with date fields now correctly allow Date | string on insert and return Date on select",
+        "details": [
+          "Added ObjectColumnType<T> helper that wraps nested objects in ColumnType for correct Kysely Insertable/Selectable type expansion",
+          "Nested objects containing date/datetime fields now accept Date | string on insert and return Date on select",
+          "Nullable fields inside nested objects are now optional for inserts and required for selects, matching Kysely conventions"
+        ],
+        "migration": null
+      }
+    },
+    {
+      "id": "appshell-@tailor-platform/app-shell@0.32.0",
+      "product": "AppShell",
+      "version": "@tailor-platform/app-shell@0.32.0",
+      "versionType": "minor",
+      "title": "ActivityCard, Form/Field/Fieldset, Card, MetricCard, and Avatar components",
+      "date": "2026-03-31",
+      "githubUrl": "https://github.com/tailor-platform/app-shell/releases/tag/%40tailor-platform/app-shell%400.32.0",
+      "body": "New ActivityCard component for rendering timestamped activity timelines with standalone and compound APIs\n\nNew Form, Fieldset, and Field components with HTML constraint validation and React Hook Form + Zod integration\n\nNew Card compound component for consistent container layouts\n\nNew MetricCard for KPI dashboards, Avatar component with size variants, and Button xs size variant",
+      "bodyHtml": "<ul><li>New ActivityCard component for rendering timestamped activity timelines with standalone and compound APIs</li><li>New Form, Fieldset, and Field components with HTML constraint validation and React Hook Form + Zod integration</li><li>New Card compound component for consistent container layouts</li><li>New MetricCard for KPI dashboards, Avatar component with size variants, and Button xs size variant</li></ul>",
+      "breaking": false,
+      "tags": [],
+      "narrative": {
+        "summary": "Six new UI components: ActivityCard, Form/Field/Fieldset, Card, MetricCard, and Avatar",
+        "impact": "Build audit timelines, validated forms, KPI dashboards, and consistent card layouts without third-party dependencies",
+        "details": [
+          "ActivityCard with standalone (<ActivityCard items={...} />) and compound (ActivityCard.Root/.Items/.Item) APIs for timestamped activity feeds with grouping and custom rendering",
+          "Form, Fieldset, and Field components with HTML constraint validation, React Hook Form + Zod integration, and automatic aria wiring",
+          "Card compound component (Card.Root, Card.Header, Card.Content) as a general-purpose container with consistent styling",
+          "MetricCard for KPI dashboard summaries with title, value, trend direction indicator, and description",
+          "Avatar component (Avatar.Root, Avatar.Image, Avatar.Fallback) with sm/default/lg size variants",
+          "Button xs size variant for compact inline actions in cards and tight layouts"
+        ],
+        "migration": null
+      }
+    },
     {
       "id": "sdk-@tailor-platform/sdk@1.33.0",
       "product": "SDK",
