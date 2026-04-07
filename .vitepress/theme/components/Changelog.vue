@@ -80,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import changelogData from '../../../docs/reference/changelog/releases.json'
+import { data as changelogData } from '../../../docs/reference/changelog/releases.data'
 import { useChangelog, formatDate, PRODUCTS } from '../composables/useChangelog'
 import FilterTabs from './FilterTabs.vue'
 
