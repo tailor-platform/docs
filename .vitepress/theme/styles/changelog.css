@@ -1,3 +1,51 @@
+/* Release card */
+.release-card {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.release-card:last-child {
+  border-bottom: none;
+}
+
+.release-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.release-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--vp-c-text-2);
+}
+
+.release-card-badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.release-card-footer {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .release-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 /* Changelog page layout */
 .changelog-container {
   max-width: 900px;
@@ -56,6 +104,26 @@
   background: #fef2f2;
   color: #991b1b;
   border: 1px solid #fecaca;
+}
+
+/* Dark mode overrides for hardcoded light-mode badge colours */
+:root.dark .version-badge[data-type="major"],
+:root.dark .breaking-badge {
+  background: rgba(254, 242, 242, 0.08);
+  color: #fca5a5;
+  border-color: rgba(254, 202, 202, 0.25);
+}
+
+:root.dark .version-badge[data-type="minor"] {
+  background: rgba(239, 246, 255, 0.08);
+  color: #93c5fd;
+  border-color: rgba(191, 219, 254, 0.25);
+}
+
+:root.dark .narrative-migration {
+  background: rgba(254, 242, 242, 0.08);
+  border-color: rgba(254, 202, 202, 0.25);
+  color: #fca5a5;
 }
 
 /* Footer tags */
