@@ -222,6 +222,60 @@ Clicking `View Attempts` displays details of job execution attempts. The Tailor 
 - **Executor not triggering**: Ensure `publishEvents: true` is set in `.features()` on the Project type
 - **Error in logs**: Check the executor logs in the Console for detailed error messages
 
+## Multi-Event Triggers
+
+Instead of creating separate executors for each event type, you can use `recordTrigger()` to handle multiple events in a single executor. This is useful when the response logic is similar across events.
+
+Update `executor/notify-project-completion.ts` to also handle project creation:
+
+```typescript
+import { createExecutor, recordTrigger } from "@tailor-platform/sdk";
+import { project } from "../db/project";
+
+export default createExecutor({
+  name: "notify-project-changes",
+  description: "Send Slack notification on project create or status change to COMPLETED",
+  trigger: recordTrigger({
+    type: project,
+    events: ["created", "updated"],
+  }),
+  operation: {
+    kind: "webhook",
+    url: () => "https://hooks.slack.com/services/YOUR_WEBHOOK_URL",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    requestBody: async ({ event, newRecord, oldRecord }) => {
+      if (event === "created") {
+        return {
+          text: `📋 New Project Created: ${newRecord.name}`,
+        };
+      }
+
+      // event === "updated"
+      if (newRecord.status === "COMPLETED" && oldRecord?.status !== "COMPLETED") {
+        return {
+          text: `🎉 Project Completed: ${newRecord.name}`,
+        };
+      }
+
+      return null; // No notification for other updates
+    },
+  },
+});
+```
+
+**Key differences from single-event triggers:**
+
+| | Single-event (`recordUpdatedTrigger`) | Multi-event (`recordTrigger`) |
+|---|---|---|
+| Import | `recordUpdatedTrigger` | `recordTrigger` |
+| Events | Fixed to one event | Pass `events: [...]` array |
+| Args | Always has `oldRecord` + `newRecord` | Use `args.event` to narrow the type |
+| Use case | Simple, focused handlers | Shared logic across create/update/delete |
+
+The `event` field on args is typed to match the `events` array you pass, so TypeScript will narrow correctly in `if (event === "created")` branches.
+
 ## Next Steps
 
 Learn more about executors:
