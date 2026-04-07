@@ -13,7 +13,7 @@ Resolvers provide:
 
 ## Comparison with Tailor Platform Pipeline Resolver
 
-The SDK's Resolver is a simplified version of Tailor Platform's [Pipeline Resolver](/guides/resolver).
+The SDK's Resolver is a simplified version of Tailor Platform's [Pipeline Resolver](/guides/pipeline).
 
 | Pipeline Resolver                        | SDK Resolver                      |
 | ---------------------------------------- | --------------------------------- |
