@@ -26,3 +26,4 @@ The second approach is to request an ID token from your identity provider, then 
 - [Create users](login/create-user)
 - [Create an OAuth2 client](login/create-oauth2-client)
 - [Log in using ID token](login/id-token)
+- [Set up Auth Connections](setup-auth-connections)

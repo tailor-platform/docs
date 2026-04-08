@@ -30,7 +30,7 @@ export const task = db.type("Task", {
     .enum(["todo", "in_progress", "completed", "blocked"])
     .description("Current task status"),
   priority: db.enum(["low", "medium", "high", "urgent"]).description("Task priority level"),
-  projectId: db.string().foreignKey(project).description("Associated project"),
+  projectId: db.uuid().relation({ type: "n-1", toward: { type: project } }).description("Associated project"),
   assigneeId: db.string().optional().description("ID of assigned team member"),
   dueDate: db.string().optional().description("Task due date"),
   estimatedHours: db.float().optional().description("Estimated hours to complete"),
@@ -45,7 +45,7 @@ export type task = typeof task;
 - **description**: Optional detailed description
 - **status**: Enumeration with predefined status values
 - **priority**: Enumeration for priority levels
-- **projectId**: Foreign key relationship to the Project type
+- **projectId**: Many-to-one relation to the Project type
 - **assigneeId**: Optional reference to a team member
 - **dueDate**: Optional date field
 - **estimatedHours**: Optional float for time estimation
