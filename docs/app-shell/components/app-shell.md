@@ -170,7 +170,7 @@ Settings appear in a dropdown menu in the sidebar header, accessible via the set
 
 Supported locales: `en`, `ja`
 
-[Learn more about Internationalization →](../guides/internationalization)
+[Learn more about Internationalization →](../api/define-i18n-labels)
 
 ### errorBoundary
 

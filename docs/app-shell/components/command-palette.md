@@ -277,7 +277,7 @@ The CommandPalette follows these design principles:
 
 - [Modules and Resources](../concepts/modules-and-resources) - Define routes that appear in CommandPalette
 - [Routing and Navigation](../concepts/routing-navigation) - Navigation system
-- [Guards and Permissions](../guides/guards-permissions) - Control route visibility
+- [Guards and Permissions](../api/guards/overview) - Control route visibility
 
 ## Troubleshooting
 
