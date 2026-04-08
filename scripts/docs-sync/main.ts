@@ -152,6 +152,7 @@ walk(config.dst)
     let content = fs.readFileSync(f, "utf8");
     content = content.replace(/\(https:\/\/docs\.tailor\.tech(\/[^)]*)\)/g, "($1)");
     content = content.replace(/\(\.\//g, "(");
+    content = content.replace(/\/index\.md\)/g, "/)");
     content = content.replace(/\.md\)/g, ")");
     content = fixHeadingLevels(content);
     content = stripNonAllowedLinks(content);
