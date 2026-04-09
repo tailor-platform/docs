@@ -10,10 +10,10 @@ Each service has specific timeout values based on its intended use case and oper
 ## Service Timeouts
 
 | Service          | Timeout Value | Description                                                                   | Impact                                                                 |
-| ---------------- | ------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------- | --- |
+| ---------------- | ------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | Gateway Timeout  | 60 seconds    | Max time for API gateway request processing                                   | Request terminated if it exceeds 60s                                   |
 | Pipeline Service | 60 seconds    | Max time for pipeline resolver execution                                      | Pipeline operation terminated if it exceeds 60s                        |
-| Executor Service | 60 seconds    | Max time for `TargetTailorGraphql` and `TargetWebhook` operations to complete | Failure triggers retry (up to 10 attempts) if it exceeds 60s           | \   |
+| Executor Service | 60 seconds    | Max time for `TargetTailorGraphql` and `TargetWebhook` operations to complete | Failure triggers retry (up to 10 attempts) if it exceeds 60s           |
 | TailorDB Hooks   | 2 seconds     | Max time for TailorDB's `PreHook` and `PostHook` operations                   | Hook is terminated and returns an error if it exceeds 2s               |
 | Pipeline Hooks   | 2 seconds     | Max time for Pipeline's `PreHook` and `PostHook` operations                   | Hook is terminated and returns an error if it exceeds 2s               |
 | Function Service | 60 seconds    | Max time for a Function service operation                                     | Execution is terminated and returns an error if it exceeds 60s         |
