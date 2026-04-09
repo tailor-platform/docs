@@ -8,7 +8,7 @@ tabs:
         (() => {
           // throws an error if no heroes found
           if (args.characters.edges.length < 0) {
-            throw new TailorErrorMessage("No heroes found")
+            throw new Error("No heroes found")
           }
           return {
             "success": true,
@@ -28,7 +28,7 @@ tabs:
                 (() => {
                     // throws an error if no heroes found
                     if (args.characters.edges.length < 0) {
-                        throw new TailorErrorMessage("No heroes found")
+                        throw new Error("No heroes found")
                     }
                     return {
                         "success": true,
@@ -249,7 +249,7 @@ Here are some examples of where you can utilize JavaScript:
 
 You can use `PostHook` field in the Pipeline to return the object that can be used in the later steps.
 
-Throwing a `TailorErrorMessage` in a pipeline step causes the pipeline execution to halt when the error is caught, and the API then returns the error message as the response.
+Throwing an `Error` in a pipeline step halts the execution. The API returns the error in the format `<name>: <message>` (e.g., `Error: No heroes found`).
 
 **Example**:
 
