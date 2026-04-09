@@ -424,7 +424,7 @@ const checkPermission: Guard = async ({ context }) => {
 
 ## Related Concepts
 
-- [Guards and Permissions](../api/guards/overview) - Comprehensive guard guide
+- [Guards and Permissions](../guides/guards-permissions) - Comprehensive guard guide
 - [Modules and Resources](../concepts/modules-and-resources) - Route-level guards
 
 ## API Reference
