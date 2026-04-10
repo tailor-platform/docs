@@ -231,4 +231,4 @@ export const generators = defineGenerators(
 );
 ```
 
-See [Generators](generator/index) for full documentation.
+See [Generators](generator/) for full documentation.
