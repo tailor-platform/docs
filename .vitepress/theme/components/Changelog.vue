@@ -51,11 +51,10 @@
           </div>
         </div>
 
-        <div v-else v-html="entry.bodyHtml" class="release-body" />
-
-        <div v-if="entry.tags?.length" class="release-card-footer">
-          <span v-for="tag in entry.tags" :key="tag" class="entry-tag">{{ tag }}</span>
+        <div v-else class="release-body">
+          <p v-for="(para, i) in entry.body.split('\n\n')" :key="i">{{ para }}</p>
         </div>
+
       </div>
     </div>
 

@@ -13,5 +13,5 @@
       "@/*": ["./.vitepress/*"]
     }
   },
-  "include": [".vitepress/**/*.ts", ".vitepress/**/*.vue", ".vitepress/env.d.ts"]
+  "include": [".vitepress/**/*.ts", ".vitepress/**/*.vue", ".vitepress/env.d.ts", "docs/**/*.data.ts"]
 }

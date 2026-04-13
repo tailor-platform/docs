@@ -11,14 +11,16 @@ export interface ChangelogItem {
   id: string
   date: string
   product: string
-  version?: string
-  versionType?: 'major' | 'minor' | 'patch'
+  version: string
+  versionType: 'major' | 'minor' | 'patch'
   title: string
-  breaking?: boolean
-  githubUrl?: string
-  bodyHtml?: string
-  tags?: string[]
-  narrative?: ChangelogNarrative
+  breaking: boolean
+  githubUrl: string
+  body: string
+  narrative: ChangelogNarrative
+  status: string
+  createdAt: string
+  updatedAt?: string
 }
 
 export interface ChangelogData {
