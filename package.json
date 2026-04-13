@@ -20,7 +20,7 @@
     "globby": "^16.1.0",
     "markdown-it-container": "^4.0.0",
     "mermaid": "11.14.0",
-    "oxfmt": "0.44.0",
+    "oxfmt": "0.45.0",
     "oxlint": "1.59.0",
     "remark-frontmatter": "^5.0.0",
     "remark-mdx": "^3.1.1",
