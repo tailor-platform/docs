@@ -119,6 +119,7 @@ const auth = defineAuth("project-management-auth", {
       // Alternative: use rawMetadata for inline XML
       // rawMetadata: `<?xml version="1.0"?>...`,
       enableSignRequest: false, // Set to true to enable request signing
+      defaultRedirectURL: "https://your-app.example.com/login",
     },
   },
 });
@@ -136,11 +137,12 @@ export default defineConfig({
 
 **Configuration Properties:**
 
-| Property              | Description                                                                                                                                            |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **metadataUrl**       | Metadata URL of the identity provider **(required if rawMetadata is not provided)**.                                                                   |
-| **rawMetadata**       | Raw SAML metadata XML string **(required if metadataUrl is not provided)**.                                                                            |
-| **enableSignRequest** | Whether to enable signing of SAML authentication requests (optional, defaults to `false`). When enabled, the platform uses a built-in key for signing. |
+| Property               | Description                                                                                                                                            |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **metadataUrl**        | Metadata URL of the identity provider **(required if rawMetadata is not provided)**.                                                                   |
+| **rawMetadata**        | Raw SAML metadata XML string **(required if metadataUrl is not provided)**.                                                                            |
+| **enableSignRequest**  | Whether to enable signing of SAML authentication requests (optional, defaults to `false`). When enabled, the platform uses a built-in key for signing. |
+| **defaultRedirectURL** | URL the platform redirects to when a SAML assertion arrives without a `RelayState`.                                                                    |
 
 **Environment Variables:**
 
