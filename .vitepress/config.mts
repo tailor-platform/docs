@@ -4,6 +4,7 @@ import path from "node:path";
 import { generateNav } from "./config/nav.js";
 import { generateAllSidebars } from "./config/sidebar.js";
 import { configureMarkdown } from "./config/markdown.js";
+import { generateSitemap } from "./config/sitemap.js";
 
 const docsDir = path.join(process.cwd(), "docs");
 
@@ -13,9 +14,24 @@ export default withMermaid(
     description: "Platform Documentation",
     base: "/",
     srcDir: "docs",
-    ignoreDeadLinks: true,
+    ignoreDeadLinks: [
+      // Ignore localhost URLs used in examples
+      /^http:\/\/localhost/,
+    ],
 
-    head: [["link", { rel: "icon", href: "/favicon.png" }]],
+    head: [
+      ["link", { rel: "icon", href: "/favicon.png" }],
+      ["meta", { name: "theme-color", content: "#6366f1" }],
+      ["meta", { property: "og:type", content: "website" }],
+      ["meta", { property: "og:locale", content: "en" }],
+      ["meta", { property: "og:site_name", content: "Tailor Platform Documentation" }],
+      ["meta", { name: "robots", content: "index,follow" }],
+    ],
+
+    // Generate sitemap on build
+    buildEnd: async (config) => {
+      generateSitemap(config);
+    },
 
     vite: {
       optimizeDeps: {

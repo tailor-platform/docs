@@ -1,5 +1,413 @@
 # @tailor-platform/app-shell
 
+## 0.34.0
+
+### Minor Changes
+
+- 0dac517: Add contextual action registration for CommandPalette via `useRegisterCommandPaletteActions` hook. `ActionPanel` actions are now automatically registered to the CommandPalette, making them discoverable and triggerable via keyboard shortcut.
+
+  ```tsx
+  import { useRegisterCommandPaletteActions } from "@tailor-platform/app-shell";
+
+  function MyPage() {
+    useRegisterCommandPaletteActions("My Page", [
+      { key: "save", label: "Save", onSelect: handleSave },
+    ]);
+  }
+  ```
+
+- c6afaca: Add `CsvImporter` component — a guided, multi-step CSV import flow with drag-and-drop upload, interactive column mapping, Standard Schema validation, inline cell editing, and async server-side validation support.
+
+  Key features:
+
+  - **Drag & drop upload** with file size limit enforcement
+  - **Auto column matching** via aliases and fuzzy header detection
+  - **Standard Schema validation** with built-in `csv.string()`, `csv.number()`, `csv.boolean()`, `csv.date()`, and `csv.enum()` validators that handle coercion and validation in one step
+  - **Inline error correction** — users can fix validation errors directly in the review table before importing
+  - **Async `onValidate`** callback for server-side checks (e.g. uniqueness constraints)
+  - **Built-in i18n support** — English and Japanese labels included out of the box
+
+  ```tsx
+  import {
+    CsvImporter,
+    useCsvImporter,
+    csv,
+    type CsvCellIssue,
+  } from "@tailor-platform/app-shell";
+
+  const { open, props } = useCsvImporter({
+    schema: {
+      // Each column defines a mapping target for CSV headers
+      columns: [
+        {
+          // Becomes the object key in parsed row data
+          key: "name",
+          // Display label shown in the mapping UI
+          label: "Name",
+          // Must be mapped to a CSV header before proceeding
+          required: true,
+          // Alternative CSV header names for auto-matching
+          aliases: ["product_name"],
+          // Standard Schema validator — coerces and validates in one step
+          schema: csv.string({ min: 1 }),
+        },
+        {
+          key: "price",
+          label: "Price",
+          schema: csv.number({ min: 0 }), // Coerces the raw CSV string to a number and rejects NaN
+        },
+        {
+          key: "active",
+          label: "Active",
+          schema: csv.boolean(), // Recognises "true"/"1"/"yes" and "false"/"0"/"no" (case-insensitive)
+        },
+      ],
+    },
+
+    // Async callback invoked after schema validation passes.
+    // Use it for server-side checks such as uniqueness or foreign-key lookups.
+    onValidate: async (rows) => {
+      // Async API request that returns CsvCellIssue[] — shown inline in the review table
+      return await validateOnServer(rows);
+    },
+
+    // Called when the user confirms the import after resolving all errors.
+    // `event` contains the final rows, mappings, corrections, and summary stats.
+    onImport: async (event) => {
+      // buildRows() returns typed rows inferred from the schema definition.
+      // e.g. { name: string; price: number; active: boolean }[]
+      const rows = await event.buildRows();
+      await saveToBackend(rows);
+    },
+  });
+
+  // open() opens the import drawer
+  <Button onClick={open}>Import CSV</Button>
+
+  // Renders a multi-step flow CSV importer component in drawer
+  <CsvImporter {...props} />
+  ```
+
+### Patch Changes
+
+- 6a39f50: Updated react-router (^7.13.1 -> ^7.14.0)
+- dc4b24b: Updated lucide-react (^0.577.0 -> ^1.7.0)
+- 3dd41da: Improve authentication initialization
+
+  - Avoids React strict mode double-invocation issues by running auth side effects outside of React's lifecycle
+  - OAuth redirections are now handled before component rendering, eliminating unnecessary UI renders during the callback flow
+
+- Updated dependencies [01984ee]
+  - @tailor-platform/app-shell-vite-plugin@0.2.1
+
+## 0.33.0
+
+### Minor Changes
+
+- 6f5c23f: **Breaking:** `AsyncFetcherFn` now receives `string | null` instead of `string` as the `query` parameter.
+
+  The fetcher is called with `null` when the user has not typed anything (e.g. the dropdown was just opened or the input was cleared). Return initial/default items for `null`, or return an empty array to show nothing until the user starts typing.
+
+  `useAsync` also now returns an `onOpenChange` handler that triggers `fetcher(null)` on the first open, so `Combobox.Async` shows initial items immediately when the dropdown opens.
+
+  ```tsx
+  // Before
+  const fetcher = async (query: string, { signal }) => { ... };
+
+  // After
+  const fetcher = async (query: string | null, { signal }) => {
+    const res = await fetch(`/api/items?q=${query ?? ""}`, { signal });
+    return res.json();
+  };
+  ```
+
+- 7917328: Add `useOverrideBreadcrumb` hook for dynamically overriding breadcrumb titles from within page components. This is useful for displaying data-driven titles (e.g., record names) instead of static route-based titles.
+
+  With `defineResource`:
+
+  ```tsx
+  import { useOverrideBreadcrumb } from "@tailor-platform/app-shell";
+
+  defineResource({
+    path: ":id",
+    component: () => {
+      const { data } = useQuery(GET_ORDER, { variables: { id } });
+
+      // Update breadcrumb with the order name
+      useOverrideBreadcrumb(data?.order?.name);
+
+      return <OrderDetail />;
+    },
+  });
+  ```
+
+  With file-based routing (`pages/orders/[id]/page.tsx`):
+
+  ```tsx
+  import { useOverrideBreadcrumb, useParams } from "@tailor-platform/app-shell";
+
+  const OrderDetailPage = () => {
+    const { id } = useParams();
+    const { data } = useQuery(GET_ORDER, { variables: { id } });
+
+    // Update breadcrumb with the order name
+    useOverrideBreadcrumb(data?.order?.name);
+
+    return <div>...</div>;
+  };
+
+  export default OrderDetailPage;
+  ```
+
+- 58f8024: Fix guards defined via `appShellPageProps` being silently ignored in file-based routing. Guards now correctly produce route loaders for both root and non-root pages.
+
+### Patch Changes
+
+- 1cad50d: Fix portal-based components (`Menu`, `Select`, `Combobox`, `Autocomplete`, `Tooltip`) rendering behind the sidebar by establishing a stacking context on each portal container.
+
+  Centralize all z-index values into CSS custom properties (`--z-sidebar`, `--z-sidebar-rail`, `--z-popup`, `--z-overlay`) defined in `globals.css`.
+
+- afec4f7: Updated graphql (^16.13.0 -> ^16.13.2)
+
+## 0.32.0
+
+### Minor Changes
+
+- 3c1e939: Add `ActivityCard` APIs for both simple and advanced use cases:
+
+  - Standalone API (`<ActivityCard />`) for quick timeline rendering with sensible defaults
+  - Compound API (`ActivityCard.Root` / `.Items` / `.Item`) for fully custom item rendering (icons, links, buttons, badges, mixed item kinds)
+
+  ## Standalone API
+
+  ```tsx
+  import { ActivityCard } from "@tailor-platform/app-shell";
+
+  <ActivityCard
+    items={items}
+    title="Updates"
+    maxVisible={6}
+    overflowLabel="more"
+    groupBy="day"
+  />;
+  ```
+
+  ## Compound API
+
+  ```tsx
+  import { ActivityCard, Badge } from "@tailor-platform/app-shell";
+  import type { ActivityCardBaseItem } from "@tailor-platform/app-shell";
+
+  interface MyItem extends ActivityCardBaseItem {
+    kind: "approval" | "update";
+    label?: string;
+    message?: string;
+  }
+
+  <ActivityCard.Root items={items} title="Updates" groupBy="day">
+    <ActivityCard.Items<MyItem>>
+      {(item) =>
+        item.kind === "approval" ? (
+          <ActivityCard.Item indicator={<ApprovedIcon />}>
+            <p>{item.label}</p>
+            <Badge variant="default">Complete</Badge>
+          </ActivityCard.Item>
+        ) : (
+          <ActivityCard.Item>
+            <p>{item.message}</p>
+            <a href="#">View changes</a>
+          </ActivityCard.Item>
+        )
+      }
+    </ActivityCard.Items>
+  </ActivityCard.Root>;
+  ```
+
+  Each item must satisfy `ActivityCardBaseItem` (`id` + `timestamp`). Items without an `indicator` render a default timeline node. The `indicator` prop accepts any `ReactNode` (avatars, icons, etc.).
+
+- 3c1e939: Add `Avatar` (Base UI): `Avatar.Root`, `Avatar.Image`, and `Avatar.Fallback` with `size` variants (`sm`, `default`, `lg`) and exported `avatarVariants` and `AvatarProps`. `ActivityCard` uses this shared avatar; export `ActivityCardItem` from the package root for typed activity lists.
+
+  ```tsx
+  import { Avatar } from "@tailor-platform/app-shell";
+
+  export function UserAvatar() {
+    return (
+      <Avatar.Root>
+        <Avatar.Image src="/user.png" alt="" />
+        <Avatar.Fallback>AB</Avatar.Fallback>
+      </Avatar.Root>
+    );
+  }
+  ```
+
+- 693d8aa: Add `xs` size variant to `Button` component — a compact extra-small button (`h-7`, `text-xs`) for inline actions within cards and tight layouts.
+
+  ```tsx
+  <Button size="xs" variant="outline">
+    Resubmit
+  </Button>
+  ```
+
+- 497be49: Add `Card` compound component (`Card.Root`, `Card.Header`, `Card.Content`) as a general-purpose container with consistent styling. Existing card-style components (`DescriptionCard`, `MetricCard`, `ActionPanel`) now use `Card` internally.
+
+  ```tsx
+  import { Card } from "@tailor-platform/app-shell";
+
+  <Card.Root>
+    <Card.Header title="Order Details" description="Summary of order #1234" />
+    <Card.Content>
+      <p>Content goes here</p>
+    </Card.Content>
+  </Card.Root>;
+  ```
+
+- ea4b256: Add `Form`, `Fieldset`, and `Field` components for building validated forms.
+
+  ### `Form`
+
+  A form element with consolidated error handling and validation. Supports `onFormSubmit` for type-safe parsed form values, and `onSubmit` for native `FormEvent` access. External errors (e.g. API responses) can be fed via the `errors` prop and are automatically routed to matching `Field.Error` components.
+
+  ```tsx
+  <Form onFormSubmit={(values) => save(values)}>
+    <Field.Root name="email">
+      <Field.Label>Email</Field.Label>
+      <Field.Control type="email" required />
+      <Field.Error match="typeMismatch">Enter a valid email.</Field.Error>
+    </Field.Root>
+    <button type="submit">Save</button>
+  </Form>
+  ```
+
+  ### `Fieldset`
+
+  A compound component (`Fieldset.Root`, `Fieldset.Legend`) for grouping related fields with a shared legend for accessible form sectioning.
+
+  ```tsx
+  <Fieldset.Root>
+    <Fieldset.Legend>Billing details</Fieldset.Legend>
+    <Field.Root name="company">
+      <Field.Label>Company</Field.Label>
+      <Field.Control />
+    </Field.Root>
+  </Fieldset.Root>
+  ```
+
+  ### `Field`
+
+  A compound component (`Field.Root`, `Field.Label`, `Field.Control`, `Field.Description`, `Field.Error`, `Field.Validity`) that groups all parts of a form field and manages its validation state.
+
+  `Field.Root` creates a Field context boundary. All child sub-components (`Field.Label`, `Field.Control`, `Field.Description`, `Field.Error`, `Field.Validity`) and any Base UI-backed AppShell component (e.g. Select, Combobox, Autocomplete) placed inside `Field.Root` automatically connect to this context — inheriting label association (`htmlFor`), `aria-describedby`, disabled state, and validation state (`invalid`, `dirty`, `touched`).
+
+  `Field.Control` is a styled `<input>` that shares its base styles with the `Input` component. It can be omitted when using another AppShell input component (e.g. Select, Combobox, Autocomplete) as a sibling — those components register themselves with the Field context automatically. It also supports native HTML constraint attributes (`required`, `type="email"`, `pattern`, etc.) for built-in validation.
+
+  ```tsx
+  <Field.Root name="email">
+    <Field.Label>Email</Field.Label>
+    <Field.Control type="email" required />
+    <Field.Description>We'll never share your email.</Field.Description>
+    <Field.Error match="typeMismatch">Please enter a valid email.</Field.Error>
+  </Field.Root>
+  ```
+
+  #### Using another AppShell component as the control
+
+  `Field.Control` can be omitted when using a Base UI-backed AppShell component (e.g. Select, Combobox). The component registers itself with the Field context automatically, inheriting label association and validation state.
+
+  ```tsx
+  <Field.Root name="country">
+    <Field.Label>Country</Field.Label>
+    <Select>
+      <Select.Trigger>
+        <Select.Value placeholder="Select a country" />
+      </Select.Trigger>
+      <Select.Popup>
+        <Select.Item value="jp">Japan</Select.Item>
+        <Select.Item value="us">United States</Select.Item>
+      </Select.Popup>
+    </Select>
+    <Field.Error>Please select a country.</Field.Error>
+  </Field.Root>
+  ```
+
+  #### Custom rendering with `Field.Validity`
+
+  `Field.Validity` exposes the field's `ValidityState` via a render callback, allowing fully custom validation UI.
+
+  ```tsx
+  <Field.Root name="password">
+    <Field.Label>Password</Field.Label>
+    <Field.Control type="password" required minLength={8} />
+    <Field.Validity>
+      {(state) => (
+        <ul>
+          <li>{state.validity.valueMissing ? "❌" : "✅"} Required</li>
+          <li>{state.validity.tooShort ? "❌" : "✅"} At least 8 characters</li>
+        </ul>
+      )}
+    </Field.Validity>
+  </Field.Root>
+  ```
+
+  ### React Hook Form + Zod integration
+
+  `Field.Root` accepts `isTouched`, `isDirty`, `invalid`, and `error` props that align with RHF's `fieldState` shape, so you can spread `fieldState` directly. Use `Form`'s `onSubmit` prop to connect RHF's `handleSubmit`.
+
+  ```tsx
+  import { useForm, Controller } from "react-hook-form";
+  import { zodResolver } from "@hookform/resolvers/zod";
+  import { z } from "zod";
+
+  const schema = z.object({ email: z.string().email() });
+
+  function MyForm() {
+    const { control, handleSubmit } = useForm({
+      resolver: zodResolver(schema),
+    });
+
+    return (
+      <Form onSubmit={handleSubmit((data) => save(data))}>
+        <Controller
+          name="email"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field.Root {...fieldState}>
+              <Field.Label>Email</Field.Label>
+              <Field.Control {...field} />
+              <Field.Error>{fieldState.error?.message}</Field.Error>
+            </Field.Root>
+          )}
+        />
+        <button type="submit">Save</button>
+      </Form>
+    );
+  }
+  ```
+
+  The Field context co-exists with RHF — it only drives accessibility wiring (`htmlFor`, `aria-describedby`) and visual state (`data-invalid`, `data-dirty`, `data-touched`) without interfering with RHF's value management or validation lifecycle.
+
+- 524d49a: Add `MetricCard` component for dashboard KPI summaries (title, value, optional trend and description).
+
+  ```tsx
+  import { MetricCard } from "@tailor-platform/app-shell";
+
+  <MetricCard
+    title="Net total payment"
+    value="$1,500.00"
+    trend={{ direction: "up", value: "+5%" }}
+    description="vs last month"
+  />;
+  ```
+
+- 135d5a9: Render module-level breadcrumb segments as non-clickable text when the module has no component.
+  Modules defined without a `component` (group-only modules) now display their breadcrumb as plain text instead of a link, preventing navigation to non-existent pages.
+
+### Patch Changes
+
+- 6dec130: Add `color-scheme: dark` to the `.dark` selector in theme CSS so that native form controls (e.g. `<select>`) render correctly in dark mode on Windows.
+- ae37125: Fix `breadcrumbTitle` not being propagated in file-based routing. The `breadcrumbTitle` set in `AppShellPageProps.meta` is now correctly reflected in breadcrumbs, matching the behavior of the `defineResource` API.
+- 49e2e3a: Fix `DefaultSidebar` not applying active style when `basePath` is not specified. The sidebar now correctly normalizes URLs before comparing with the current pathname, ensuring the active highlight appears on the correct menu item.
+- 10c0cd3: Add `min-h-0` to `SidebarInset` so that nested content areas can scroll independently instead of causing the entire page to scroll.
+
 ## 0.31.1
 
 ### Patch Changes

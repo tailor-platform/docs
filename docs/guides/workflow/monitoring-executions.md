@@ -99,8 +99,9 @@ tailor-sdk workflow executions --workflow-name my-workflow --status FAILED
 A workflow execution can have the following statuses:
 
 - **pending**: Waiting to be picked up by the scheduler
-- **pending_resume**: Waiting to be resumed after a failure
+- **pending_resume**: Waiting to be resumed after a failure or resolve
 - **running**: Currently executing
+- **waiting**: Paused by `wait()`, waiting for an external `resolve()` signal (see [Wait / Resolve](/guides/workflow/wait-resolve))
 - **success**: Completed successfully
 - **failed**: Execution failed (can be resumed)
 

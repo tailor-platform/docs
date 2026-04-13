@@ -76,7 +76,7 @@ export const excludedSections: string[] = ["public"];
 // Custom title overrides for sections/folders
 export const customTitles: Record<string, string> = {
   "app-shell": "AppShell",
-  // Add more custom titles here as needed
+  "wait-resolve": "Wait / Resolve",
 };
 
 // Define custom ordering for sidebar items within sections
@@ -85,6 +85,13 @@ export const defaultSidebarOrder: string[] = ["overview", "quickstart"];
 
 // Section-specific overrides (only if you need different ordering for a specific section)
 export const sidebarItemOrder: Record<string, string[]> = {
+  "setup-auth": [
+    "overview",
+    "setup-identity-provider",
+    "register-identity-provider",
+    "setup-auth-connections",
+    "login",
+  ],
   function: ["overview", "builtin-interfaces"],
   reference: ["changelog","api", "platform", "concepts", "infrastructure", "security"],
   "app-shell": [

@@ -49,8 +49,8 @@ export const task = db.type("Task", {
   description: db.string().optional().description("Task description"),
   status: db.enum(["todo", "in_progress", "completed"]).description("Task status"),
   priority: db.enum(["low", "medium", "high"]).description("Task priority"),
-  projectId: db.string().foreignKey(project).description("Associated project"),
-  assigneeId: db.string().foreignKey(teamMember).optional().description("Assigned team member"),
+  projectId: db.uuid().relation({ type: "n-1", toward: { type: project } }).description("Associated project"),
+  assigneeId: db.uuid().relation({ type: "n-1", toward: { type: teamMember } }).optional().description("Assigned team member"),
   dueDate: db.string().optional().description("Due date"),
   ...db.fields.timestamps(),
 });
@@ -153,7 +153,15 @@ export default createResolver({
 
 ## 4. Deploy and Test
 
-Deploy your changes to the workspace:
+First, generate Kysely types for type-safe database queries:
+
+```bash
+npm run generate
+```
+
+This generates TypeScript types and the `getDB()` helper in the `generated/` directory based on your TailorDB schema.
+
+Then deploy your changes to the workspace:
 
 ```bash
 npm run deploy -- --workspace-id <your-workspace-id>
@@ -247,6 +255,49 @@ You can view resolver execution logs in the [Console](https://console.tailor.tec
 - Database queries performed
 
 This helps you debug issues and understand how your resolver processes requests.
+
+## Advanced: Triggering Executors from Resolvers
+
+You can configure resolvers to publish events when they execute, allowing executors to trigger automatically after resolver execution. This is useful for post-processing tasks like sending notifications or updating related data.
+
+```typescript
+export default createResolver({
+  name: "assignTask",
+  operation: "mutation",
+  publishEvents: true, // Enable event publishing
+  // ... rest of resolver config
+});
+```
+
+**How it works:**
+
+- When `publishEvents: true`, the resolver publishes execution events
+- Executors can listen for these events using `resolverExecutedTrigger()`
+- The SDK **automatically enables** `publishEvents` when an executor references the resolver
+
+**Example executor that triggers after resolver execution:**
+
+```typescript
+import { createExecutor, resolverExecutedTrigger } from "@tailor-platform/sdk";
+import assignTaskResolver from "../resolver/assign-task";
+
+export default createExecutor({
+  name: "notify-task-assigned",
+  trigger: resolverExecutedTrigger({
+    resolver: assignTaskResolver,
+    condition: ({ result, error }) => !error && !!result.taskId,
+  }),
+  operation: {
+    kind: "function",
+    body: async ({ result }) => {
+      console.log(`Task ${result.taskId} assigned to ${result.assigneeName}`);
+      // Send notification logic here
+    },
+  },
+});
+```
+
+For more details, see [Executor Service - Resolver Executed Trigger](../sdk/services/executor#resolver-executed-trigger).
 
 ## Next Steps
 

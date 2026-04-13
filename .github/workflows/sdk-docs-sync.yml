@@ -8,17 +8,22 @@ on:
 jobs:
   update-sdk-pages:
     runs-on: ubuntu-slim
-    permissions:
-      contents: write
-      pull-requests: write
-
     env:
       FRONTEND_REF: main
 
     steps:
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2.2.2
+        with:
+          app-id: ${{ secrets.TAILOR_DOCS_BOT_APP_ID }}
+          private-key: ${{ secrets.TAILOR_DOCS_BOT_PRIVATE_KEY }}
+
       - name: Checkout current repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: main
           path: docs
 
       - name: Checkout sdk repository
@@ -46,21 +51,18 @@ jobs:
         id: git_diff
         run: |
           git config --global --add safe.directory $PWD
-          if git diff --quiet; then
+          git add -A
+          if git diff --staged --quiet; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Create Pull Request
+      - name: Commit and push changes
         if: steps.git_diff.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
-        with:
-          path: docs
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: Update SDK pages
-          branch: update-sdk-pages
-          title: Update SDK pages
-          body: Auto-created by the update_sdk_docs workflow.
-          base: main
-          labels: DOCS
+        working-directory: docs
+        run: |
+          git config user.name "tailor-docs-bot[bot]"
+          git config user.email "tailor-docs-bot[bot]@users.noreply.github.com"
+          git commit -m "Update SDK pages"
+          git push origin main

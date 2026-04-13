@@ -10,7 +10,7 @@ To create an event-based trigger, you'll need to:
 
 1. Configure the Executor service
 2. Create the executor with a record updated trigger
-3. Enable `PublishRecordEvents` setting on the Project type
+3. Enable `publishEvents` feature on the Project type
 4. Deploy the changes
 5. Verify the trigger
 
@@ -101,9 +101,9 @@ export default createExecutor({
 
 3. **Database Query**: Uses Kysely to query task completion statistics before sending the notification
 
-### 3. Enable `PublishRecordEvents` Setting
+### 3. Enable `publishEvents` Feature
 
-To ensure the executor triggers when Project records are updated, enable `PublishRecordEvents` in your Project type definition.
+To ensure the executor triggers when Project records are updated, enable `publishEvents` in your Project type definition.
 
 Update your `db/project.ts` file:
 
@@ -122,12 +122,12 @@ export const project = db
     createdAt: db.string().description("Creation timestamp"),
     updatedAt: db.string().description("Last update timestamp"),
   })
-  .settings({
-    publishRecordEvents: true,
+  .features({
+    publishEvents: true,
   });
 ```
 
-The `.settings({ publishRecordEvents: true })` configuration enables the platform to publish events when Project records are created, updated, or deleted. Without this setting, the executor trigger will not fire.
+The `.features({ publishEvents: true })` configuration enables the platform to publish events when Project records are created, updated, or deleted. Without this feature enabled, the executor trigger will not fire.
 
 ### 4. Deploy the Changes
 
@@ -135,7 +135,14 @@ Before deploying, make sure you have:
 
 1. Created a Slack webhook URL (see [Slack Incoming Webhooks](https://api.slack.com/messaging/webhooks))
 2. Replaced `YOUR_WEBHOOK_URL` in the executor code with your actual webhook URL
-3. Generated Kysely types: `npm run generate` (if using Kysely type generator)
+
+Generate Kysely types for type-safe database access:
+
+```bash
+npm run generate
+```
+
+This generates TypeScript types and the `getDB()` helper in the `generated/` directory.
 
 Deploy your application:
 
@@ -143,7 +150,7 @@ Deploy your application:
 npm run deploy -- --workspace-id <your-workspace-id>
 ```
 
-The SDK will deploy both the updated Project type with `publishRecordEvents` enabled and the new executor.
+The SDK will deploy both the updated Project type with `publishEvents` enabled and the new executor.
 
 ### 5. Verify the Trigger
 
@@ -212,8 +219,62 @@ Clicking `View Attempts` displays details of job execution attempts. The Tailor 
 **Troubleshooting:**
 
 - **No notification received**: Verify your Slack webhook URL is correct
-- **Executor not triggering**: Ensure `publishRecordEvents: true` is set on the Project type
+- **Executor not triggering**: Ensure `publishEvents: true` is set in `.features()` on the Project type
 - **Error in logs**: Check the executor logs in the Console for detailed error messages
+
+## Multi-Event Triggers
+
+Instead of creating separate executors for each event type, you can use `recordTrigger()` to handle multiple events in a single executor. This is useful when the response logic is similar across events.
+
+Update `executor/notify-project-completion.ts` to also handle project creation:
+
+```typescript
+import { createExecutor, recordTrigger } from "@tailor-platform/sdk";
+import { project } from "../db/project";
+
+export default createExecutor({
+  name: "notify-project-changes",
+  description: "Send Slack notification on project create or status change to COMPLETED",
+  trigger: recordTrigger({
+    type: project,
+    events: ["created", "updated"],
+  }),
+  operation: {
+    kind: "webhook",
+    url: () => "https://hooks.slack.com/services/YOUR_WEBHOOK_URL",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    requestBody: async ({ event, newRecord, oldRecord }) => {
+      if (event === "created") {
+        return {
+          text: `📋 New Project Created: ${newRecord.name}`,
+        };
+      }
+
+      // event === "updated"
+      if (newRecord.status === "COMPLETED" && oldRecord?.status !== "COMPLETED") {
+        return {
+          text: `🎉 Project Completed: ${newRecord.name}`,
+        };
+      }
+
+      return null; // No notification for other updates
+    },
+  },
+});
+```
+
+**Key differences from single-event triggers:**
+
+| | Single-event (`recordUpdatedTrigger`) | Multi-event (`recordTrigger`) |
+|---|---|---|
+| Import | `recordUpdatedTrigger` | `recordTrigger` |
+| Events | Fixed to one event | Pass `events: [...]` array |
+| Args | Always has `oldRecord` + `newRecord` | Use `args.event` to narrow the type |
+| Use case | Simple, focused handlers | Shared logic across create/update/delete |
+
+The `event` field on args is typed to match the `events` array you pass, so TypeScript will narrow correctly in `if (event === "created")` branches.
 
 ## Next Steps
 

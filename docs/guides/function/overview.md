@@ -131,7 +131,7 @@ query {
 }
 ```
 
-Function operations are subject to a recursive call depth limit of 10 levels when calling other platform services. See [Platform Limits](/reference/platform-limits#recursive-call-detection) for more details.
+Function operations are subject to a recursive call depth limit of 10 levels when calling other platform services. See [Platform Limits](/reference/platform/platform-limits#recursive-call-detection) for more details.
 
 ## Using the "user" variable
 

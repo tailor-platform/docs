@@ -91,13 +91,13 @@ const cities: City[] = [
 
 ## Async Suggestions
 
-Use `Autocomplete.Async` to fetch suggestions as the user types. The fetcher is called on each keystroke (debounced).
+Use `Autocomplete.Async` to fetch suggestions as the user types. The fetcher is called on each keystroke (debounced). When the dropdown first opens or the input is cleared, the fetcher receives `null` as the query — return initial/default suggestions for `null`, or return an empty array to show nothing until the user starts typing.
 
 ```tsx
 import { type AutocompleteAsyncFetcher } from "@tailor-platform/app-shell";
 
 const fetcher: AutocompleteAsyncFetcher<string> = async (query, { signal }) => {
-  const res = await fetch(`/api/suggestions?q=${query}`, { signal });
+  const res = await fetch(`/api/suggestions?q=${query ?? ""}`, { signal });
   return res.json();
 };
 
@@ -121,11 +121,14 @@ Accepts all the same props as `Autocomplete` except `items`, plus:
 
 ```ts
 type AutocompleteAsyncFetcher<T> =
-  | ((query: string, options: { signal: AbortSignal }) => Promise<T[]>)
-  | { fn: (query: string, options: { signal: AbortSignal }) => Promise<T[]>; debounceMs: number };
+  | ((query: string | null, options: { signal: AbortSignal }) => Promise<T[]>)
+  | {
+      fn: (query: string | null, options: { signal: AbortSignal }) => Promise<T[]>;
+      debounceMs: number;
+    };
 ```
 
-Pass `{ fn, debounceMs }` to customize the debounce delay. Errors thrown by the fetcher are silently caught — handle errors inside the fetcher.
+`query` is `null` when the user has not typed anything (e.g. the dropdown was just opened or the input was cleared). Pass `{ fn, debounceMs }` to customize the debounce delay. Errors thrown by the fetcher are silently caught — handle errors inside the fetcher.
 
 ## Low-level Primitives
 
@@ -147,8 +150,6 @@ const {
   GroupLabel,
   Collection,
   Status,
-  useFilter,
-  useAsync,
 } = Autocomplete.Parts;
 ```
 
@@ -176,6 +177,38 @@ const fetcher: AutocompleteAsyncFetcher<string> = async (query, { signal }) => {
   placeholder="Start typing an address..."
   onValueChange={(address) => form.setValue("address", address)}
 />;
+```
+
+### Async with Parts (custom composition)
+
+Combine `Autocomplete.useAsync` with `Autocomplete.Parts` for full control over layout and rendering:
+
+```tsx
+const suggestions = Autocomplete.useAsync({
+  fetcher: async (query, { signal }) => {
+    const res = await fetch(`/api/suggestions?q=${query ?? ""}`, { signal });
+    return res.json();
+  },
+});
+
+<Autocomplete.Parts.Root {...suggestions} filter={null}>
+  <Autocomplete.Parts.InputGroup>
+    <Autocomplete.Parts.Input placeholder="Search..." />
+    <Autocomplete.Parts.Clear />
+  </Autocomplete.Parts.InputGroup>
+  <Autocomplete.Parts.Content>
+    <Autocomplete.Parts.List>
+      {suggestions.items.map((item) => (
+        <Autocomplete.Parts.Item key={item} value={item}>
+          {item}
+        </Autocomplete.Parts.Item>
+      ))}
+      <Autocomplete.Parts.Empty>
+        {suggestions.loading ? "Loading..." : "No results."}
+      </Autocomplete.Parts.Empty>
+    </Autocomplete.Parts.List>
+  </Autocomplete.Parts.Content>
+</Autocomplete.Parts.Root>;
 ```
 
 ## Accessibility

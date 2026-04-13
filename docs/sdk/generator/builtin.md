@@ -16,21 +16,13 @@ Generates Kysely type definitions and the `getDB()` function for type-safe datab
 | ---------- | -------- | --------------------------- |
 | `distPath` | `string` | Output file path (required) |
 
-### Prerequisites
-
-Install the required dev dependency for type definitions:
-
-```bash
-pnpm add -D @tailor-platform/function-types
-```
-
 ### Output
 
 Generates a TypeScript file containing:
 
 - Type definitions for all TailorDB types
 - `getDB(namespace)` function to create Kysely instances
-- Utility types for Timestamp and Serial fields
+- Utility types for `Timestamp`, `Serial`, and `ObjectColumnType` (wraps nested objects containing date/datetime fields to provide correct insert vs select types)
 
 ### Usage
 

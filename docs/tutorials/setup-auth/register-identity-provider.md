@@ -17,10 +17,45 @@ To enable authentication through an identity provider, you need to register it w
 
 ### OIDC (OpenID Connect)
 
-Update your `tailor.config.ts` to include the Auth service with OIDC configuration:
+First, ensure you have a User type defined in your database schema (e.g., `db/user.ts`):
 
 ```typescript
-import { defineConfig, t } from "@tailor-platform/sdk";
+import { db } from "@tailor-platform/sdk";
+
+export const user = db.type("User", {
+  email: db.string().unique(), // usernameField must be unique
+  name: db.string(),
+  roles: db.array(db.string()).optional(),
+  ...db.fields.timestamps(),
+});
+```
+
+Then update your `tailor.config.ts` to include the Auth service with OIDC configuration:
+
+```typescript
+import { defineAuth, defineConfig } from "@tailor-platform/sdk";
+import { user } from "./db/user";
+
+const auth = defineAuth("project-management-auth", {
+  userProfile: {
+    type: user,
+    usernameField: "email",
+    attributes: {
+      roles: true,
+    },
+  },
+  idProvider: {
+    name: "oidc-provider",
+    oidc: {
+      clientId: process.env.OIDC_CLIENT_ID!,
+      clientSecret: {
+        vaultName: "my-vault",
+        secretName: "oidc-client-secret",
+      },
+      providerUrl: process.env.OIDC_PROVIDER_URL!,
+    },
+  },
+});
 
 export default defineConfig({
   name: "project-management",
@@ -29,30 +64,7 @@ export default defineConfig({
       files: ["db/**/*.ts"],
     },
   },
-  auth: {
-    namespace: "project-management-auth",
-    idpConfigs: [
-      {
-        name: "oidc-provider",
-        oidc: {
-          clientId: process.env.OIDC_CLIENT_ID!,
-          clientSecret: {
-            vaultName: "my-vault",
-            secretName: "oidc-client-secret",
-          },
-          providerUrl: process.env.OIDC_PROVIDER_URL!,
-        },
-      },
-    ],
-    userProfileConfig: {
-      tailordb: {
-        namespace: "main-db",
-        type: "User",
-        usernameField: "email",
-        attributeFields: ["roles"],
-      },
-    },
-  },
+  auth,
 });
 ```
 
@@ -82,21 +94,6 @@ tailor-sdk secret create \
 
 **Vault naming rules:** Only lowercase letters (a-z), numbers (0-9), and hyphens (-). Must start and end with a letter or number, 2-62 characters long.
 
-**User Type Definition:**
-
-Make sure you have a User type defined in your database schema (e.g., `db/user.ts`):
-
-```typescript
-import { t } from "@tailor-platform/sdk";
-
-export const User = t.object({
-  id: t.uuid(),
-  email: t.string().email(),
-  name: t.string(),
-  roles: t.array(t.string()).optional(),
-});
-```
-
 ### SAML
 
 The Tailor Platform provides a built-in key for signing SAML authentication requests. When request signing is enabled, the platform automatically signs requests sent from the SP to the IdP. The SP metadata, including the public key for signature verification, is available at `https://api.tailor.tech/saml/{workspace_id}/{auth_namespace}/metadata.xml`.
@@ -104,7 +101,27 @@ The Tailor Platform provides a built-in key for signing SAML authentication requ
 Update your `tailor.config.ts` to include SAML configuration:
 
 ```typescript
-import { defineConfig } from "@tailor-platform/sdk";
+import { defineAuth, defineConfig } from "@tailor-platform/sdk";
+import { user } from "./db/user";
+
+const auth = defineAuth("project-management-auth", {
+  userProfile: {
+    type: user,
+    usernameField: "email",
+    attributes: {
+      roles: true,
+    },
+  },
+  idProvider: {
+    name: "saml-provider",
+    saml: {
+      metadataUrl: process.env.SAML_METADATA_URL!,
+      // Alternative: use rawMetadata for inline XML
+      // rawMetadata: `<?xml version="1.0"?>...`,
+      enableSignRequest: false, // Set to true to enable request signing
+    },
+  },
+});
 
 export default defineConfig({
   name: "project-management",
@@ -113,28 +130,7 @@ export default defineConfig({
       files: ["db/**/*.ts"],
     },
   },
-  auth: {
-    namespace: "project-management-auth",
-    idpConfigs: [
-      {
-        name: "saml-provider",
-        saml: {
-          metadataUrl: process.env.SAML_METADATA_URL!,
-          // Alternative: use rawMetadata for inline XML
-          // rawMetadata: `<?xml version="1.0"?>...`,
-          enableSignRequest: false, // Set to true to enable request signing
-        },
-      },
-    ],
-    userProfileConfig: {
-      tailordb: {
-        namespace: "main-db",
-        type: "User",
-        usernameField: "email",
-        attributeFields: ["roles"],
-      },
-    },
-  },
+  auth,
 });
 ```
 
@@ -161,7 +157,25 @@ The metadata URL is provided by your Identity Provider (IdP). You can typically 
 For ID Token-based authentication, update your `tailor.config.ts`:
 
 ```typescript
-import { defineConfig } from "@tailor-platform/sdk";
+import { defineAuth, defineConfig } from "@tailor-platform/sdk";
+import { user } from "./db/user";
+
+const auth = defineAuth("project-management-auth", {
+  userProfile: {
+    type: user,
+    usernameField: "email",
+    attributes: {
+      roles: true,
+    },
+  },
+  idProvider: {
+    name: "idtoken-provider",
+    idToken: {
+      clientId: process.env.ID_TOKEN_CLIENT_ID!,
+      providerUrl: process.env.ID_TOKEN_PROVIDER_URL!,
+    },
+  },
+});
 
 export default defineConfig({
   name: "project-management",
@@ -170,26 +184,7 @@ export default defineConfig({
       files: ["db/**/*.ts"],
     },
   },
-  auth: {
-    namespace: "project-management-auth",
-    idpConfigs: [
-      {
-        name: "idtoken-provider",
-        idToken: {
-          clientId: process.env.ID_TOKEN_CLIENT_ID!,
-          providerUrl: process.env.ID_TOKEN_PROVIDER_URL!,
-        },
-      },
-    ],
-    userProfileConfig: {
-      tailordb: {
-        namespace: "main-db",
-        type: "User",
-        usernameField: "email",
-        attributeFields: ["roles"],
-      },
-    },
-  },
+  auth,
 });
 ```
 

@@ -13,7 +13,7 @@ Resolvers provide:
 
 ## Comparison with Tailor Platform Pipeline Resolver
 
-The SDK's Resolver is a simplified version of Tailor Platform's [Pipeline Resolver](/guides/pipeline).
+The SDK's Resolver is a simplified version of Tailor Platform's [Pipeline Resolver](/guides/resolver).
 
 | Pipeline Resolver                        | SDK Resolver                      |
 | ---------------------------------------- | --------------------------------- |
@@ -215,6 +215,19 @@ You can specify validation as:
 - A function returning `boolean` (uses default error message)
 - A tuple of `[function, errorMessage]` for custom error messages
 - Multiple validators (pass multiple arguments to `validate`)
+
+Validation runs automatically before the `body` function executes. When validation fails, individual errors are returned in the GraphQL `errors` array with field-level paths:
+
+```json
+{
+  "errors": [
+    {
+      "message": "Value must be non-negative",
+      "path": ["createUser", "age"]
+    }
+  ]
+}
+```
 
 ## Body Function
 

@@ -11,7 +11,7 @@ This approach preserves historical data and enables change monitoring and analys
 ## How to enable Data Versioning
 
 1. Create a history table
-2. Enable `PublishRecordEvents` settings
+2. Enable `publishEvents` feature
 3. Add an event based trigger
 
 ## Example
@@ -51,15 +51,15 @@ db.type("StockSummaryHistory", {
 });
 ```
 
-### 2. Enable `PublishRecordEvents` settings
+### 2. Enable `publishEvents` feature
 
-By enabling `PublishRecordEvents` in the `StockSummary` settings, you can create an event-based trigger that executes on every `StockSummary` record update.
+By enabling `publishEvents` in the `StockSummary` features, you can create an event-based trigger that executes on every `StockSummary` record update.
 
 ```typescript
 db.type("StockSummary", {
   // fields...
-}).settings({
-  publishRecordEvents: true,
+}).features({
+  publishEvents: true,
 });
 ```
 
