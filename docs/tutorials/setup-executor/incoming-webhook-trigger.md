@@ -192,15 +192,7 @@ curl -X POST "https://api.tailor.tech/v1/executor/workspaces/{WORKSPACE_ID}/exec
      }'
 ```
 
-Expected response:
-
-```json
-{
-  "success": true,
-  "message": "Project API Integration Test updated to active",
-  "projectId": "<your-project-id>"
-}
-```
+The webhook responds with `204 No Content`. The executor operation runs asynchronously after the response is sent.
 
 You can also send form-urlencoded data:
 
