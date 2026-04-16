@@ -69,6 +69,18 @@ Incoming webhook triggers provide access to HTTP request data through the `args`
 
 This data can be used in operation variables to process the incoming webhook data appropriately.
 
+## Response
+
+By default, the incoming webhook trigger responds with `204 No Content`. The executor operation runs asynchronously after the response is sent.
+
+To customize the response, pass a `response` option to `incomingWebhookTrigger()`. The function receives the same `args` as the operation and returns the response body. The status code defaults to `200` when `response` is set, and can be overridden with `statusCode`.
+
+```typescript
+incomingWebhookTrigger<WebhookPayload>({
+  response: (args) => ({ challenge: args.body.challenge }),
+})
+```
+
 ## Properties
 
 **Incoming Webhook Trigger Properties**
