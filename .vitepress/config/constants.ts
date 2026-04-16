@@ -19,7 +19,7 @@ export const navItemOrder: Record<string, string[]> = {
     "develop-from-scratch",
   ],
   sdk: ["quickstart", "cli", "services", "generator"],
-  reference: ["api", "platform", "concepts", "infrastructure"],
+  reference: ["changelog","security", "api", "platform", "concepts", "infrastructure"],
   "getting-started": ["quickstart", "core-concepts", "console"],
   "app-shell": [
     "introduction",
@@ -93,6 +93,7 @@ export const sidebarItemOrder: Record<string, string[]> = {
     "login",
   ],
   function: ["overview", "builtin-interfaces"],
+  reference: ["changelog","api", "platform", "concepts", "infrastructure", "security"],
   "app-shell": [
     "introduction",
     "quickstart",

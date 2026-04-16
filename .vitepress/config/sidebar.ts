@@ -89,15 +89,22 @@ export function generateSidebar(
   for (const dirName of sortedDirs) {
     const subdirPath = path.join(dir, dirName);
     const subdirBasePath = `${basePath}/${dirName}`;
+    const dirIndexPath = path.join(fullPath, dirName, "index.md");
+    const hasIndex = fs.existsSync(dirIndexPath);
     const subItems = generateSidebar(docsDir, subdirPath, subdirBasePath, depth + 1);
 
+    // Add directory if it has sub-items OR if it has an index.md
     if (subItems.length > 0) {
-      // Check if directory has an index.md to read title from
-      const dirIndexPath = path.join(fullPath, dirName, "index.md");
       items.push({
-        text: toTitle(dirName, { filePath: fs.existsSync(dirIndexPath) ? dirIndexPath : undefined }),
+        text: toTitle(dirName, { filePath: hasIndex ? dirIndexPath : undefined }),
         collapsed: depth > 0,
         items: subItems,
+      });
+    } else if (hasIndex) {
+      // Directory with only index.md - add as direct link
+      items.push({
+        text: toTitle(dirName, { filePath: dirIndexPath }),
+        link: subdirBasePath,
       });
     }
   }
