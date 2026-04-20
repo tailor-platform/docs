@@ -71,7 +71,7 @@ export default defineConfig({
 
 ### Permission Configuration
 
-The `permission` block controls who can perform each IdP user management operation. Each operation has an independent list of policies, evaluated in order.
+The `permission` block controls who can perform each IdP user management operation. Each operation has an independent list of policies.
 
 :::warning Important
 If `permission` is not configured, all IdP user management operations (create, read, update, delete, send password reset email) will be denied. This includes both GraphQL operations and access via `tailor.idp.Client` in Functions. OIDC-based login is not affected by permission settings.
@@ -89,9 +89,15 @@ If `permission` is not configured, all IdP user management operations (create, r
 
 #### Policy Evaluation
 
-- **Explicit allow required**: If no policy matches, access is denied by default (implicit deny)
-- **Explicit deny takes precedence**: A policy with `permit: false` always overrides allow policies
-- **All conditions must match**: Within a policy, all conditions must be satisfied for the policy to match
+Policies are evaluated sequentially in array order:
+
+1. If the policy list is empty (or `permission` is not configured for the operation), the operation is **denied** (implicit deny)
+2. For each policy, all conditions are checked (AND). If all conditions are satisfied, the policy matches
+3. If a matching policy has `permit: false`, the operation is **immediately denied** (short-circuit). No further policies are evaluated
+4. If a matching policy has `permit: true`, it is recorded as allowed, but evaluation continues to check for subsequent deny policies
+5. After all policies are evaluated, the operation is allowed only if at least one allow policy matched. Otherwise it is denied
+
+Because deny short-circuits, **deny always takes precedence over allow regardless of order**.
 
 #### Operands
 
@@ -118,7 +124,7 @@ const idp = defineIdp("builtin-idp", {
     update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     sendPasswordResetEmail: [
-      { conditions: [[{ user: "_loggedIn" }, "=", true]], permit: true },
+      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
     ],
   },
 });
