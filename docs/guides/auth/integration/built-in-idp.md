@@ -20,7 +20,7 @@ Before setting up Built-in IdP, ensure you have:
 
 Built-in IdP requires several resources working together to provide complete authentication functionality. The setup involves creating an IdP service, client configuration, secret management, and Auth service integration.
 
-All Built-in IdP GraphQL operations are denied by default.
+All Built-in IdP user management operations are denied by default. This applies to both GraphQL operations and access via [`tailor.idp.Client`](/guides/function/managing-idp-users) in Functions.
 
 Access must be explicitly granted by defining per-operation permission policies in the `permission` block. This follows the same policy-based model as [TailorDB Permission](/guides/tailordb/permission), providing a consistent access control pattern across services.
 
@@ -74,7 +74,7 @@ export default defineConfig({
 The `permission` block controls who can perform each IdP user management operation. Each operation has an independent list of policies, evaluated in order.
 
 :::warning Important
-If `permission` is not configured, all IdP user management operations (create, read, update, delete, send password reset email) will be denied. OIDC-based login is not affected by permission settings.
+If `permission` is not configured, all IdP user management operations (create, read, update, delete, send password reset email) will be denied. This includes both GraphQL operations and access via `tailor.idp.Client` in Functions. OIDC-based login is not affected by permission settings.
 :::
 
 #### Operations
