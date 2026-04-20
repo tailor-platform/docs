@@ -20,19 +20,27 @@ Before setting up Built-in IdP, ensure you have:
 
 Built-in IdP requires several resources working together to provide complete authentication functionality. The setup involves creating an IdP service, client configuration, secret management, and Auth service integration.
 
-All Built-in IdP GraphQL operations require authentication by default.
+All Built-in IdP GraphQL operations are denied by default.
 
-Access must be explicitly granted by defining an authorization rule using a CEL expression in the `authorization` block.
+Access must be explicitly granted by defining per-operation permission policies in the `permission` block. This follows the same policy-based model as [TailorDB Permission](/guides/tailordb/permission), providing a consistent access control pattern across services.
 
 ```typescript
 // tailor.config.ts
 import { defineConfig, defineIdp, defineAuth } from "@tailor-platform/sdk";
 import { user } from "./tailordb/user"; // Your TailorDB user type
 
-// 1. Define the IdP service with client
+// 1. Define the IdP service with client and permission
 const idp = defineIdp("builtin-idp", {
-  authorization: "user.role == 'admin'",
   clients: ["main-client"], // Automatically creates client credentials
+  permission: {
+    create: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    sendPasswordResetEmail: [
+      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
+    ],
+  },
   userAuthPolicy: {
     useNonEmailIdentifier: false,
     allowSelfPasswordReset: true,
@@ -148,8 +156,16 @@ The Built-in IdP allows you to enforce password requirements to enhance security
 import { defineIdp } from "@tailor-platform/sdk";
 
 export const builtinIdp = defineIdp("builtin-idp", {
-  authorization: "user.role == 'admin'",
   clients: ["main-client"],
+  permission: {
+    create: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    sendPasswordResetEmail: [
+      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
+    ],
+  },
   userAuthPolicy: {
     useNonEmailIdentifier: false,
     allowSelfPasswordReset: true,
@@ -194,8 +210,16 @@ To enable Google OAuth, set `allow_google_oauth` to `true` and specify `allowed_
 import { defineIdp } from "@tailor-platform/sdk";
 
 export const builtinIdp = defineIdp("builtin-idp", {
-  authorization: "user.role == 'admin'",
   clients: ["main-client"],
+  permission: {
+    create: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    sendPasswordResetEmail: [
+      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
+    ],
+  },
   userAuthPolicy: {
     allowGoogleOauth: true,
     allowedEmailDomains: ["example.com"],
@@ -234,8 +258,16 @@ To enable Microsoft OAuth, set `allowMicrosoftOauth` to `true`, specify `allowed
 import { defineIdp } from "@tailor-platform/sdk";
 
 export const builtinIdp = defineIdp("builtin-idp", {
-  authorization: "user.role == 'admin'",
   clients: ["main-client"],
+  permission: {
+    create: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    sendPasswordResetEmail: [
+      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
+    ],
+  },
   userAuthPolicy: {
     allowMicrosoftOauth: true,
     allowedEmailDomains: ["example.com"],
@@ -266,8 +298,16 @@ You can restrict which email domains are allowed to sign in or be created in the
 import { defineIdp } from "@tailor-platform/sdk";
 
 export const builtinIdp = defineIdp("builtin-idp", {
-  authorization: "user.role == 'admin'",
   clients: ["main-client"],
+  permission: {
+    create: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    sendPasswordResetEmail: [
+      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
+    ],
+  },
   userAuthPolicy: {
     allowGoogleOauth: true,
     allowedEmailDomains: ["example.com", "corp.example.com"],
@@ -307,8 +347,16 @@ You can disable password-based authentication entirely by setting `disable_passw
 import { defineIdp } from "@tailor-platform/sdk";
 
 export const builtinIdp = defineIdp("builtin-idp", {
-  authorization: "user.role == 'admin'",
   clients: ["main-client"],
+  permission: {
+    create: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    sendPasswordResetEmail: [
+      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
+    ],
+  },
   userAuthPolicy: {
     allowGoogleOauth: true,
     allowedEmailDomains: ["example.com"],
@@ -342,8 +390,16 @@ The Built-in IdP allows you to customize the sender name and subject line for em
 import { defineIdp } from "@tailor-platform/sdk";
 
 export const builtinIdp = defineIdp("builtin-idp", {
-  authorization: "user.role == 'admin'",
   clients: ["main-client"],
+  permission: {
+    create: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    sendPasswordResetEmail: [
+      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
+    ],
+  },
   emailConfig: {
     fromName: "My App Support",
     passwordResetSubject: "Reset your My App password",
