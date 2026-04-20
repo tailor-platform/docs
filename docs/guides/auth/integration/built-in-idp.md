@@ -77,6 +77,10 @@ The `permission` block controls who can perform each IdP user management operati
 If `permission` is not configured, all IdP user management operations (create, read, update, delete, send password reset email) will be denied. This includes both GraphQL operations and access via `tailor.idp.Client` in Functions. OIDC-based login is not affected by permission settings.
 :::
 
+:::tip
+The role values used in permission conditions (e.g., `"ADMIN"`) are examples. Replace them with the actual values from your Auth service's AttributeMap. Comparisons are case-sensitive.
+:::
+
 #### Operations
 
 | Operation | Description | Available operands |
