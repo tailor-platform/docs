@@ -69,6 +69,125 @@ export default defineConfig({
 });
 ```
 
+### Permission Configuration
+
+The `permission` block controls who can perform each IdP user management operation. Each operation has an independent list of policies, evaluated in order.
+
+:::warning Important
+If `permission` is not configured, all IdP user management operations (create, read, update, delete, send password reset email) will be denied. OIDC-based login is not affected by permission settings.
+:::
+
+#### Operations
+
+| Operation | Description | Available operands |
+| --- | --- | --- |
+| `create` | Controls who can create IdP users | `user`, `idpUser`, literal values |
+| `read` | Controls who can read IdP users | `user`, `idpUser`, literal values |
+| `update` | Controls who can update IdP users | `user`, `oldIdpUser`, `newIdpUser`, literal values |
+| `delete` | Controls who can delete IdP users | `user`, `idpUser`, literal values |
+| `sendPasswordResetEmail` | Controls who can send password reset emails | `user`, `idpUser`, literal values |
+
+#### Policy Evaluation
+
+- **Explicit allow required**: If no policy matches, access is denied by default (implicit deny)
+- **Explicit deny takes precedence**: A policy with `permit: false` always overrides allow policies
+- **All conditions must match**: Within a policy, all conditions must be satisfied for the policy to match
+
+#### Operands
+
+- `{ user: "field" }` - Authenticated user's attribute from JWT claims (e.g., `"_id"`, `"_loggedIn"`, or custom attributes from Auth's AttributeMap)
+- `{ idpUser: "field" }` - Target IdP user's field (for create/read/delete/sendPasswordResetEmail). Available fields: `"id"`, `"name"`, `"disabled"`
+- `{ oldIdpUser: "field" }` - IdP user field before update (for update only). Available fields: `"id"`, `"name"`, `"disabled"`
+- `{ newIdpUser: "field" }` - IdP user field after update (for update only). Available fields: `"id"`, `"name"`, `"disabled"`
+- Literal values: `string`, `boolean`, `string[]`, `boolean[]`
+
+#### Operators
+
+`"="`, `"!="`, `"in"`, `"not in"`
+
+#### Examples
+
+**Role-based access control:**
+
+```typescript
+const idp = defineIdp("builtin-idp", {
+  clients: ["main-client"],
+  permission: {
+    create: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    read: [{ conditions: [[{ user: "_loggedIn" }, "=", true]], permit: true }],
+    update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    sendPasswordResetEmail: [
+      { conditions: [[{ user: "_loggedIn" }, "=", true]], permit: true },
+    ],
+  },
+});
+```
+
+**Self-record access with admin override:**
+
+This example assumes that `usernameField` is `"email"` (i.e., the IdP user's `name` field contains an email address), and that `email` is mapped in the Auth service's `attributes` so that `{ user: "email" }` is available in permission conditions:
+
+```typescript
+const auth = defineAuth("my-auth", {
+  userProfile: {
+    type: user,
+    usernameField: "email",
+    attributes: { role: true, email: true }, // "email" must be included
+  },
+  idProvider: idp.provider("builtin-idp-provider", "main-client"),
+});
+```
+
+```typescript
+const idp = defineIdp("builtin-idp", {
+  clients: ["main-client"],
+  permission: {
+    create: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    read: [
+      // Admins can read all users
+      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
+      // Users can read their own record
+      {
+        conditions: [[{ user: "email" }, "=", { idpUser: "name" }]],
+        permit: true,
+      },
+    ],
+    update: [
+      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
+      {
+        conditions: [[{ user: "email" }, "=", { oldIdpUser: "name" }]],
+        permit: true,
+      },
+    ],
+    delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    sendPasswordResetEmail: [
+      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
+    ],
+  },
+});
+```
+
+**Deny creating disabled users:**
+
+```typescript
+const idp = defineIdp("builtin-idp", {
+  clients: ["main-client"],
+  permission: {
+    create: [
+      // Deny takes precedence: prevent creating disabled users
+      {
+        conditions: [[{ idpUser: "disabled" }, "=", true]],
+        permit: false,
+      },
+      // Allow admins to create users
+      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
+    ],
+    // ... other operations
+  },
+});
+```
+
 ### Architecture Overview
 
 The Built-in IdP integration involves three main components working together:
