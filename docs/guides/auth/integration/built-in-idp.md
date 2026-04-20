@@ -22,7 +22,7 @@ Built-in IdP requires several resources working together to provide complete aut
 
 All Built-in IdP user management operations are denied by default. This applies to both GraphQL operations and access via [`tailor.idp.Client`](/guides/function/managing-idp-users) in Functions.
 
-Access must be explicitly granted by defining per-operation permission policies in the `permission` block. This follows the same policy-based model as [TailorDB Permission](/guides/tailordb/permission), providing a consistent access control pattern across services.
+Access must be explicitly granted by defining per-operation permission policies in the `permission` block. This follows the same policy-based model as [TailorDB Permission](/guides/tailordb/permission), though the supported operators and operands differ between the two.
 
 ```typescript
 // tailor.config.ts
