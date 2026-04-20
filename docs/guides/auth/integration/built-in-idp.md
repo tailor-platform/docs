@@ -74,7 +74,7 @@ export default defineConfig({
 The `permission` block controls who can perform each IdP user management operation. Each operation has an independent list of policies.
 
 :::warning Important
-If `permission` is not configured, all IdP user management operations (create, read, update, delete, send password reset email) will be denied. This includes both GraphQL operations and access via `tailor.idp.Client` in Functions. OIDC-based login is not affected by permission settings.
+If `permission` is not configured, all IdP user management operations (`create`, `read`, `update`, `delete`, `sendPasswordResetEmail`) will be denied. This includes both GraphQL operations and access via `tailor.idp.Client` in Functions. OIDC-based login is not affected by permission settings.
 :::
 
 :::tip
@@ -329,7 +329,7 @@ The Built-in IdP supports "Sign in with Google", allowing users to authenticate 
 5. The user is signed in and redirected to the application
 
 :::tip
-Users created via Google OAuth do not have a password set. They can only sign in using Google. To enable password-based login for these users, use the \_sendPasswordResetEmail mutation to set an initial password.
+Users created via Google OAuth do not have a password set. They can only sign in using Google. To enable password-based login for these users, use the `_sendPasswordResetEmail` mutation to set an initial password.
 :::
 
 :::warning
@@ -360,7 +360,7 @@ export const builtinIdp = defineIdp("builtin-idp", {
 ```
 
 :::tip
-allow_google_oauth requires allowed_email_domains to be set. This ensures that only users from specified email domains can authenticate via Google OAuth.
+`allow_google_oauth` requires `allowed_email_domains` to be set. This ensures that only users from specified email domains can authenticate via Google OAuth.
 :::
 
 :::warning
