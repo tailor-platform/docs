@@ -162,7 +162,10 @@ const idp = defineIdp("builtin-idp", {
     update: [
       { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
       {
-        conditions: [[{ user: "email" }, "=", { oldIdpUser: "name" }]],
+        conditions: [
+          [{ user: "email" }, "=", { oldIdpUser: "name" }],
+          [{ user: "email" }, "=", { newIdpUser: "name" }],
+        ],
         permit: true,
       },
     ],
