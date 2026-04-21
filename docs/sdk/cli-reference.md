@@ -119,6 +119,14 @@ Commands for managing TailorDB tables, data, and schema migrations.
 | [tailordb erd serve](cli/tailordb.md#tailordb-erd-serve)                   | Generate and serve ERD locally (liam build + serve dist). (beta)                                                          |
 | [tailordb erd deploy](cli/tailordb.md#tailordb-erd-deploy)                 | Deploy ERD static website for TailorDB namespace(s).                                                                      |
 
+### [Query Commands](cli/query)
+
+Run ad-hoc SQL/GraphQL queries or enter the interactive REPL.
+
+| Command                       | Description            |
+| ----------------------------- | ---------------------- |
+| [query](cli/query.md#query) | Run SQL/GraphQL query. |
+
 ### [User & Auth Commands](cli/user)
 
 Commands for authentication and user management.
@@ -268,6 +276,14 @@ Commands for upgrading SDK versions with automated code migration.
 | Command                             | Description                                                  |
 | ----------------------------------- | ------------------------------------------------------------ |
 | [upgrade](cli/upgrade.md#upgrade) | Run codemods to upgrade your project to a newer SDK version. |
+
+### [Skills Commands](cli/skills)
+
+Commands for installing Tailor SDK agent skills.
+
+| Command                                          | Description                                                        |
+| ------------------------------------------------ | ------------------------------------------------------------------ |
+| [skills install](cli/skills.md#skills-install) | Install the tailor-sdk agent skill from the installed SDK package. |
 
 ### [Completion](cli/completion)
 
