@@ -145,7 +145,7 @@ Open the [Console](https://console.tailor.tech) and navigate to your workspace. 
 The webhook URL format is:
 
 ```
-https://api.tailor.tech/v1/executor/workspaces/{WORKSPACE_ID}/executors/webhook-update-project/invokeIncomingWebhook/{WEBHOOK_SECRET}
+https://api.erp.dev/v1/executor/workspaces/{WORKSPACE_ID}/executors/webhook-update-project/invokeIncomingWebhook/{WEBHOOK_SECRET}
 ```
 
 Alternatively, use the Tailor CLI:
@@ -183,7 +183,7 @@ Note the project ID returned.
 Send a POST request to update the project status:
 
 ```bash
-curl -X POST "https://api.tailor.tech/v1/executor/workspaces/{WORKSPACE_ID}/executors/webhook-update-project/invokeIncomingWebhook/{WEBHOOK_SECRET}" \
+curl -X POST "https://api.erp.dev/v1/executor/workspaces/{WORKSPACE_ID}/executors/webhook-update-project/invokeIncomingWebhook/{WEBHOOK_SECRET}" \
      -H "Content-Type: application/json" \
      -d '{
        "projectId": "<your-project-id>",
@@ -197,7 +197,7 @@ The webhook responds with `204 No Content`. The executor operation runs asynchro
 You can also send form-urlencoded data:
 
 ```bash
-curl -X POST "https://api.tailor.tech/v1/executor/workspaces/{WORKSPACE_ID}/executors/webhook-update-project/invokeIncomingWebhook/{WEBHOOK_SECRET}" \
+curl -X POST "https://api.erp.dev/v1/executor/workspaces/{WORKSPACE_ID}/executors/webhook-update-project/invokeIncomingWebhook/{WEBHOOK_SECRET}" \
      -H "Content-Type: application/x-www-form-urlencoded" \
      -d "projectId=<your-project-id>&status=completed&description=Done"
 ```
