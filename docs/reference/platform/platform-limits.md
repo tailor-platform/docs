@@ -11,8 +11,8 @@ Platform limits are enforced across different services in the Tailor Platform to
 | Service              | Limit Type                      | Limit Value   | Description                                                                     | Impact                                                                                  |
 | -------------------- | ------------------------------- | ------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | Recursive Call Limit | Call Depth                      | 10 levels     | Max depth for nested platform-to-platform requests (pipelines, functions, etc.) | Request rejected with BadRequest error if depth exceeds 10 levels                       |
-| Workflow             | Workspace Concurrent Executions | 50 executions | Max concurrent workflow executions per workspace                                | Pending executions remain in PENDING status until running executions drop below the cap  |
-| Workflow             | Per-Workflow Concurrent Executions | 20 executions | Max concurrent executions of a single workflow                                  | Pending executions remain in PENDING status until running executions drop below the cap  |
+| Workflow             | Workspace Concurrent Executions | 50 executions | Max concurrent workflow executions per workspace                                | Pending executions remain in `PENDING` status until running executions drop below the cap |
+| Workflow             | Per-Workflow Concurrent Executions | 20 executions | Max concurrent executions of a single workflow                                  | Pending executions remain in `PENDING` status until running executions drop below the cap |
 
 ## Recursive Call Detection
 
@@ -47,7 +47,7 @@ Two independent limits control the number of concurrent workflow executions:
 - **Workspace-wide limit (50)**: Caps the total number of concurrently running workflow executions within a single workspace. This prevents any one workspace from monopolizing platform resources.
 - **Per-workflow limit (20)**: Caps the number of concurrently running executions of the same workflow definition. This prevents a single high-volume workflow from starving other workflows in the workspace.
 
-When either limit is reached, new executions are not rejected. Instead, they remain in **PENDING** status and are re-evaluated on the next scheduler polling tick. Once running executions complete and slots become available, pending executions are transitioned to RUNNING automatically.
+When either limit is reached, new executions are not rejected. Instead, they remain in `PENDING` status and are re-evaluated on the next scheduler polling tick. Once running executions complete and slots become available, pending executions are transitioned to `RUNNING` automatically.
 
 ### Behavior
 
@@ -67,4 +67,4 @@ When working within platform limits, consider the following best practices:
 
 1. **Use alternative patterns**: Consider using event-driven architectures, queuing systems, or batch processing for complex workflows that might exceed depth limits.
 
-1. **Design for workflow concurrency**: If your application triggers many workflow executions simultaneously, be aware that excess executions will queue as PENDING. Design your application to handle this gracefully rather than assuming immediate execution.
+1. **Design for workflow concurrency**: If your application triggers many workflow executions simultaneously, be aware that excess executions will queue as `PENDING`. Design your application to handle this gracefully rather than assuming immediate execution.
