@@ -57,7 +57,7 @@ When either limit is reached, new executions are not rejected. Instead, they rem
 
 ## Best Practices
 
-When working with services that have call depth limits, consider the following best practices:
+When working within platform limits, consider the following best practices:
 
 1. **Avoid deep service nesting**: Design workflows to minimize the depth of service-to-service calls. Consider flattening complex nested operations or using alternative patterns like event-driven architectures with proper safeguards.
 
