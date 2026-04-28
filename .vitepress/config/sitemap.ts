@@ -80,7 +80,7 @@ ${entries
 </urlset>`;
 
   // Write sitemap to public directory
-  const publicDir = path.join(process.cwd(), "docs", ".vitepress", "dist");
+  const publicDir = path.join(process.cwd(), ".vitepress", "dist"); 
   if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir, { recursive: true });
   }
