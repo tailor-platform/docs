@@ -142,14 +142,14 @@ function JournalsPage() {
 
 `DataTable` is a namespace object. All sub-components read state from `DataTable.Root` via context.
 
-| Sub-component          | Description                                                                                                       |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `DataTable.Root`       | Context provider. Wraps all other sub-components. Required.                                                       |
-| `DataTable.Table`      | Renders the `<table>` with headers and body. Required.                                                            |
-| `DataTable.Toolbar`    | Container for toolbar content (e.g. filters, column visibility). Optional.                                        |
-| `DataTable.Filters`    | Auto-generated filter chips from column filter configs. Requires `control` from `useCollectionVariables`.         |
-| `DataTable.Footer`     | Footer container for pagination and other footer content. Optional.                                               |
-| `DataTable.Pagination` | Pre-built pagination controls. Requires `control` from `useCollectionVariables`. Place inside `DataTable.Footer`. |
+| Sub-component          | Description                                                                                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `DataTable.Root`       | Context provider. Wraps all other sub-components. Required.                                                                                                  |
+| `DataTable.Table`      | Renders the `<table>` with headers and body. Required.                                                                                                       |
+| `DataTable.Toolbar`    | Container for toolbar content (e.g. filters, column visibility). Optional.                                                                                   |
+| `DataTable.Filters`    | Auto-generated filter chips from column filter configs. Requires `control` from `useCollectionVariables`.                                                    |
+| `DataTable.Footer`     | Footer container for pagination and other footer content. Optional.                                                                                          |
+| `DataTable.Pagination` | Pre-built pagination controls with optional row count and selection info. Requires `control` from `useCollectionVariables`. Place inside `DataTable.Footer`. |
 
 ### `DataTable.Root` Props
 
@@ -164,6 +164,17 @@ function JournalsPage() {
 | Prop              | Type       | Default | Description                                                                                                                                               |
 | ----------------- | ---------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `pageSizeOptions` | `number[]` | —       | Available page-size options. When provided, a page-size switcher is rendered. First/Last buttons are shown only when the backend returns a `total` count. |
+
+`DataTable.Pagination` automatically displays a row count and selection info text on the left side of the pagination bar based on context state:
+
+| Condition                                 | Displayed text           |
+| ----------------------------------------- | ------------------------ |
+| `total` is provided                       | `X row(s)`               |
+| Rows selected and `total` is provided     | `Y of X row(s) selected` |
+| Rows selected and `total` is not provided | `Y row(s) selected`      |
+| No selection enabled and no `total`       | _(nothing displayed)_    |
+
+Row selection is enabled by providing `onSelectionChange` to `useDataTable`. The `total` value comes from `DataTableData.total`.
 
 ## `useDataTable`
 
@@ -180,16 +191,17 @@ const table = useDataTable({
 
 ### Options
 
-| Option              | Type                               | Description                                                                                                       |
-| ------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `columns`           | `Column<TRow>[]`                   | Column definitions. Required.                                                                                     |
-| `data`              | `DataTableData<TRow> \| undefined` | Fetched data. Pass `undefined` while loading.                                                                     |
-| `loading`           | `boolean`                          | When `true`, renders a loading skeleton.                                                                          |
-| `error`             | `Error \| null`                    | When set, renders an error message in the table body.                                                             |
-| `control`           | `CollectionControl`                | Collection control from `useCollectionVariables()`. Required for `DataTable.Pagination` and `DataTable.Filters`.  |
-| `onClickRow`        | `(row: TRow) => void`              | Called when the user clicks a row. Adds a pointer cursor to rows.                                                 |
-| `rowActions`        | `RowAction<TRow>[]`                | Per-row action items rendered in a kebab-menu column. The column is omitted when empty or not provided.           |
-| `onSelectionChange` | `(ids: string[]) => void`          | Called with selected row IDs on change. Providing this enables the checkbox column. Rows must have a string `id`. |
+| Option              | Type                               | Description                                                                                                                                               |
+| ------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `columns`           | `Column<TRow>[]`                   | Column definitions. Required.                                                                                                                             |
+| `data`              | `DataTableData<TRow> \| undefined` | Fetched data. Pass `undefined` while loading.                                                                                                             |
+| `loading`           | `boolean`                          | When `true`, renders a loading skeleton.                                                                                                                  |
+| `error`             | `Error \| null`                    | When set, renders an error message in the table body.                                                                                                     |
+| `control`           | `CollectionControl`                | Collection control from `useCollectionVariables()`. Required for `DataTable.Pagination` and `DataTable.Filters`.                                          |
+| `onClickRow`        | `(row: TRow) => void`              | Called when the user clicks a row. Adds a pointer cursor to rows.                                                                                         |
+| `rowActions`        | `RowAction<TRow>[]`                | Per-row action items rendered in a kebab-menu column. The column is omitted when empty or not provided.                                                   |
+| `onSelectionChange` | `(ids: string[]) => void`          | Called with selected row IDs on change. Providing this enables the checkbox column. Rows must have a string `id`.                                         |
+| `sort`              | `false \| { multiple?: boolean }`  | Sort behaviour. `false` disables sorting entirely. `{ multiple: true }` enables multi-column sorting. Omit or pass `{}` for single-column sort (default). |
 
 ### `DataTableData`
 
