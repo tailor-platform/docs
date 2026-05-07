@@ -27,7 +27,7 @@ Workspaces are deployed to specific regions:
 | Region         | Location             |
 | -------------- | -------------------- |
 | `us-west`      | United States (West) |
-| `ap-northeast` | Asia Pacific (Tokyo) |
+| `asia-northeast` | Asia Pacific (Tokyo) |
 
 ## Application
 
