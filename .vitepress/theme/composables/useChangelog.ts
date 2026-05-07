@@ -18,7 +18,6 @@ export interface ChangelogItem {
   githubUrl: string
   body: string
   narrative: ChangelogNarrative
-  status: string
   createdAt: string
   updatedAt?: string
 }
@@ -45,7 +44,7 @@ export function formatDate(dateString: string): string {
 export function useChangelog(data: ChangelogData) {
   const selectedProduct = ref('All')
   const currentPage = ref(1)
-  const itemsPerPage = 10
+  const itemsPerPage = 20
 
   watch(selectedProduct, () => {
     currentPage.value = 1

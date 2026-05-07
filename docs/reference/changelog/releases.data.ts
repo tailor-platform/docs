@@ -3,32 +3,36 @@ import type { ChangelogData, ChangelogItem } from '../../../.vitepress/theme/com
 declare const data: ChangelogData
 export { data }
 
-const ENDPOINT = 'https://changelog-3jsbo08al2.erp.dev/query'
+const ENDPOINT = 'https://changelog-lu2nvur63d.erp.dev/query'
 
 const PAGE_SIZE = 100
 
-const QUERY = (limit: number, offset: number) => `
+const QUERY = (first: number, after: string | null) => `
   query {
-    listApprovedReleases(limit: ${limit}, offset: ${offset}) {
-      items {
-        id
-        productType
-        version
-        versionType
-        title
-        releaseDate
-        githubUrl
-        body
-        breaking
-        narrativeSummary
-        narrativeImpact
-        narrativeDetails
-        narrativeMigration
-        status
-        createdAt
-        updatedAt
+    releases(first: ${first}${after ? `, after: "${after}"` : ''}) {
+      edges {
+        node {
+          id
+          productType
+          version
+          versionType
+          title
+          releaseDate
+          githubUrl
+          body
+          breaking
+          narrativeSummary
+          narrativeImpact
+          narrativeDetails
+          narrativeMigration
+          createdAt
+          updatedAt
+        }
       }
-      hasNextPage
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
 `
@@ -50,35 +54,34 @@ function mapItem(item: Record<string, unknown>): ChangelogItem {
       details: item.narrativeDetails as string[],
       migration: item.narrativeMigration as string | null,
     },
-    status: item.status as string,
     createdAt: item.createdAt as string,
     updatedAt: item.updatedAt as string | undefined,
   }
 }
 
-async function fetchPage(offset: number): Promise<{ items: Record<string, unknown>[]; hasNextPage: boolean }> {
+async function fetchPage(after: string | null): Promise<{ edges: { node: Record<string, unknown> }[]; pageInfo: { hasNextPage: boolean; endCursor: string } }> {
   const res = await fetch(ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: QUERY(PAGE_SIZE, offset) }),
+    body: JSON.stringify({ query: QUERY(PAGE_SIZE, after) }),
   })
   const json = await res.json() as {
-    data?: { listApprovedReleases: { items: Record<string, unknown>[]; hasNextPage: boolean } }
+    data?: { releases: { edges: { node: Record<string, unknown> }[]; pageInfo: { hasNextPage: boolean; endCursor: string } } }
     errors?: { message: string }[]
   }
   if (json.errors?.length) throw new Error(json.errors[0].message)
-  return json.data!.listApprovedReleases
+  return json.data!.releases
 }
 
 export default {
   async load(): Promise<ChangelogData> {
     const allItems: Record<string, unknown>[] = []
-    let offset = 0
+    let cursor: string | null = null
     while (true) {
-      const { items, hasNextPage } = await fetchPage(offset)
-      allItems.push(...items)
-      if (!hasNextPage) break
-      offset += PAGE_SIZE
+      const { edges, pageInfo } = await fetchPage(cursor)
+      allItems.push(...edges.map((e) => e.node))
+      if (!pageInfo.hasNextPage) break
+      cursor = pageInfo.endCursor
     }
     const entries = allItems
       .map(mapItem)
