@@ -7,18 +7,18 @@ description: Styled button with multiple variants and sizes
 
 The `Button` component is a styled button with multiple visual variants and sizes. It supports rendering as a custom element via the `render` prop (Base UI render pattern).
 
-## Import
-
-```tsx
-import { Button } from "@tailor-platform/app-shell";
-```
-
 ## Basic Usage
 
-```tsx
-<Button>Click me</Button>
-<Button variant="outline">Outline</Button>
-<Button variant="destructive">Delete</Button>
+```tsx preview wrap="row"
+import { Button } from "@tailor-platform/app-shell";
+
+export default (
+  <>
+    <Button>Click me</Button>
+    <Button variant="outline">Outline</Button>
+    <Button variant="destructive">Delete</Button>
+  </>
+)
 ```
 
 ## Props
