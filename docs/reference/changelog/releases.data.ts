@@ -1,4 +1,7 @@
+import { createMarkdownRenderer } from 'vitepress'
 import type { ChangelogData, ChangelogItem } from '../../../.vitepress/theme/composables/useChangelog'
+
+const md = await createMarkdownRenderer(process.cwd())
 
 declare const data: ChangelogData
 export { data }
@@ -47,13 +50,14 @@ function mapItem(item: Record<string, unknown>): ChangelogItem {
     date: String(item.releaseDate).split('T')[0],
     githubUrl: item.githubUrl as string,
     body: item.body as string,
+    bodyHtml: md.render(item.body as string),
     breaking: item.breaking as boolean,
-    narrative: {
+    narrative: item.narrativeSummary != null ? {
       summary: item.narrativeSummary as string,
-      impact: item.narrativeImpact as string,
-      details: item.narrativeDetails as string[],
+      impact: item.narrativeImpact as string | undefined,
+      details: item.narrativeDetails as string[] | undefined,
       migration: item.narrativeMigration as string | null,
-    },
+    } : null,
     createdAt: item.createdAt as string,
     updatedAt: item.updatedAt as string | undefined,
   }

@@ -17,7 +17,8 @@ export interface ChangelogItem {
   breaking: boolean
   githubUrl: string
   body: string
-  narrative: ChangelogNarrative
+  bodyHtml: string
+  narrative: ChangelogNarrative | null
   createdAt: string
   updatedAt?: string
 }

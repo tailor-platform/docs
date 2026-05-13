@@ -51,9 +51,7 @@
           </div>
         </div>
 
-        <div v-else class="release-body">
-          <p v-for="(para, i) in entry.body.split('\n\n')" :key="i">{{ para }}</p>
-        </div>
+        <div v-else class="release-body" v-html="entry.bodyHtml" />
 
       </div>
     </div>

@@ -210,6 +210,74 @@
   color: #991b1b;
 }
 
+/* Body (markdown rendered from GitHub release notes) */
+.release-body {
+  margin-top: 1rem;
+  color: var(--vp-c-text-2);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+
+.release-body h2,
+.release-body h3 {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--vp-c-text-2);
+}
+
+.release-body h2:first-child,
+.release-body h3:first-child {
+  margin-top: 0;
+}
+
+.release-body ul {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.release-body li {
+  margin-bottom: 0.5rem;
+  color: var(--vp-c-text-1);
+}
+
+.release-body li > p {
+  margin: 0.25rem 0 0;
+}
+
+.release-body p {
+  margin: 0.5rem 0;
+}
+
+.release-body code {
+  font-size: 0.875em;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 4px;
+  padding: 0.125em 0.375em;
+  color: var(--vp-c-text-1);
+}
+
+.release-body pre {
+  margin: 0.75rem 0;
+  padding: 1rem;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.release-body pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.875rem;
+  color: var(--vp-c-text-1);
+}
+
 /* Empty state */
 .empty-state {
   text-align: center;
