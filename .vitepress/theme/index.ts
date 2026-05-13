@@ -6,6 +6,7 @@ import GitHubIcon from "./components/icons/GitHubIcon.vue";
 import Tag from "./components/Tag.vue";
 import DeprecatedTag from "./components/DeprecatedTag.vue";
 import PreviewTag from "./components/PreviewTag.vue";
+import PreviewBlock from "@izumisy/vitepress-plugin-react-preview/PreviewBlock.vue";
 
 // Tailor brand theme styles (order matters!)
 import "./styles/vars.css"; // Brand colors & CSS variables (must be first)
@@ -30,6 +31,7 @@ const theme: Theme = {
     app.component("Tag", Tag);
     app.component("DeprecatedTag", DeprecatedTag);
     app.component("PreviewTag", PreviewTag);
+    app.component("PreviewBlock", PreviewBlock);
   },
   setup() {
     onMounted(() => {
