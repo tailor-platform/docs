@@ -5,6 +5,11 @@ import { generateNav } from "./config/nav.js";
 import { generateAllSidebars } from "./config/sidebar.js";
 import { configureMarkdown } from "./config/markdown.js";
 import { generateSitemap } from "./config/sitemap.js";
+import { createMrpPlugin } from "@izumisy/vitepress-plugin-react-preview";
+
+const mrp = createMrpPlugin({
+  css: "@tailor-platform/app-shell/styles",
+});
 
 const docsDir = path.join(process.cwd(), "docs");
 
@@ -37,6 +42,7 @@ export default withMermaid(
       optimizeDeps: {
         include: ["mermaid"],
       },
+      plugins: [...mrp.vite()],
     },
 
     themeConfig: {
@@ -92,7 +98,10 @@ export default withMermaid(
     },
 
     markdown: {
-      config: configureMarkdown,
+      config(md) {
+        md.use(mrp.markdownIt);
+        configureMarkdown(md);
+      },
     },
   }),
 );
