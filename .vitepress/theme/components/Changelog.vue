@@ -21,7 +21,7 @@
           <div class="release-card-header">
             <div class="release-card-meta">
               <span class="entry-date">{{ formatDate(entry.date) }}</span>
-              <template v-if="entry.product !== 'Platform Core'">
+              <template v-if="entry.product !== 'Platform Core' && entry.narrative">
                 <span class="entry-separator">•</span>
                 <a :href="entry.githubUrl" target="_blank" rel="noopener" class="entry-github-link">
                   View on GitHub →
@@ -58,9 +58,10 @@
               <strong>⚠️ Migration required:</strong>
               <div v-html="entry.narrative.migration" />
             </div>
-            <div v-if="entry.githubUrl" class="narrative-full-notes">
-              <a :href="entry.githubUrl" target="_blank" rel="noopener">Full release notes →</a>
-            </div>
+          </div>
+
+          <div v-else-if="entry.githubUrl" class="narrative-full-notes">
+            To learn more, check out the <a :href="entry.githubUrl" target="_blank" rel="noopener">full release notes →</a>
           </div>
 
         </div>
