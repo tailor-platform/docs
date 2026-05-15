@@ -58,11 +58,9 @@
               <strong>⚠️ Migration required:</strong>
               <div v-html="entry.narrative.migration" />
             </div>
-          </div>
-
-          <div v-else-if="entry.githubUrl" class="release-github-fallback">
-            For more details,
-            <a :href="entry.githubUrl" target="_blank" rel="noopener">check the full release notes →</a>
+            <div v-if="entry.githubUrl" class="narrative-full-notes">
+              <a :href="entry.githubUrl" target="_blank" rel="noopener">Full release notes →</a>
+            </div>
           </div>
 
         </div>

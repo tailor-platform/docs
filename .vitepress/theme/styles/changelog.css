@@ -10,18 +10,17 @@
   color: var(--vp-c-danger-1);
 }
 
-.release-github-fallback {
-  font-size: 0.9rem;
-  color: var(--vp-c-text-2);
-  margin-top: 0.5rem;
+.narrative-full-notes {
+  margin-top: 0.75rem;
 }
 
-.release-github-fallback a {
+.narrative-full-notes a {
+  font-size: 0.9rem;
   color: var(--vp-c-brand-1);
   text-decoration: none;
 }
 
-.release-github-fallback a:hover {
+.narrative-full-notes a:hover {
   text-decoration: underline;
 }
 
