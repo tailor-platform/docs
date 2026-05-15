@@ -1,4 +1,4 @@
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, type Ref } from 'vue'
 
 export interface ChangelogNarrative {
   summary: string
@@ -16,8 +16,6 @@ export interface ChangelogItem {
   title: string
   breaking: boolean
   githubUrl: string
-  body: string
-  bodyHtml: string
   narrative: ChangelogNarrative | null
   createdAt: string
   updatedAt?: string
@@ -42,7 +40,7 @@ export function formatDate(dateString: string): string {
   })
 }
 
-export function useChangelog(data: ChangelogData) {
+export function useChangelog(data: Ref<ChangelogData | null>) {
   const selectedProduct = ref('All')
   const currentPage = ref(1)
   const itemsPerPage = 20
@@ -51,15 +49,16 @@ export function useChangelog(data: ChangelogData) {
     currentPage.value = 1
   })
 
-  // Only surface entries for visible products
-  const visibleEntries = data.entries.filter((e) =>
-    (VISIBLE_PRODUCTS as readonly string[]).includes(e.product),
+  const visibleEntries = computed(() =>
+    (data.value?.entries ?? []).filter((e) =>
+      (VISIBLE_PRODUCTS as readonly string[]).includes(e.product),
+    ),
   )
 
   const filteredEntries = computed(() =>
     selectedProduct.value === 'All'
-      ? visibleEntries
-      : visibleEntries.filter((e) => e.product === selectedProduct.value),
+      ? visibleEntries.value
+      : visibleEntries.value.filter((e) => e.product === selectedProduct.value),
   )
 
   const paginatedEntries = computed(() =>
@@ -71,8 +70,8 @@ export function useChangelog(data: ChangelogData) {
   const remaining = computed(() => filteredEntries.value.length - paginatedEntries.value.length)
 
   const productCounts = computed(() => {
-    const counts: Record<string, number> = { All: visibleEntries.length }
-    for (const entry of visibleEntries) {
+    const counts: Record<string, number> = { All: visibleEntries.value.length }
+    for (const entry of visibleEntries.value) {
       counts[entry.product] = (counts[entry.product] ?? 0) + 1
     }
     return counts

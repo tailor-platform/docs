@@ -1,3 +1,30 @@
+/* Loading / error states */
+.changelog-loading,
+.changelog-error {
+  padding: 2rem 0;
+  color: var(--vp-c-text-2);
+  font-size: 0.95rem;
+}
+
+.changelog-error {
+  color: var(--vp-c-danger-1);
+}
+
+.release-github-fallback {
+  font-size: 0.9rem;
+  color: var(--vp-c-text-2);
+  margin-top: 0.5rem;
+}
+
+.release-github-fallback a {
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+}
+
+.release-github-fallback a:hover {
+  text-decoration: underline;
+}
+
 /* Release card */
 .release-card {
   padding: 1.5rem 0;
