@@ -13,6 +13,8 @@ Platform limits are enforced across different services in the Tailor Platform to
 | Recursive Call Limit | Call Depth                      | 10 levels     | Max depth for nested platform-to-platform requests (pipelines, functions, etc.) | Request rejected with BadRequest error if depth exceeds 10 levels                       |
 | Workflow             | Workspace Concurrent Executions | 50 executions | Max concurrent workflow executions per workspace                                | Pending executions remain in `PENDING` status until running executions drop below the cap |
 | Workflow             | Per-Workflow Concurrent Executions | 20 executions | Max concurrent executions of a single workflow                                  | Pending executions remain in `PENDING` status until running executions drop below the cap |
+| Function             | Memory                          | 32 MB         | Max memory available to a Function execution                                    | Execution terminated with `Memory limit exceeded` error if usage exceeds 32 MB          |
+| JobFunction          | Memory                          | 256 MB        | Max memory available to a JobFunction execution                                 | Execution terminated with `Memory limit exceeded` error if usage exceeds 256 MB         |
 
 ## Recursive Call Detection
 
@@ -55,6 +57,15 @@ When either limit is reached, new executions are not rejected. Instead, they rem
 - If the workspace-wide limit is reached, no new executions start in that workspace regardless of per-workflow counts.
 - If the per-workflow limit is reached for a specific workflow, other workflows in the same workspace can still start new executions (as long as the workspace-wide limit is not reached).
 
+## Memory Limits
+
+The Tailor Platform enforces fixed memory limits on function executions to prevent resource exhaustion. These limits are not configurable.
+
+- **Function**: 32 MB per execution
+- **JobFunction**: 256 MB per execution
+
+When an execution exceeds its memory limit, it is terminated and returns a `Memory limit exceeded` error indicating the memory used and the limit (for example, `used 50 MB of 32 MB limit`).
+
 ## Best Practices
 
 When working within platform limits, consider the following best practices:
@@ -68,3 +79,7 @@ When working within platform limits, consider the following best practices:
 1. **Use alternative patterns**: Consider using event-driven architectures, queuing systems, or batch processing for complex workflows that might exceed depth limits.
 
 1. **Design for workflow concurrency**: If your application triggers many workflow executions simultaneously, be aware that excess executions will queue as `PENDING`. Design your application to handle this gracefully rather than assuming immediate execution.
+
+1. **Design for memory limits**: Process large datasets in batches or stream them rather than loading everything into memory at once.
+
+1. **Choose JobFunction for memory-intensive workloads**: If your workload exceeds the 32 MB Function limit, use JobFunction (256 MB) instead.
