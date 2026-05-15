@@ -26,7 +26,7 @@ Please contact us if you have any questions or issues when you use these package
 
 #### Web
 
-- https://developer.mozilla.org/en-US/docs/Web/API/Fetch\_API
+- https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
 - https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream
 - https://developer.mozilla.org/en-US/docs/Web/API/WritableStream
 - https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder

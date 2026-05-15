@@ -223,21 +223,25 @@ When configuring SAML, Tailor Platform acts as the Service Provider (SP). Key SP
 
 - **EntityID**: Uniquely identifies your Tailor Platform application (format: `https://api.tailor.tech/saml/{workspace_id}/{auth_namespace}/metadata.xml`)
 - **ACS URL**: The callback endpoint where SAML assertions are received (format: `https://{application_url}/oauth2/callback`)
-- **Certificate/Key Pair**: Used for signing and encryption of SAML messages
+- **Request Signing**: The platform provides a built-in key for signing SAML authentication requests. Enable via `enableSignRequest`.
 
 For detailed steps on setting up the IdP with SAML, refer to the [tutorial](/tutorials/setup-auth/setup-identity-provider#2settingupidpforsaml).
+
+**IdP-initiated flow**
+
+The Tailor Platform does not support the SAML IdP-initiated flow, because SP-initiated flows provide stronger security guarantees. For applications that still need to start a flow from the IdP side, the platform provides a redirect mechanism: when a SAML assertion arrives without a `RelayState`, the platform redirects the user to the `defaultRedirectURL` configured on the IdP. Applications typically point this URL at their own login entry point, which then starts a normal SP-initiated flow.
 
 Here is an example of a SAML configuration with the SDK:
 
 ```typescript
-import { defineAuth, idp, secrets } from "@tailor-platform/sdk";
+import { defineAuth, idp } from "@tailor-platform/sdk";
 import { user } from "./tailordb/user";
 
 const auth = defineAuth("my-auth", {
   idProvider: idp.saml("saml-local", {
     metadataUrl: "{METADATA_URL}",
-    spCertBase64: secrets.value("default", "saml-cert"),
-    spKeyBase64: secrets.value("default", "saml-key"),
+    enableSignRequest: false,
+    defaultRedirectURL: "https://your-app.example.com/login",
   }),
   userProfile: {
     type: user,
@@ -252,18 +256,18 @@ const auth = defineAuth("my-auth", {
 });
 ```
 
-| Property         | Description                                                          |
-| ---------------- | -------------------------------------------------------------------- |
-| **idProvider**   | An Identity Provider for SSO configured via `idp.saml()`.            |
-| - metadataUrl    | Metadata URL of the identity provider.                               |
-| - spCertBase64   | Service Provider Certificate. Managed via `secrets.value()`.         |
-| - spKeyBase64    | Service Provider Key. Managed via `secrets.value()`.                 |
-| **userProfile**  | Configuration for the user profile provider.                         |
-| - type           | Reference to the TailorDB type for user profiles **(required)**.     |
-| - usernameField  | Field to map username (e.g., `email`) **(required)**.                |
-| - attributes     | Object mapping attribute fields to `true` (e.g., `{ roles: true }`). |
-| **machineUsers** | Object mapping machine user names to their configurations.           |
-| - attributes     | Object mapping attribute fields to values.                           |
+| Property             | Description                                                                                                                                            |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **idProvider**       | An Identity Provider for SSO configured via `idp.saml()`.                                                                                              |
+| - metadataUrl        | Metadata URL of the identity provider.                                                                                                                 |
+| - enableSignRequest  | Whether to enable signing of SAML authentication requests (optional, defaults to `false`). When enabled, the platform uses a built-in key for signing. |
+| - defaultRedirectURL | URL the platform redirects to when a SAML assertion arrives without a `RelayState`.                                                                    |
+| **userProfile**      | Configuration for the user profile provider.                                                                                                           |
+| - type               | Reference to the TailorDB type for user profiles **(required)**.                                                                                       |
+| - usernameField      | Field to map username (e.g., `email`) **(required)**.                                                                                                  |
+| - attributes         | Object mapping attribute fields to `true` (e.g., `{ roles: true }`).                                                                                   |
+| **machineUsers**     | Object mapping machine user names to their configurations.                                                                                             |
+| - attributes         | Object mapping attribute fields to values.                                                                                                             |
 
 ### ID Token
 

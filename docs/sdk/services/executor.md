@@ -88,6 +88,25 @@ type WebhookRequest = {
 incomingWebhookTrigger<WebhookRequest>();
 ```
 
+You can customize the HTTP response returned to the webhook caller:
+
+```typescript
+// Response body only (shorthand)
+incomingWebhookTrigger<WebhookRequest>({
+  response: (args) => ({ challenge: args.body.challenge }),
+});
+
+// Response body with custom status code
+incomingWebhookTrigger<WebhookRequest>({
+  response: {
+    body: (args) => ({ challenge: args.body.challenge }),
+    statusCode: 201,
+  },
+});
+```
+
+If `body` is set without `statusCode`, the platform uses 200. If neither is set, the platform returns 204.
+
 ### Resolver Executed Trigger
 
 Fires when a resolver is executed:
@@ -110,6 +129,16 @@ Fire when IdP users are created, updated, or deleted:
 ```typescript
 idpUserCreatedTrigger();
 ```
+
+When the project defines multiple IdPs, pass `idp` to target a specific one. The name is type-narrowed via the generated `IdpName` type:
+
+```typescript
+idpUserCreatedTrigger({ idp: "my-idp" });
+```
+
+Omitting `idp` is allowed only when the project has exactly one IdP; otherwise `apply` fails with an error listing the configured IdPs.
+
+These triggers require the IdP to publish user lifecycle events. The SDK enables `publishUserEvents` automatically during `apply` on each IdP that is targeted by an `idpUser` trigger; set the value explicitly on `defineIdp()` to override. See [IdP service - publishUserEvents](idp.md#publishuserevents).
 
 ### Auth Access Token Triggers
 
@@ -159,6 +188,12 @@ export default createExecutor({
 idpUserTrigger({ events: ["created", "deleted"] });
 ```
 
+In multi-IdP projects, add `idp` to target a specific IdP:
+
+```typescript
+idpUserTrigger({ events: ["created", "deleted"], idp: "my-idp" });
+```
+
 #### `authAccessTokenTrigger()`
 
 ```typescript
@@ -183,6 +218,8 @@ createExecutor({
   },
 });
 ```
+
+`function` and `jobFunction` `body` args include an `invoker` field: the principal running this function, overridden by `authInvoker` when set; `null` for anonymous calls. Other operation kinds (`graphql`, `webhook`, `workflow`) do not pass `invoker` into their callbacks.
 
 ### Job Function Operation
 
@@ -294,19 +331,10 @@ createExecutor({
 
 ### Authentication for Operations
 
-GraphQL and Workflow operations can specify an `authInvoker` to execute with machine user credentials:
+GraphQL and Workflow operations can specify an `authInvoker` to execute with machine user credentials. Pass the machine user name as a plain string — it is type-narrowed to the names defined in your auth config:
 
 ```typescript
-import { defineAuth, createExecutor, scheduleTrigger } from "@tailor-platform/sdk";
-
-const auth = defineAuth("my-auth", {
-  // ... auth configuration
-  machineUsers: {
-    "batch-processor": {
-      attributes: { role: "ADMIN" },
-    },
-  },
-});
+import { createExecutor, scheduleTrigger } from "@tailor-platform/sdk";
 
 export default createExecutor({
   name: "scheduled-cleanup",
@@ -314,10 +342,12 @@ export default createExecutor({
   operation: {
     kind: "graphql",
     query: `mutation { cleanupOldRecords { count } }`,
-    authInvoker: auth.invoker("batch-processor"),
+    authInvoker: "batch-processor",
   },
 });
 ```
+
+> **Deprecated:** `auth.invoker("batch-processor")` still works, but is deprecated. Prefer the string form to avoid importing config-layer modules into runtime files.
 
 ## Event Payloads
 
@@ -435,6 +465,26 @@ export default createExecutor({
       const signature = headers["stripe-signature"];
       console.log(`Received ${body.type} event`);
       // Process webhook...
+    },
+  },
+});
+```
+
+**With custom response:**
+
+```typescript
+export default createExecutor({
+  name: "slack-challenge",
+  trigger: incomingWebhookTrigger<{
+    body: { challenge: string; type: string };
+    headers: Record<string, string>;
+  }>({
+    response: (args) => ({ challenge: args.body.challenge }),
+  }),
+  operation: {
+    kind: "function",
+    body: async ({ body }) => {
+      console.log(`Received ${body.type} event`);
     },
   },
 });

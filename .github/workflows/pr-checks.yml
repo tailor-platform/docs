@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
-      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
         name: Install pnpm
         with:
           standalone: true
@@ -44,7 +44,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Check spelling
-        uses: crate-ci/typos@02ea592e44b3a53c302f697cddca7641cd051c3d # v1.45.0
+        uses: crate-ci/typos@cf5f1c29a8ac336af8568821ec41919923b05a83 # v1.45.1
 
   schema-check:
     runs-on: ubuntu-latest
@@ -55,7 +55,7 @@ jobs:
           fetch-depth: 0
 
       - name: Validate markdown schema
-        uses: jackchuka/mdschema@50777884bcd61948e0010bd333ed0dd7e3b1a2d2 # v0.12.8
+        uses: jackchuka/mdschema@605e0e9aaf9097e1007af51136141a6481527a7b # v0.12.9
         with:
           files: "README.md docs/**/*.md"
           schema: "schema.yml"

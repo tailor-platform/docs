@@ -43,30 +43,32 @@ Both `--env-file` and `--env-file-if-exists` can be specified multiple times and
 
 ```bash
 # Load .env (required) and .env.local (optional, if exists)
-tailor-sdk apply --env-file .env --env-file-if-exists .env.local
+tailor-sdk deploy --env-file .env --env-file-if-exists .env.local
 
 # Load multiple files
-tailor-sdk apply --env-file .env --env-file .env.production
+tailor-sdk deploy --env-file .env --env-file .env.production
 ```
 
 ## Environment Variables
 
 You can use environment variables to configure workspace and authentication:
 
-| Variable                                     | Description                                                                 |
-| -------------------------------------------- | --------------------------------------------------------------------------- |
-| `TAILOR_PLATFORM_WORKSPACE_ID`               | Workspace ID for deployment commands                                        |
-| `TAILOR_PLATFORM_ORGANIZATION_ID`            | Organization ID for organization commands                                   |
-| `TAILOR_PLATFORM_FOLDER_ID`                  | Folder ID for folder commands                                               |
-| `TAILOR_PLATFORM_TOKEN`                      | Authentication token (alternative to `login`)                               |
-| `TAILOR_TOKEN`                               | **Deprecated.** Use `TAILOR_PLATFORM_TOKEN` instead                         |
-| `TAILOR_PLATFORM_PROFILE`                    | Workspace profile name                                                      |
-| `TAILOR_PLATFORM_SDK_CONFIG_PATH`            | Path to SDK config file                                                     |
-| `TAILOR_PLATFORM_MACHINE_USER_CLIENT_ID`     | Client ID for `login --machineuser`                                         |
-| `TAILOR_PLATFORM_MACHINE_USER_CLIENT_SECRET` | Client secret for `login --machineuser`                                     |
-| `VISUAL` / `EDITOR`                          | Preferred editor for commands that open files (e.g., `vim`, `code`, `nano`) |
-| `TAILOR_CRASH_REPORTS_LOCAL`                 | Local crash log writing: `on` (default) or `off`                            |
-| `TAILOR_CRASH_REPORTS_REMOTE`                | Automatic crash report submission: `off` (default) or `on`                  |
+| Variable                                     | Description                                                                  |
+| -------------------------------------------- | ---------------------------------------------------------------------------- |
+| `TAILOR_PLATFORM_WORKSPACE_ID`               | Workspace ID for deployment commands                                         |
+| `TAILOR_PLATFORM_ORGANIZATION_ID`            | Organization ID for organization commands                                    |
+| `TAILOR_PLATFORM_FOLDER_ID`                  | Folder ID for folder commands                                                |
+| `TAILOR_PLATFORM_TOKEN`                      | Authentication token (alternative to `login`)                                |
+| `TAILOR_TOKEN`                               | **Deprecated.** Use `TAILOR_PLATFORM_TOKEN` instead                          |
+| `TAILOR_PLATFORM_PROFILE`                    | Workspace profile name                                                       |
+| `TAILOR_PLATFORM_SDK_CONFIG_PATH`            | Path to SDK config file                                                      |
+| `TAILOR_PLATFORM_SDK_DTS_PATH`               | Output path for generated `tailor.d.ts` type definition file                 |
+| `TAILOR_PLATFORM_MACHINE_USER_CLIENT_ID`     | Client ID for `login --machine-user`                                         |
+| `TAILOR_PLATFORM_MACHINE_USER_CLIENT_SECRET` | Client secret for `login --machine-user`                                     |
+| `TAILOR_PLATFORM_MACHINE_USER_NAME`          | Default machine user name for `query`, `workflow start`, `function test-run` |
+| `VISUAL` / `EDITOR`                          | Preferred editor for commands that open files (e.g., `vim`, `code`, `nano`)  |
+| `TAILOR_CRASH_REPORTS_LOCAL`                 | Local crash log writing: `on` (default) or `off`                             |
+| `TAILOR_CRASH_REPORTS_REMOTE`                | Automatic crash report submission: `off` (default) or `on`                   |
 
 ### Authentication Token Priority
 
@@ -93,15 +95,16 @@ Workspace ID resolution follows this priority order:
 
 Commands for managing Tailor Platform applications (work with `tailor.config.ts`).
 
-| Command                                   | Description                                                         |
-| ----------------------------------------- | ------------------------------------------------------------------- |
-| [init](cli/application.md#init)         | Initialize a new project using create-sdk.                          |
-| [generate](cli/application.md#generate) | Generate files using Tailor configuration.                          |
-| [apply](cli/application.md#apply)       | Apply Tailor configuration to deploy your application.              |
-| [remove](cli/application.md#remove)     | Remove all resources managed by the application from the workspace. |
-| [show](cli/application.md#show)         | Show information about the deployed application.                    |
-| [open](cli/application.md#open)         | Open Tailor Platform Console.                                       |
-| [api](cli/application.md#api)           | Call Tailor Platform API endpoints directly.                        |
+| Command                                         | Description                                                         |
+| ----------------------------------------------- | ------------------------------------------------------------------- |
+| [init](cli/application.md#init)               | Initialize a new project using create-sdk.                          |
+| [generate](cli/application.md#generate)       | Generate files using Tailor configuration.                          |
+| [deploy](cli/application.md#deploy)           | Deploy your application by applying the Tailor configuration.       |
+| [remove](cli/application.md#remove)           | Remove all resources managed by the application from the workspace. |
+| [show](cli/application.md#show)               | Show information about the deployed application.                    |
+| [open](cli/application.md#open)               | Open Tailor Platform Console.                                       |
+| [api list](cli/application.md#api-list)       | List all invocable OperatorService methods.                         |
+| [api inspect](cli/application.md#api-inspect) | Print the input message tree of an OperatorService endpoint.        |
 
 ### [TailorDB Commands](cli/tailordb)
 
@@ -116,6 +119,14 @@ Commands for managing TailorDB tables, data, and schema migrations.
 | [tailordb erd export](cli/tailordb.md#tailordb-erd-export)                 | Export Liam ERD dist from applied TailorDB schema.                                                                        |
 | [tailordb erd serve](cli/tailordb.md#tailordb-erd-serve)                   | Generate and serve ERD locally (liam build + serve dist). (beta)                                                          |
 | [tailordb erd deploy](cli/tailordb.md#tailordb-erd-deploy)                 | Deploy ERD static website for TailorDB namespace(s).                                                                      |
+
+### [Query Commands](cli/query)
+
+Run ad-hoc SQL/GraphQL queries or enter the interactive REPL.
+
+| Command                       | Description            |
+| ----------------------------- | ---------------------- |
+| [query](cli/query.md#query) | Run SQL/GraphQL query. |
 
 ### [User & Auth Commands](cli/user)
 
@@ -199,10 +210,12 @@ Commands for managing workflows and executions.
 
 ### [Function Commands](cli/function)
 
-Commands for viewing function execution logs.
+Commands for managing function registries and viewing function execution logs.
 
 | Command                                                  | Description                                                     |
 | -------------------------------------------------------- | --------------------------------------------------------------- |
+| [function get](cli/function.md#function-get)           | Get a function registry by name                                 |
+| [function list](cli/function.md#function-list)         | List function registries in a workspace                         |
 | [function logs](cli/function.md#function-logs)         | List or get function execution logs.                            |
 | [function test-run](cli/function.md#function-test-run) | Run a function on the Tailor Platform server without deploying. |
 
@@ -242,14 +255,14 @@ Commands for managing and deploying static websites.
 | [staticwebsite list](cli/staticwebsite.md#staticwebsite-list)     | List all static websites in a workspace.              |
 | [staticwebsite get](cli/staticwebsite.md#staticwebsite-get)       | Get details of a specific static website.             |
 
-### [Crash Report Commands](cli/crash-report)
+### [Crash Report Commands](cli/crashreport)
 
 Commands for managing crash reports.
 
-| Command                                                      | Description                                    |
-| ------------------------------------------------------------ | ---------------------------------------------- |
-| [crash-report list](cli/crash-report.md#crash-report-list) | List local crash report files.                 |
-| [crash-report send](cli/crash-report.md#crash-report-send) | Submit a crash report to help improve the SDK. |
+| Command                                                   | Description                                    |
+| --------------------------------------------------------- | ---------------------------------------------- |
+| [crashreport list](cli/crashreport.md#crashreport-list) | List local crash report files.                 |
+| [crashreport send](cli/crashreport.md#crashreport-send) | Submit a crash report to help improve the SDK. |
 
 ### [Setup Commands](cli/setup)
 
@@ -258,6 +271,22 @@ Commands for setting up project infrastructure.
 | Command                                     | Description                                             |
 | ------------------------------------------- | ------------------------------------------------------- |
 | [setup github](cli/setup.md#setup-github) | Generate GitHub Actions workflow for deployment. (beta) |
+
+### [Upgrade Commands](cli/upgrade)
+
+Commands for upgrading SDK versions with automated code migration.
+
+| Command                             | Description                                                  |
+| ----------------------------------- | ------------------------------------------------------------ |
+| [upgrade](cli/upgrade.md#upgrade) | Run codemods to upgrade your project to a newer SDK version. |
+
+### [Skills Commands](cli/skills)
+
+Commands for installing Tailor SDK agent skills.
+
+| Command                                          | Description                                                        |
+| ------------------------------------------------ | ------------------------------------------------------------------ |
+| [skills install](cli/skills.md#skills-install) | Install the tailor-sdk agent skill from the installed SDK package. |
 
 ### [Completion](cli/completion)
 

@@ -118,6 +118,8 @@ const modules = [
 </AppShell>
 ```
 
+When `rootComponent` is set, the root page is treated as a first-class navigation item: it appears in `DefaultSidebar` and `CommandPalette` just like any other module. The title defaults to the localized `"Home"` / `"ホーム"` if no explicit title is provided.
+
 > **Tip:** For redirects from the root, use a guard with `redirectTo()` instead
 
 ```tsx
@@ -127,6 +129,8 @@ import { redirectTo } from "@tailor-platform/app-shell";
   {/* ... */}
 </AppShell>;
 ```
+
+> **Note:** If a module with `path: ""` is present in `modules`, it takes precedence over `rootComponent`.
 
 ### settingsResources
 
@@ -261,6 +265,38 @@ const requireAuth: Guard = ({ context }) => {
   return pass();
 };
 ```
+
+### searchSources
+
+- **Type:** `readonly SearchSource[]` (optional)
+- **Description:** Async search sources wired into the built-in CommandPalette. Each source is activated by typing its `prefix` followed by `:` in the palette. When active, the Actions and Pages sections are hidden and only results from that source are shown. The empty-input state of the palette lists all registered sources in a **Search Modes** section so users can discover them with a single click.
+
+```tsx
+import { AppShell, type SearchSource } from "@tailor-platform/app-shell";
+
+const searchSources: readonly SearchSource[] = [
+  {
+    prefix: "ORD",
+    title: "Orders",
+    search: async (query, { signal }) => {
+      const results = await api.searchOrders(query, { signal });
+      return results.map((o) => ({
+        key: o.id,
+        label: o.number,
+        path: `/orders/${o.id}`,
+      }));
+    },
+  },
+];
+
+<AppShell modules={modules} searchSources={searchSources}>
+  <SidebarLayout sidebar={<DefaultSidebar />} />
+</AppShell>;
+```
+
+See [`SearchSource`](command-palette.md#searchsource) for the full type reference.
+
+> **Note:** `DefaultSidebar` always renders a **Search** entry that opens the palette regardless of whether `searchSources` is configured. The `Cmd+K` / `Ctrl+K` shortcut also works globally.
 
 ### children
 

@@ -234,7 +234,9 @@ Validation runs automatically before the `body` function executes. When validati
 Define actual resolver logic in the `body` function. Function arguments include:
 
 - `input` - Input data from GraphQL request
-- `user` - User performing the operation
+- `user` - The user who called this resolver; unaffected by `authInvoker`
+- `invoker` - The principal running this function; equals `user` by default, or the machine user set by `authInvoker`. `null` for anonymous calls.
+- `env` - Environment variables declared in `tailor.config.ts`
 
 ### Using Kysely for Database Access
 
@@ -350,19 +352,10 @@ createResolver({
 
 ## Authentication
 
-Specify an `authInvoker` to execute the resolver with machine user credentials:
+Specify an `authInvoker` to execute the resolver with machine user credentials. Pass the machine user name as a plain string — it is type-narrowed to the names you defined in your auth config:
 
 ```typescript
-import { defineAuth, createResolver, t } from "@tailor-platform/sdk";
-
-const auth = defineAuth("my-auth", {
-  // ... auth configuration
-  machineUsers: {
-    "batch-processor": {
-      attributes: { role: "ADMIN" },
-    },
-  },
-});
+import { createResolver, t } from "@tailor-platform/sdk";
 
 export default createResolver({
   name: "adminQuery",
@@ -372,10 +365,12 @@ export default createResolver({
     // Executes as "batch-processor" machine user
     return { result: "ok" };
   },
-  authInvoker: auth.invoker("batch-processor"),
+  authInvoker: "batch-processor",
 });
 ```
 
-The `authInvoker` option accepts the return value of `auth.invoker()`, which specifies the auth namespace and machine user name.
+The machine user name is looked up in the auth service configured on your app (`machineUsers` in `defineAuth`). The namespace is resolved automatically — no need to import `auth` from `tailor.config.ts` in resolver files.
 
-**Note:** `authInvoker` controls the permissions for database operations and other platform actions, but the `user` object passed to the `body` function still reflects the original caller who invoked the resolver.
+> **Deprecated:** `auth.invoker("batch-processor")` still works, but is deprecated. Importing `auth` into runtime files pulls config-layer (Node-only) dependencies into the bundle.
+
+**Note:** `authInvoker` controls the permissions for database operations and other platform actions. The `user` object passed to `body` still reflects the original caller, while `invoker` reflects the principal actually running the body.

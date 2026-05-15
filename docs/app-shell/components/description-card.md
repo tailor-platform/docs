@@ -75,16 +75,19 @@ Displays value as a Badge component with variant mapping.
   label: "Status",
   type: "badge",
   meta: {
+    sentenceCaseBadges: false, // Optional: render the original value instead
     badgeVariantMap: {
       draft: "neutral",
-      pending: "outline-warning",
-      approved: "outline-success",
+      pending: "subtle-warning",
+      approved: "subtle-success",
       shipped: "success",
-      cancelled: "outline-error",
+      cancelled: "subtle-error",
     },
   },
 }
 ```
+
+Badge values are rendered in sentence case by default. Set `meta.sentenceCaseBadges` to `false` when you need to display the original value from your data.
 
 ### money
 
@@ -321,10 +324,10 @@ function OrderDetails() {
           meta: {
             badgeVariantMap: {
               draft: "neutral",
-              pending: "outline-warning",
-              shipped: "outline-success",
+              pending: "subtle-warning",
+              shipped: "subtle-success",
               delivered: "success",
-              cancelled: "outline-error",
+              cancelled: "subtle-error",
             },
           },
         },

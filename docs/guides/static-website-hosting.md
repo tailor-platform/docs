@@ -54,7 +54,7 @@ export default defineTailorConfig({
   app: {
     name: "my-app",
     // Add static website URL to CORS
-    cors: ["https://my-spa-{WORKSPACE_HASH}.erp.dev"],
+    cors: ["https://my-spa-{WORKSPACE_HASH}.web.erp.dev"],
     subgraphs: [
       /* ... */
     ],
@@ -62,4 +62,4 @@ export default defineTailorConfig({
 });
 ```
 
-The static website URL format is: `https://{static-website-name}-{WORKSPACE_HASH}.erp.dev`
+The static website URL format is: `https://{static-website-name}-{WORKSPACE_HASH}.web.erp.dev`
