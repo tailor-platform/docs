@@ -1,14 +1,15 @@
 ---
 doc_type: guide
+preview: true
 ---
 
-# Integrate Claude and Claude Code with Tailor Platform
+# Integrate Claude and Claude Code with Tailor Platform <PreviewTag />
 
 ## Overview
 
 Claude supports [custom connectors using remote MCP](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp), and [Claude Code](https://docs.claude.com/en/docs/claude-code) supports remote [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers via `claude mcp add`.
 
-Tailor Platform exposes a remote MCP server for each application, allowing Claude and Claude Code to execute GraphQL queries and mutations against your application's Dataplane on behalf of an authenticated user.
+Tailor Platform exposes a remote MCP server for each application (currently in preview), allowing Claude and Claude Code to execute GraphQL queries and mutations against your application's Dataplane on behalf of an authenticated user.
 
 By registering your Tailor PF app as a remote MCP server in Claude or Claude Code, you can let them read and write your application data through the same OAuth2-authenticated GraphQL API used by your other clients.
 
