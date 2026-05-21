@@ -12,7 +12,7 @@ This automated synchronization eliminates manual data entry and reduces errors, 
 
 ## What you'll learn
 
-In this guide, you'll learn how to integrate Tailor Platform with Shopify, QuickBooks, ShipStation, Loop, Claude and Claude Code.
+In this guide, you'll learn how to integrate Tailor Platform with Shopify, QuickBooks, ShipStation, Loop, Claude, and Claude Code.
 
 - [Shopify using third-party integration tools](/guides/integration/pipedream-shopify) like [Zapier](https://zapier.com/) or [Pipedream](https://pipedream.com/)
 - [Shopify through direct integration](/guides/integration/shopify) using triggers
