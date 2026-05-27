@@ -19,7 +19,7 @@ export const navItemOrder: Record<string, string[]> = {
     "develop-from-scratch",
   ],
   sdk: ["quickstart", "cli", "services", "generator"],
-  reference: ["api", "platform", "concepts", "infrastructure"],
+  reference: ["api", "platform", "concepts", "infrastructure", "character-encodings", "security"],
   "getting-started": ["quickstart", "core-concepts", "console"],
   "app-shell": [
     "introduction",
@@ -77,6 +77,7 @@ export const excludedSections: string[] = ["public"];
 export const customTitles: Record<string, string> = {
   "app-shell": "AppShell",
   "wait-resolve": "Wait / Resolve",
+  index: "Overview",
 };
 
 // Define custom ordering for sidebar items within sections
