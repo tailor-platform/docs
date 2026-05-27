@@ -225,7 +225,7 @@ A column definition passed to `useDataTable`. `Column<TRow>` is a discriminated 
 | `width`    | `number`                   | Fixed column width in pixels. Optional.                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `align`    | `"left" \| "right"`        | Horizontal alignment. Defaults to `"right"` for `type: "number"` and `type: "money"`; `"left"` otherwise. Pass `"left"` to opt a numeric column out.                                                                                                                                                                                                                                                                                                                                          |
 | `truncate` | `boolean`                  | Truncate overflowing text with an ellipsis. Wires up an app-shell `<Tooltip>` automatically when the resolved cell value is a string or number — resolved via `accessor` first, then `row[col.id]` as a fallback — so hovering the cell reveals the full value. With `inferColumns`, no explicit `accessor` is needed because `id` is pinned to the field name. Requires another column to anchor the row width (`width` on a neighbor, or a fixed-size column like selection / row actions). |
-| `accessor` | _(narrowed per `type`)_    | Extracts the raw value. The return type is narrowed per `type` branch — returning an array or a plain object is a compile error on a typed column. Untyped columns (`type` omitted) retain `unknown`. `null` and `undefined` are always allowed.                                                                                                                                                                                                                                              |
+| `accessor` | _(narrowed per `type`)_    | Extracts the raw value. The return type is narrowed per `type` branch — returning an array is a compile error on all typed columns except `badge`, and returning a plain object is a compile error on all typed columns. Untyped columns (`type` omitted) retain `unknown`. `null` and `undefined` are always allowed.                                                                                                                                                                        |
 | `sort`     | `SortConfig`               | Sort configuration. When set, the column header becomes clickable (Asc → Desc → off).                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `filter`   | `FilterConfig`             | Filter configuration. When set, the column appears as an option in `DataTable.Filters`.                                                                                                                                                                                                                                                                                                                                                                                                       |
 
@@ -254,14 +254,14 @@ column({
 });
 ```
 
-| `type`   | Accessor return type                                         | Value handling                                    | Options interface                                                                                                          |
-| -------- | ------------------------------------------------------------ | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `text`   | `string \| number \| boolean \| bigint \| null \| undefined` | `String(value)` — falls back to `—` when nullish. | _(no options)_                                                                                                             |
-| `number` | `number \| null \| undefined`                                | `Intl.NumberFormat`. `—` for nullish / NaN.       | `NumberCellOptions`: `minDecimals`, `maxDecimals`, `locale`                                                                |
-| `money`  | `number \| null \| undefined`                                | `Intl.NumberFormat` currency. `—` for nullish.    | `MoneyCellOptions<TRow>`: `currency` (string or `(row) => string`), `maxDecimals`, `locale`                                |
-| `date`   | `Date \| string \| number \| null \| undefined`              | `Intl.DateTimeFormat`. Accepts `Date`/ISO/epoch.  | `DateCellOptions`: `dateFormat` (`"short"` \| `"long"` \| `"datetime"`), `locale`                                          |
-| `badge`  | `string \| number \| boolean \| null \| undefined`           | `<Badge>` keyed off the stringified value.        | `BadgeCellOptions`: `badgeVariantMap`, `badgeLabelMap`, `defaultBadgeVariant` (defaults to `"neutral"`)                    |
-| `link`   | `string \| number \| boolean \| null \| undefined`           | app-shell `<Link>` to `typeOptions.href(row)`.    | `LinkCellOptions<TRow>`: `href: (row) => string \| null \| undefined` (returning nullish renders plain text; **required**) |
+| `type`   | Accessor return type                                                                     | Value handling                                                            | Options interface                                                                                                             |
+| -------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `text`   | `string \| number \| boolean \| bigint \| null \| undefined`                             | `String(value)` — falls back to `—` when nullish.                         | _(no options)_                                                                                                                |
+| `number` | `number \| null \| undefined`                                                            | `Intl.NumberFormat`. `—` for nullish / NaN.                               | `NumberCellOptions`: `minDecimals`, `maxDecimals`, `locale`                                                                   |
+| `money`  | `number \| null \| undefined`                                                            | `Intl.NumberFormat` currency. `—` for nullish.                            | `MoneyCellOptions<TRow>`: `currency` (string or `(row) => string`), `maxDecimals`, `locale`                                   |
+| `date`   | `Date \| string \| number \| null \| undefined`                                          | `Intl.DateTimeFormat`. Accepts `Date`/ISO/epoch.                          | `DateCellOptions`: `dateFormat` (`"short"` \| `"long"` \| `"datetime"`), `locale`                                             |
+| `badge`  | `string \| number \| boolean \| null \| undefined \| Array<string \| number \| boolean>` | `<Badge>` keyed off the stringified value. Arrays render multiple badges. | `BadgeCellOptions`: `badgeVariantMap`, `badgeLabelMap`, `defaultBadgeVariant` (defaults to `"outline-neutral"`), `maxVisible` |
+| `link`   | `string \| number \| boolean \| null \| undefined`                                       | app-shell `<Link>` to `typeOptions.href(row)`.                            | `LinkCellOptions<TRow>`: `href: (row) => string \| null \| undefined` (returning nullish renders plain text; **required**)    |
 
 Empty values (`null`, `undefined`, `""`) render a muted `—` placeholder for every type. Use `render` for custom empty-state handling.
 
@@ -277,7 +277,7 @@ column({ type: "link", accessor: (r) => r.title });
 // ❌ Compile error — text columns reject typeOptions entirely
 column({ type: "text", accessor: (r) => r.title, typeOptions: { locale: "en-US" } });
 
-// ❌ Compile error — text/number/money/badge/link accessor cannot return an array or object
+// ❌ Compile error — text/number/money/link accessor cannot return an array or object
 column({ type: "text", accessor: (row) => row.tags }); // row.tags is string[]
 column({ type: "number", accessor: (row) => row.meta }); // row.meta is an object
 ```
@@ -382,13 +382,29 @@ column({
       processing: "Processing",
       cancelled: "Cancelled",
     },
-    defaultBadgeVariant: "neutral", // unmapped values fall back here
+    defaultBadgeVariant: "outline-neutral", // unmapped values fall back here
   },
 });
 ```
 
 - The cell value is stringified before lookup, so `accessor` can return strings, numbers, or booleans.
-- Unmapped values render with `defaultBadgeVariant` (or `"neutral"`) and the raw stringified value as the label.
+- `accessor` may also return an **array** of values — each item is rendered as a separate badge.
+- Unmapped values render with `defaultBadgeVariant` (or `"outline-neutral"`) and the raw stringified value as the label.
+
+#### Array badges with overflow
+
+Use `maxVisible` to cap the number of badges shown. Extra values are hidden behind a hover popover:
+
+```tsx
+column({
+  ...infer("tags"),
+  type: "badge",
+  typeOptions: {
+    badgeVariantMap: { Premium: "warning", Office: "outline-info" },
+    maxVisible: 2,
+  },
+});
+```
 
 ### `link` — clickable text
 
@@ -428,13 +444,13 @@ column({
 
 ### Combining `type` with `inferColumns`
 
-`inferColumns` (from `@tailor-platform/app-shell-sdk-plugin`) derives `label`, `sort`, `filter`, and a default `render` from TailorDB metadata. You can layer a `type` on top to swap the rendering without losing the inferred sort/filter config:
+`inferColumns` (from `@tailor-platform/app-shell-sdk-plugin`) derives `label`, `sort`, `filter`, and `id` from TailorDB metadata. You can layer a `type` on top to get a built-in renderer without losing the inferred sort/filter config:
 
 ```tsx
 const infer = inferColumns(tableMetadata.order);
 
 const columns = [
-  // Inferred string column — keeps the default render
+  // Inferred column — displays row[id] as plain text
   column(infer("reference")),
 
   // Inferred datetime column, swapped to a `date` cell with long format
@@ -457,7 +473,7 @@ const columns = [
 ];
 ```
 
-When you spread `...infer("field")`, drop in `accessor` if the inferred render doesn't already match what your `type` expects — built-in renderers read from `accessor` (or `row[id]`), not from the inferred `render`.
+When you spread `...infer("field")`, add `accessor` when you want a typed renderer to read a specific value — built-in renderers read from `accessor` (or `row[id]`).
 
 ## `FilterConfig`
 
