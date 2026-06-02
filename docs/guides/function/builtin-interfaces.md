@@ -235,18 +235,22 @@ const { data: base64 } = await tailordb.file.downloadAsBase64(
   recordId,
 );
 
-// Stream large files (>10MB)
-const stream = await tailordb.file.openDownloadStream(
+// Stream download large files (>10MB)
+await tailordb.file.downloadStream(
   "my-namespace",
   "Document",
   "attachment",
   recordId,
 );
-for await (const chunk of stream) {
-  if (chunk.type === "chunk") {
-    // process chunk.data
-  }
-}
+
+// Stream upload a file
+await tailordb.file.uploadStream(
+  "my-namespace",
+  "Document",
+  "attachment",
+  recordId,
+  readableStream,
+);
 
 // Get metadata without downloading
 const meta = await tailordb.file.getMetadata("my-namespace", "Document", "attachment", recordId);
@@ -264,4 +268,6 @@ await tailordb.file.delete("my-namespace", "Document", "attachment", recordId);
 | `downloadAsBase64(...)` | `Promise<FileDownloadAsBase64Response>` | Download as Base64 string. Throws if >10MB |
 | `delete(...)` | `Promise<void>` | Delete a file |
 | `getMetadata(...)` | `Promise<FileMetadata>` | Get file metadata without downloading |
-| `openDownloadStream(...)` | `Promise<FileStreamIterator>` | Stream large files in chunks |
+| `downloadStream(...)` | `Promise<FileDownloadStreamResponse>` | Download a file as a `ReadableStream` |
+| `uploadStream(..., readableStream, options?)` | `Promise<FileUploadResponse>` | Upload a file using a `ReadableStream` |
+| `openDownloadStream(...)` | `Promise<FileStreamIterator>` | **Deprecated.** Use `downloadStream()` instead |

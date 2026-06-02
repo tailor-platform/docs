@@ -667,7 +667,7 @@ const imageUploadResponse = await tailordb.file.upload(
 
 Download files to retrieve both the file content and metadata. The content is returned as a `Uint8Array`.
 
-Files larger than 10 MB cannot be downloaded using download() or downloadAsBase64(). Attempting to download a file that exceeds this limit will throw a FILE_TOO_LARGE error. For larger files, use openDownloadStream(), as shown [here](#stream-large-files).
+Files larger than 10 MB cannot be downloaded using download() or downloadAsBase64(). Attempting to download a file that exceeds this limit will throw a FILE_TOO_LARGE error. For larger files, use downloadStream(), as shown [here](#stream-large-files).
 
 ```typescript {{ title: 'Download a file' }}
 const downloadResponse = await tailordb.file.download(namespace, typeName, fieldName, recordId);
@@ -721,50 +721,38 @@ console.log(`Last Uploaded: ${metadata.lastUploadedAt}`);
 
 ### Stream Large Files
 
-For large files, use streaming download to process files efficiently without loading the entire content into memory at once. The stream uses an async iterator pattern.
+For large files, use `downloadStream()` to process files efficiently without loading the entire content into memory at once. It returns a standard Web `ReadableStream`.
 
 ```typescript {{ title: 'Stream download a large file' }}
-const stream = await tailordb.file.openDownloadStream(namespace, typeName, fieldName, recordId);
+const { body, metadata } = await tailordb.file.downloadStream(
+  namespace,
+  typeName,
+  fieldName,
+  recordId,
+);
 
-let totalBytes = 0;
-let reconstructedData: Uint8Array | null = null;
-let offset = 0;
-
-try {
-  for await (const chunkResult of stream) {
-    switch (chunkResult.type) {
-      case "metadata":
-        console.log(`Stream started: ${chunkResult.metadata.fileSize} bytes`);
-        if (chunkResult.metadata.fileSize > 0) {
-          reconstructedData = new Uint8Array(chunkResult.metadata.fileSize);
-        }
-        break;
-
-      case "chunk":
-        const chunk = new Uint8Array(chunkResult.data);
-        totalBytes += chunk.length;
-
-        if (reconstructedData) {
-          reconstructedData.set(chunk, offset);
-          offset += chunk.length;
-        }
-        break;
-
-      case "complete":
-        console.log(`Stream completed. Total: ${totalBytes} bytes`);
-        break;
-    }
-  }
-} finally {
-  await stream.close();
-}
+console.log(`Content type: ${metadata.contentType}`);
+console.log(`File size: ${metadata.fileSize} bytes`);
+// body is a ReadableStream<Uint8Array>
 ```
 
-The streaming API yields three types of results:
+### Stream Upload Files
 
-- `metadata`: First result containing file metadata
-- `chunk`: Each data chunk with `data` (ArrayBuffer) and `position` (number)
-- `complete`: Final result indicating stream completion
+Use `uploadStream()` to upload large files using a `ReadableStream`. This is useful when you want to pipe data from one source directly into TailorDB without buffering the entire content in memory.
+
+```typescript {{ title: 'Stream upload a file' }}
+const { metadata } = await tailordb.file.uploadStream(
+  namespace,
+  typeName,
+  fieldName,
+  recordId,
+  readableStream, // ReadableStream<Uint8Array | ArrayBuffer>
+);
+```
+
+::: warning Deprecated: openDownloadStream
+`openDownloadStream()` is deprecated. Use `downloadStream()` instead, which returns a standard Web `ReadableStream` rather than a custom async iterator.
+:::
 
 ### Delete Files
 
@@ -842,7 +830,23 @@ tailordb.file.getMetadata(
   recordId: string
 ): Promise<FileMetadata>
 
-tailordb.file.openDownloadStream(
+tailordb.file.downloadStream(
+  namespace: string,
+  typeName: string,
+  fieldName: string,
+  recordId: string
+): Promise<{ body: ReadableStream<Uint8Array>; metadata: DownloadMetadata }>
+
+tailordb.file.uploadStream(
+  namespace: string,
+  typeName: string,
+  fieldName: string,
+  recordId: string,
+  readableStream: ReadableStream<Uint8Array | ArrayBuffer>,
+  options?: { contentType?: string; fileSize?: number }
+): Promise<{ metadata: UploadMetadata }>
+
+tailordb.file.openDownloadStream( // deprecated — use downloadStream()
   namespace: string,
   typeName: string,
   fieldName: string,
