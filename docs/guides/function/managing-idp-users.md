@@ -28,7 +28,6 @@ interface User {
   name: string;
   disabled: boolean;
   createdAt?: string;
-  updatedAt?: string;
 }
 
 interface UserQuery {
