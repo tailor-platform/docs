@@ -14,12 +14,7 @@ Changes from Step 2: added `admin` machine user, `resolver` namespace, and `gene
 import { defineAuth, defineConfig, defineGenerators } from "@tailor-platform/sdk";
 import { user } from "./src/db/user";
 
-if (!process.env.WORKSPACE_ID) {
-  throw new Error("WORKSPACE_ID environment variable is not set");
-}
-
 export default defineConfig({
-  workspaceId: process.env.WORKSPACE_ID,
   name: "project-management",
   db: { "main-db": { files: [`./src/db/*.ts`] } },
   auth: defineAuth("main-auth", {
