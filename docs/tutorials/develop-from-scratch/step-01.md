@@ -50,12 +50,7 @@ This step establishes the foundational database schema for your project manageme
 ```typescript {{title: 'tailor.config.ts'}}
 import { defineConfig } from "@tailor-platform/sdk";
 
-if (!process.env.WORKSPACE_ID) {
-  throw new Error("WORKSPACE_ID environment variable is not set");
-}
-
 export default defineConfig({
-  workspaceId: process.env.WORKSPACE_ID,
   name: "project-management",
   db: { "main-db": { files: [`./src/db/*.ts`] } },
 });
@@ -138,10 +133,13 @@ project-management/
 
 ## Deploy
 
+The workspace is provided at deploy time, not in `tailor.config.ts`. Pass it via the `TAILOR_PLATFORM_WORKSPACE_ID` environment variable (or the `--workspace-id` flag). On the first deploy, the SDK injects a stable `id` into `tailor.config.ts` to track the application across renames — keep it under version control.
+
 ```bash
 npm install
-export WORKSPACE_ID=your-workspace-id
+export TAILOR_PLATFORM_WORKSPACE_ID=your-workspace-id
 npm run deploy
+# or: npm run deploy -- --workspace-id your-workspace-id
 ```
 
 ## Next Step
