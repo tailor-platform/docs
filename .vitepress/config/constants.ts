@@ -9,6 +9,7 @@ export const navItemOrder: Record<string, string[]> = {
     "auth",
     "application",
     "events",
+    "observability",
   ],
   tutorials: [
     "app-endpoint",
