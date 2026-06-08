@@ -20,7 +20,7 @@ Telemetry export is configured through the Tailor Terraform provider. There are 
 
 ## How it works
 
-Telemetry routing is scoped to a workspace. Each export destination you define receives the workspace's signals over OTLP (the OpenTelemetry Protocol), and you choose which signals each destination receives.
+TelemetryRouter routes signals per workspace. Each export destination you define receives the workspace's signals over OTLP (the OpenTelemetry Protocol), and you choose which signals each destination receives.
 
 - Signals are routed per workspace to every enabled export destination.
 - Traces and logs can be enabled independently per export.
