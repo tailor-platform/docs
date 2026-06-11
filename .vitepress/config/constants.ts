@@ -9,6 +9,7 @@ export const navItemOrder: Record<string, string[]> = {
     "auth",
     "application",
     "events",
+    "opentelemetry",
   ],
   tutorials: [
     "app-endpoint",
@@ -86,6 +87,18 @@ export const defaultSidebarOrder: string[] = ["overview", "quickstart"];
 
 // Section-specific overrides (only if you need different ordering for a specific section)
 export const sidebarItemOrder: Record<string, string[]> = {
+  guides: [
+    "application",
+    "events",
+    "resolver",
+    "secretmanager",
+    "static-website-hosting",
+    "opentelemetry",
+    "tailordb",
+    "executor",
+    "function",
+    "auth",
+  ],
   "setup-auth": [
     "overview",
     "setup-identity-provider",
