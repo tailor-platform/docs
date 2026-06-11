@@ -13,7 +13,7 @@ Comprehensive guides for building applications on Tailor Platform.
 - [Events](events.md) - Event types and payloads for building dynamic workflows and automations
 - [Secret Manager](secretmanager.md) - Securely manage API keys, tokens, and credentials with versioning
 - [Observability / OpenTelemetry](opentelemetry.md) - Forward platform-generated traces and logs to external backends like New Relic, Honeycomb, or Datadog
-- [Static Website Hosting](static-website-hosting.md) - Deploy single-page applications with CDN caching and access control
+- [Static Website Hosting](static-website-hosting.md) - Deploy single-page applications with CDN caching, access control, and custom domains
 
 ## Service-Specific Guides
 
