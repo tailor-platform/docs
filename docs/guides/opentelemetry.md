@@ -7,8 +7,6 @@ title: Observability / OpenTelemetry
 
 Tailor Platform automatically generates [OpenTelemetry](https://github.com/open-telemetry/opentelemetry-specification) signals — **traces** and **logs** — for the services in your workspace. By configuring a **telemetry export**, you can forward those signals to the observability backend of your choice, such as New Relic, Honeycomb, Grafana, or Datadog, without changing any application code.
 
-This is different from inspecting logs in the Tailor console: the [console](/getting-started/console/overview) lets you view pipeline execution logs inside the platform, while this guide is about **forwarding signals to an external backend** that you operate.
-
 Common use cases include:
 
 - Sending request traces from your platform services to an existing distributed tracing backend
