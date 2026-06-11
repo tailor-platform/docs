@@ -128,7 +128,7 @@ Endpoints that resolve to a private or internal host (for example RFC 1918 range
 
 ### New Relic
 
-New Relic ingests OTLP directly. Point the export at its OTLP endpoint and authenticate with a license key sent in the `api-key` header — see the [example above](#configuring-a-telemetry-export). Use the OTLP endpoint for your account's region (for example `https://otlp.nr-data.net` for US or `https://otlp.eu01.nr-data.net` for EU).
+New Relic ingests OTLP directly. Point the export at its OTLP endpoint and authenticate with a license key sent in the `api-key` header — see the [example above](#configuring-a-telemetry-export). Use the OTLP endpoint that matches your New Relic account's region (for example `https://otlp.nr-data.net` for a US account); see New Relic's documentation for the endpoint of your region.
 
 ### Honeycomb
 
@@ -157,7 +157,7 @@ resource "tailor_telemetryrouter_telemetry_export" "honeycomb" {
 }
 ```
 
-Use the endpoint for your account's region (for example `https://api.honeycomb.io` for US or `https://api.eu1.honeycomb.io` for EU).
+Use the endpoint that matches your Honeycomb account's region (for example `https://api.honeycomb.io` for a US account); see Honeycomb's documentation for the endpoint of your region.
 
 ### Routing through an OpenTelemetry Collector (Datadog)
 
