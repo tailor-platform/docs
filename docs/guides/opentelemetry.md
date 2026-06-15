@@ -13,7 +13,7 @@ Common use cases include:
 - Centralizing platform logs alongside your application logs
 - Enriching all outgoing signals with a consistent service name and deployment environment
 
-## How OTLP export works
+## How OTLP exporter works
 
 The platform collects the OpenTelemetry signals your services emit and forwards them, over OTLP (the OpenTelemetry Protocol), to each **OTLP exporter** you have configured. An OTLP exporter is the resource *you* define — it points at one backend and decides which signals that backend receives. The internal platform component that performs this routing is **TelemetryRouter**; you don't configure it directly, but it is the source of the `tailor_telemetryrouter_` prefix on the resources below.
 
@@ -25,7 +25,7 @@ flowchart TD
   B -->|OTLP| E[OTLP exporter<br/>...]
 ```
 
-You configure OTLP export through the Tailor Terraform provider. There are two resources:
+You configure OTLP exporters through the Tailor Terraform provider. There are two resources:
 
 - `tailor_telemetryrouter_otlp_exporter` — defines an export destination. A workspace may have many; each is given a `name` that is unique within that workspace.
 - `tailor_telemetryrouter_resource_attributes_config` — defines workspace-level resource attributes attached to every outgoing signal. A workspace has at most one.
@@ -36,7 +36,7 @@ A few things to keep in mind:
 - **Authentication credentials are never stored inline** — they are referenced from [Secret Manager](secretmanager.md) and resolved at send time.
 
 ::: warning Metrics
-Metric signals are not part of OTLP export today. While the `enable_metrics` field exists, the platform does not currently emit metric signals, so enabling it has no practical effect. Configure your destinations for traces and logs.
+OTLP exporters do not handle metric signals today. While the `enable_metrics` field exists, the platform does not currently emit metric signals, so enabling it has no practical effect. Configure your destinations for traces and logs.
 :::
 
 ## Configuring an OTLP exporter
