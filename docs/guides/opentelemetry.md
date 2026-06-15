@@ -5,7 +5,7 @@ title: Observability / OpenTelemetry
 
 # Observability / OpenTelemetry
 
-Tailor Platform automatically generates [OpenTelemetry](https://github.com/open-telemetry/opentelemetry-specification) signals — **traces** and **logs** — for the services in your workspace. By configuring a **telemetry export**, you can forward those signals to the observability backend of your choice, such as New Relic, Honeycomb, Grafana, or Datadog, without changing any application code.
+Tailor Platform automatically generates [OpenTelemetry](https://github.com/open-telemetry/opentelemetry-specification) signals — **traces** and **logs** — for the services in your workspace. By configuring an **OTLP exporter**, you can forward those signals to the observability backend of your choice, such as New Relic, Honeycomb, Grafana, or Datadog, without changing any application code.
 
 Common use cases include:
 
@@ -13,40 +13,40 @@ Common use cases include:
 - Centralizing platform logs alongside your application logs
 - Enriching all outgoing signals with a consistent service name and deployment environment
 
-## How telemetry export works
+## How OTLP export works
 
-The platform collects the OpenTelemetry signals your services emit and forwards them, over OTLP (the OpenTelemetry Protocol), to each **telemetry export** you have configured. A telemetry export is the resource *you* define — it points at one backend and decides which signals that backend receives. The internal platform component that performs this routing is **TelemetryRouter**; you don't configure it directly, but it is the source of the `tailor_telemetryrouter_` prefix on the resources below.
+The platform collects the OpenTelemetry signals your services emit and forwards them, over OTLP (the OpenTelemetry Protocol), to each **OTLP exporter** you have configured. An OTLP exporter is the resource *you* define — it points at one backend and decides which signals that backend receives. The internal platform component that performs this routing is **TelemetryRouter**; you don't configure it directly, but it is the source of the `tailor_telemetryrouter_` prefix on the resources below.
 
 ```mermaid
 flowchart TD
   A[Your workspace services<br/>emit OpenTelemetry signals] -->|traces / logs| B[TelemetryRouter<br/>routes your workspace's signals]
-  B -->|OTLP| C[telemetry export<br/>New Relic]
-  B -->|OTLP| D[telemetry export<br/>Honeycomb]
-  B -->|OTLP| E[telemetry export<br/>...]
+  B -->|OTLP| C[OTLP exporter<br/>New Relic]
+  B -->|OTLP| D[OTLP exporter<br/>Honeycomb]
+  B -->|OTLP| E[OTLP exporter<br/>...]
 ```
 
-You configure telemetry export through the Tailor Terraform provider. There are two resources:
+You configure OTLP export through the Tailor Terraform provider. There are two resources:
 
-- `tailor_telemetryrouter_telemetry_export` — defines an export destination. A workspace may have many; each is given a `name` that is unique within that workspace.
+- `tailor_telemetryrouter_otlp_exporter` — defines an export destination. A workspace may have many; each is given a `name` that is unique within that workspace.
 - `tailor_telemetryrouter_resource_attributes_config` — defines workspace-level resource attributes attached to every outgoing signal. A workspace has at most one.
 
 A few things to keep in mind:
 
-- **Traces and logs can be enabled independently** per export, so each destination receives only the signals you choose.
+- **Traces and logs can be enabled independently** per exporter, so each destination receives only the signals you choose.
 - **Authentication credentials are never stored inline** — they are referenced from [Secret Manager](secretmanager.md) and resolved at send time.
 
 ::: warning Metrics
-Metric signals are not part of telemetry export today. While the `enable_metrics` field exists, the platform does not currently emit metric signals, so enabling it has no practical effect. Configure your destinations for traces and logs.
+Metric signals are not part of OTLP export today. While the `enable_metrics` field exists, the platform does not currently emit metric signals, so enabling it has no practical effect. Configure your destinations for traces and logs.
 :::
 
-## Configuring a telemetry export
+## Configuring an OTLP exporter
 
-A telemetry export defines a single destination. Most OTLP-compatible backends can be targeted **directly**, with no additional infrastructure on your side.
+An OTLP exporter defines a single destination. Most OTLP-compatible backends can be targeted **directly**, with no additional infrastructure on your side.
 
 The following example forwards traces and logs to [New Relic](https://github.com/newrelic), authenticating with a license key stored in Secret Manager:
 
-```hcl {{ title: 'telemetry_export.tf' }}
-resource "tailor_telemetryrouter_telemetry_export" "newrelic" {
+```hcl {{ title: 'otlp_exporter.tf' }}
+resource "tailor_telemetryrouter_otlp_exporter" "newrelic" {
   workspace_id = tailor_workspace.example.id
 
   name     = "newrelic"
@@ -70,7 +70,7 @@ resource "tailor_telemetryrouter_telemetry_export" "newrelic" {
 
 For more backends — including ones that cannot ingest OTLP directly, such as Datadog — see [Backend examples](#backend-examples).
 
-For the full list of arguments and their constraints, refer to the [Tailor Platform Provider documentation](https://registry.terraform.io/providers/tailor-platform/tailor/latest/docs/resources/telemetryrouter_telemetry_export).
+For the full list of arguments and their constraints, refer to the [Tailor Platform Provider documentation](https://registry.terraform.io/providers/tailor-platform/tailor/latest/docs/resources/telemetryrouter_otlp_exporter).
 
 ### Authentication
 
@@ -126,14 +126,14 @@ Endpoints that resolve to a private or internal host (for example RFC 1918 range
 
 ### New Relic
 
-New Relic ingests OTLP directly. Point the export at its OTLP endpoint and authenticate with a license key sent in the `api-key` header — see the [example above](#configuring-a-telemetry-export). Use the OTLP endpoint that matches your New Relic account's region (for example `https://otlp.nr-data.net` for a US account); see New Relic's documentation for the endpoint of your region.
+New Relic ingests OTLP directly. Point the exporter at its OTLP endpoint and authenticate with a license key sent in the `api-key` header — see the [example above](#configuring-an-otlp-exporter). Use the OTLP endpoint that matches your New Relic account's region (for example `https://otlp.nr-data.net` for a US account); see New Relic's documentation for the endpoint of your region.
 
 ### Honeycomb
 
 [Honeycomb](https://github.com/honeycombio) also ingests OTLP directly. Authenticate with an API key sent in the `x-honeycomb-team` header:
 
-```hcl {{ title: 'honeycomb_export.tf' }}
-resource "tailor_telemetryrouter_telemetry_export" "honeycomb" {
+```hcl {{ title: 'honeycomb_exporter.tf' }}
+resource "tailor_telemetryrouter_otlp_exporter" "honeycomb" {
   workspace_id = tailor_workspace.example.id
 
   name     = "honeycomb"
@@ -159,13 +159,13 @@ Use the endpoint that matches your Honeycomb account's region (for example `http
 
 ### Routing through an OpenTelemetry Collector (Datadog)
 
-Datadog provides a [direct OTLP intake endpoint](https://docs.datadoghq.com/opentelemetry/setup/otlp_ingest/), but it comes with constraints — trace intake is in preview and requires requesting access, and some behavior differs from the Agent/Collector path. For a full-featured setup, a common approach is to run your own [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector) with the Datadog exporter: point your Tailor telemetry export at the collector and let it forward signals to Datadog.
+Datadog provides a [direct OTLP intake endpoint](https://docs.datadoghq.com/opentelemetry/setup/otlp_ingest/), but it comes with constraints — trace intake is in preview and requires requesting access, and some behavior differs from the Agent/Collector path. For a full-featured setup, a common approach is to run your own [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector) with the Datadog exporter: point your Tailor OTLP exporter at the collector and let it forward signals to Datadog.
 
 This collector pattern applies to any backend you'd rather reach through a collector — for processing, fan-out, or vendor-specific exporters — not just Datadog.
 
 ```mermaid
 flowchart LR
-  A[Tailor Platform<br/>telemetry export] -->|OTLP| B[Your OpenTelemetry<br/>Collector]
+  A[Tailor Platform<br/>OTLP exporter] -->|OTLP| B[Your OpenTelemetry<br/>Collector]
   B -->|datadog exporter| C[Datadog]
 ```
 
@@ -203,12 +203,12 @@ service:
 
 This collector must be reachable from Tailor over TLS at a publicly resolvable address. Terminate TLS in front of the collector (for example with a load balancer) and expose its OTLP gRPC endpoint.
 
-#### 2. Point the telemetry export at your collector
+#### 2. Point the OTLP exporter at your collector
 
-Configure the export `endpoint` to your collector's OTLP endpoint rather than Datadog directly:
+Configure the exporter `endpoint` to your collector's OTLP endpoint rather than Datadog directly:
 
-```hcl {{ title: 'datadog_export.tf' }}
-resource "tailor_telemetryrouter_telemetry_export" "datadog" {
+```hcl {{ title: 'datadog_exporter.tf' }}
+resource "tailor_telemetryrouter_otlp_exporter" "datadog" {
   workspace_id = tailor_workspace.example.id
 
   name     = "datadog-collector"
@@ -241,13 +241,13 @@ For the full list of arguments and their constraints, refer to the [Tailor Platf
 
 ## Security considerations
 
-- Prefer the `auth` block for credentials: it references secrets in [Secret Manager](secretmanager.md), so the secret values themselves are never stored in the export configuration or in Terraform state.
+- Prefer the `auth` block for credentials: it references secrets in [Secret Manager](secretmanager.md), so the secret values themselves are never stored in the exporter configuration or in Terraform state.
 - The `headers` map is marked sensitive (redacted from Terraform plan and diff output), but its values are still persisted in Terraform state. Use it only for non-secret, static headers — put credentials in the `auth` block instead.
 - Use TLS-enabled (HTTPS) endpoints so credentials and signals are encrypted in transit. Endpoints that resolve to a private or internal host are rejected.
 
 ## Best practices
 
-1. **Separate environments**: Use distinct exports (and Secret Manager vaults) per environment, and set `deployment_environment_name` accordingly.
+1. **Separate environments**: Use distinct exporters (and Secret Manager vaults) per environment, and set `deployment_environment_name` accordingly.
 2. **Enable only the signals you need**: Leave `enable_traces` / `enable_logs` off for destinations that should not receive a given signal.
 3. **Use a consistent service name prefix**: Set `service_name_prefix` so platform signals are easy to identify in your backend.
 4. **Rotate credentials**: Update the referenced secret values when rotating API keys or tokens.
