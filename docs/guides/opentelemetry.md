@@ -13,7 +13,7 @@ Common use cases include:
 - Centralizing platform logs alongside your application logs
 - Enriching all outgoing signals with a consistent service name and deployment environment
 
-## How OTLP exporter works
+## How OTLP exporters work
 
 The platform collects the OpenTelemetry signals your services emit and forwards them, over OTLP (the OpenTelemetry Protocol), to each **OTLP exporter** you have configured. An OTLP exporter is the resource *you* define — it points at one backend and decides which signals that backend receives. The internal platform component that performs this routing is **TelemetryRouter**; you don't configure it directly, but it is the source of the `tailor_telemetryrouter_` prefix on the resources below.
 
@@ -36,7 +36,7 @@ A few things to keep in mind:
 - **Authentication credentials are never stored inline** — they are referenced from [Secret Manager](secretmanager.md) and resolved at send time.
 
 ::: warning Metrics
-OTLP exporters do not handle metric signals today. While the `enable_metrics` field exists, the platform does not currently emit metric signals, so enabling it has no practical effect. Configure your destinations for traces and logs.
+Tailor does not export metric signals through OTLP exporters today. While the `enable_metrics` field exists, the platform does not currently emit metric signals, so enabling it has no practical effect. Configure your destinations for traces and logs.
 :::
 
 ## Configuring an OTLP exporter
