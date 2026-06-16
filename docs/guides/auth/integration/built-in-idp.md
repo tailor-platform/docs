@@ -328,7 +328,7 @@ The Built-in IdP supports "Sign in with Google", allowing users to authenticate 
 4. If the user does not yet exist, a new IdP user is automatically created using the Google account's email address (without a password)
 5. The user is signed in and redirected to the application
 
-During login, the Google account's profile (such as `picture`, `name`, `given_name`, `family_name`, and `locale`) is forwarded to the [`beforeLogin` hook](/guides/auth/hook#federated-identity-claims) on `claims.federated_identity`. Use it to populate your user record from the provider's profile.
+If you configure a [`beforeLogin` hook](/guides/auth/hook#federated-identity-claims), the Google account's profile (such as `picture`, `name`, `given_name`, `family_name`, and `locale`) is available to it on `claims.federated_identity`, so you can populate your user record from the provider's profile.
 
 :::tip
 Users created via Google OAuth do not have a password set. They can only sign in using Google. To enable password-based login for these users, use the `_sendPasswordResetEmail` mutation to set an initial password.
@@ -381,7 +381,7 @@ The Built-in IdP supports "Sign in with Microsoft", allowing users to authentica
 4. If the user does not yet exist, a new IdP user is automatically created using the Microsoft account's preferred username (UPN) (without a password)
 5. The user is signed in and redirected to the application
 
-During login, the Microsoft account's profile (such as `name`, `given_name`, and `family_name`) is forwarded to the [`beforeLogin` hook](/guides/auth/hook#federated-identity-claims) on `claims.federated_identity`. Microsoft does not issue `picture`.
+If you configure a [`beforeLogin` hook](/guides/auth/hook#federated-identity-claims), the Microsoft account's profile (such as `name`, `given_name`, and `family_name`) is available to it on `claims.federated_identity`. Microsoft does not issue `picture`.
 
 :::tip
 Users created via Microsoft OAuth do not have a password set. They can only sign in using Microsoft.
