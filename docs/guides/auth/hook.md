@@ -129,10 +129,6 @@ hooks: {
 `claims.federated_identity` is a login-flow signal available only inside the `beforeLogin` hook. It is not part of the app-facing session token. Persist whatever your app needs into your own TailorDB type during the hook.
 :::
 
-:::warning
-`federated_identity` is populated on a user's next federated login. Profiles for users who logged in before this feature are not backfilled, because the upstream claims were never stored.
-:::
-
 ## Example: JIT User Provisioning
 
 The following example configures a `beforeLogin` hook inline in `defineAuth` that creates a user record in TailorDB when a user logs in for the first time:
