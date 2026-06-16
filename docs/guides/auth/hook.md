@@ -31,7 +31,7 @@ sequenceDiagram
 
   User->>+IdP: Authenticate
   IdP->>-Auth: Authentication success (claims)
-  Auth->>+Hook: beforeLogin(claims, idpConfigName)
+  Auth->>+Hook: beforeLogin({ claims, idpConfigName, env })
   Hook->>DB: Custom logic (e.g., create user)
   DB->>Hook: Result
   Hook->>-Auth: Success / Error
@@ -101,7 +101,7 @@ The hook handler receives the following arguments:
 
 When a user signs in through a [Built-in IdP](/guides/auth/integration/built-in-idp) OAuth provider (Google or Microsoft), the upstream provider's profile is forwarded to the hook on `claims.federated_identity`. A common use is to populate the user record from the provider's profile during [JIT provisioning](#example-jit-user-provisioning).
 
-`claims.federated_identity` is `undefined` for password logins, so guard before reading it.
+`claims.federated_identity` is `undefined` for any non-federated login (for example, password logins or external IdP flows), so guard before reading it.
 
 | Field        | Type                       | Description                                                                                                                                                                            |
 | ------------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
