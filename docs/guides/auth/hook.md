@@ -95,6 +95,7 @@ The hook handler receives the following arguments:
 | ----------------- | ------ | ------------------------------------------------------------------ |
 | **claims**        | object | The claims returned by the Identity Provider (e.g., email, name). For Built-in IdP federated logins, also carries [`federated_identity`](#federated-identity-claims). |
 | **idpConfigName** | string | The name of the IdP configuration that authenticated the user.     |
+| **env**           | object | Environment variables defined in `defineConfig({ env })` (the same values available via `context.env` in resolvers). |
 
 ## Federated Identity Claims
 
