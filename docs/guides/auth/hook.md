@@ -93,8 +93,44 @@ The hook handler receives the following arguments:
 
 | Argument          | Type   | Description                                                        |
 | ----------------- | ------ | ------------------------------------------------------------------ |
-| **claims**        | object | The claims returned by the Identity Provider (e.g., email, name).  |
+| **claims**        | object | The claims returned by the Identity Provider (e.g., email, name). For Built-in IdP federated logins, also carries [`federated_identity`](#federated-identity-claims). |
 | **idpConfigName** | string | The name of the IdP configuration that authenticated the user.     |
+
+## Federated Identity Claims
+
+When a user signs in through a [Built-in IdP](/guides/auth/integration/built-in-idp) OAuth provider (Google or Microsoft), the upstream provider's profile is forwarded to the hook on `claims.federated_identity`. A common use is to populate the user record from the provider's profile during [JIT provisioning](#example-jit-user-provisioning).
+
+`claims.federated_identity` is `undefined` for password logins, so guard before reading it.
+
+| Field        | Type                       | Description                                                                                                                                                                            |
+| ------------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **provider** | `"google" \| "microsoft"`  | The upstream OAuth provider that federated the login.                                                                                                                                |
+| **claims**   | object                     | Profile claims from the provider's ID token. Commonly present claims (`name`, `given_name`, `family_name`, `picture`, `locale`) are available; any other claim the provider issues is forwarded as-is. |
+
+Claim availability varies by provider. For example, Microsoft does not issue `picture`.
+
+```typescript
+hooks: {
+  beforeLogin: {
+    handler: async ({ claims }) => {
+      const federated = claims.federated_identity;
+      if (federated?.provider === "google") {
+        // Populate the user record from the upstream profile
+        const avatarUrl = federated.claims.picture;
+      }
+    },
+    invoker: "hook-invoker",
+  },
+}
+```
+
+:::tip
+`claims.federated_identity` is a login-flow signal available only inside the `beforeLogin` hook. It is not part of the app-facing session token. Persist whatever your app needs into your own TailorDB type during the hook.
+:::
+
+:::warning
+`federated_identity` is populated on a user's next federated login. Profiles for users who logged in before this feature are not backfilled, because the upstream claims were never stored.
+:::
 
 ## Example: JIT User Provisioning
 
