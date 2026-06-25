@@ -32,6 +32,8 @@ The following table shows all available hook properties and their scripting lang
 | `create_expr` | [CEL](/reference/api/cel-scripting)       | Record creation | Triggered when a new record is created. You can use `_value` to refer to the current field value and `_value.abc` to refer to the specific field      |
 | `update_expr` | [CEL](/reference/api/cel-scripting)       | Record update   | Triggered when the target record is updated. You can use `_value` to refer to the current field value and `_value.abc` to refer to the specific field |
 
+On update, hooks can additionally read what the user sent in this request and the record's previous value — see [Accessing this request's input and the previous value](#accessing-this-requests-input-and-the-previous-value).
+
 ## Examples
 
 ### JavaScript
@@ -135,6 +137,49 @@ export const order = db.type("Order", {
     description = "Order quantity of a certain product"
     hooks = {
       create = "_value != null ? _value : 2"
+    }
+  }
+```
+
+## Accessing this request's input and the previous value
+
+`_value` and `_data` always hold the *merged* state — the existing record overlaid with the user's input. On update this makes it impossible to tell, from `_value`/`_data` alone, which fields the user actually sent in this request, or what a field held before the operation.
+
+To distinguish them, hooks expose the raw request input and the pre-operation value as additional variables:
+
+| Variable          | Scripting language | Availability                      | Description                                                                       |
+| ----------------- | ------------------ | --------------------------------- | --------------------------------------------------------------------------------- |
+| `_newValue`       | JavaScript / CEL   | create and update                 | The raw user input for this field, before merge / default / hook application       |
+| `_oldValue`       | JavaScript / CEL   | update only (`null` on create)    | This field's value before the operation                                           |
+| `_newData.{field}`| CEL only           | create and update                 | A sibling field's raw user input (mirrors `_value.{field}`)                       |
+| `_oldData.{field}`| CEL only           | update only (`null` on create)    | A sibling field's value before the operation                                      |
+
+`_value` / `_data` are unchanged and stay the merged state. `_newValue` is strictly what the user sent this request, so `_value` and `_newValue` can differ (for example, when a field is omitted, `_value` carries the existing value while `_newValue` is `null`).
+
+### Example: keep the maximum value ever stored (update)
+
+`_oldValue` is the value before this update, `_newValue` is the incoming input. This keeps `highWaterMark` monotonically increasing:
+
+```sh {{ title: "metric.tf"}}
+  highWaterMark = {
+    type        = "integer"
+    description = "Highest value ever submitted"
+    hooks = {
+      update = "_oldValue == null ? _newValue : Math.max(_oldValue, _newValue)"
+    }
+  }
+```
+
+### Example: detect whether a sibling field changed (update, CEL)
+
+CEL hooks can read sibling fields of the request input and the previous record via `_newData.{field}` / `_oldData.{field}`:
+
+```sh {{ title: "order.tf"}}
+  priceChanged = {
+    type        = "boolean"
+    description = "Whether price changed in this update"
+    hooks = {
+      update_expr = "_newData.price != _oldData.price"
     }
   }
 ```
