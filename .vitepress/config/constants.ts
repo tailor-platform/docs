@@ -10,6 +10,7 @@ export const navItemOrder: Record<string, string[]> = {
     "application",
     "events",
     "opentelemetry",
+    "ai-gateway",
   ],
   tutorials: [
     "app-endpoint",
@@ -79,6 +80,8 @@ export const customTitles: Record<string, string> = {
   "app-shell": "AppShell",
   "wait-resolve": "Wait / Resolve",
   index: "Overview",
+  "ai-gateway": "AI Gateway",
+  aigateway: "AI Gateway",
 };
 
 // Define custom ordering for sidebar items within sections
@@ -98,6 +101,7 @@ export const sidebarItemOrder: Record<string, string[]> = {
     "executor",
     "function",
     "auth",
+    "ai-gateway",
   ],
   "setup-auth": [
     "overview",
