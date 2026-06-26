@@ -28,6 +28,8 @@ interface User {
   name: string;
   disabled: boolean;
   createdAt?: string;
+  mfaEnrolled: boolean;
+  mfaFactorIds: string[];
 }
 
 interface UserQuery {
@@ -68,6 +70,11 @@ interface SendPasswordResetEmailInput {
   subject?: string;
 }
 
+interface UnenrollMfaInput {
+  userId: string;
+  mfaFactorId: string;
+}
+
 class Client {
   constructor(config: ClientConfig);
   users(options?: ListUsersOptions): Promise<ListUsersResponse>;
@@ -77,6 +84,7 @@ class Client {
   updateUser(input: UpdateUserInput): Promise<User>;
   deleteUser(userId: string): Promise<boolean>;
   sendPasswordResetEmail(input: SendPasswordResetEmailInput): Promise<boolean>;
+  unenrollMfa(input: UnenrollMfaInput): Promise<boolean>;
 }
 ```
 
@@ -328,6 +336,36 @@ export default async (args) => {
 :::tip
 Password reset emails are sent from `no-reply@idp.erp.dev`.
 :::
+
+### Unenroll MFA Factor
+
+The `unenrollMfa` method removes a single MFA factor from a user, for example when a user has lost their authenticator device. Use a value from `User.mfaFactorIds` for `mfaFactorId`. The operation is subject to the namespace's `unenrollMfa` permission policy.
+
+```js
+export default async (args) => {
+  const idpClient = new tailor.idp.Client({ namespace: args.namespaceName });
+
+  const user = await idpClient.user(args.userId);
+  if (!user.mfaEnrolled) {
+    return { success: false, reason: "User has no enrolled MFA factor" };
+  }
+
+  await Promise.all(
+    user.mfaFactorIds.map((mfaFactorId) =>
+      idpClient.unenrollMfa({ userId: user.id, mfaFactorId }),
+    ),
+  );
+
+  return { success: true };
+};
+```
+
+**Input fields:**
+
+- `userId` (string, required) — The ID of the user whose factor will be unenrolled.
+- `mfaFactorId` (string, required) — The ID of the factor to unenroll. Factor IDs are returned on the user record as `mfaFactorIds`.
+
+This method is available only when the IdP namespace has `enableMfa: true`. See [Multi-Factor Authentication (TOTP)](/guides/auth/integration/built-in-idp#multi-factor-authentication-totp) for the full configuration.
 
 ## Related Documentation
 
