@@ -339,7 +339,7 @@ Password reset emails are sent from `no-reply@idp.erp.dev`.
 
 ### Unenroll MFA Factor
 
-The `unenrollMfa` method removes a single MFA factor from a user, for example when a user has lost their authenticator device. Use a value from `User.mfaFactorIds` for `mfaFactorId`. The operation is subject to the namespace's `unenrollMfa` permission policy.
+The `unenrollMfa` method removes a single MFA factor from a user, for example when a user has lost their authenticator device. Use a value from `User.mfaFactorIds` for `mfaFactorId`. The operation is subject to the namespace's `unenrollMfa` permission policy and additionally requires read access to the target user (the same `read` policy that governs `user` / `userByName`); a namespace that denies `read` will reject `unenrollMfa` as well.
 
 ```js
 export default async (args) => {

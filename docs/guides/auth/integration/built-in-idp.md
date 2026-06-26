@@ -562,7 +562,7 @@ const idp = defineIdp("builtin-idp", {
 **Configuration options (inside `userAuthPolicy`):**
 
 - `enableMfa` (boolean) — Make TOTP MFA available for users in this namespace. Defaults to `false`. When `true`, the IdP exposes the MFA settings page and the `_requestMfaSettingsUrl` / `_unenrollMfa` GraphQL operations.
-- `requireMfa` (boolean) — Force password-authenticated users to enroll and pass an MFA challenge on every sign-in. Defaults to `false`. Users who have not yet enrolled cannot sign in until they complete enrollment via the MFA settings page.
+- `requireMfa` (boolean) — Force password-authenticated users to enroll and pass an MFA challenge on every sign-in. Defaults to `false`. Unenrolled users are enrolled inline on the IdP sign-in page (see the **Mandatory enrollment during sign-in** flow above); the application does not need to call `_requestMfaSettingsUrl` to bootstrap enrollment.
 - `allowedReturnOrigins` (string[]) — Origins the IdP self-service pages (such as `/mfa/settings`) are allowed to redirect back to. Each entry is either a literal origin (`https://app.example.com`, scheme + host + optional port, no path/query/fragment) or a static-website placeholder `<name>:url` (e.g. `website.url`) that the CLI resolves to the deployed website's URL at apply time. Required when `enableMfa` is `true`. Up to 50 entries.
 - `mfaIssuer` (string, optional) — Label shown next to the user account in authenticator apps. Up to 64 characters. Falls back to `"Tailor Platform IdP"` when empty.
 
