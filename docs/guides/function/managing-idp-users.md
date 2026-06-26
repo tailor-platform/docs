@@ -346,8 +346,11 @@ To remove one specific factor:
 ```js
 export default async (args) => {
   const idpClient = new tailor.idp.Client({ namespace: args.namespaceName });
-  await idpClient.unenrollMfa({ userId: args.userId, mfaFactorId: args.mfaFactorId });
-  return { success: true };
+  const success = await idpClient.unenrollMfa({
+    userId: args.userId,
+    mfaFactorId: args.mfaFactorId,
+  });
+  return { success };
 };
 ```
 
@@ -362,13 +365,13 @@ export default async (args) => {
     return { success: false, reason: "User has no enrolled MFA factors" };
   }
 
-  await Promise.all(
+  const results = await Promise.all(
     user.mfaFactorIds.map((mfaFactorId) =>
       idpClient.unenrollMfa({ userId: user.id, mfaFactorId }),
     ),
   );
 
-  return { success: true };
+  return { success: results.every(Boolean) };
 };
 ```
 
