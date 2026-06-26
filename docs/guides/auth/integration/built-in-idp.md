@@ -533,8 +533,7 @@ The IdP sign-in page handles enrollment inline — no application code is needed
 **Configuration:**
 
 ```typescript
-import { defineConfig, defineIdp, defineAuth, defineStaticWebSite } from "@tailor-platform/sdk";
-import { user } from "./tailordb/user";
+import { defineIdp, defineStaticWebSite } from "@tailor-platform/sdk";
 
 const website = defineStaticWebSite("my-frontend", { description: "App frontend" });
 

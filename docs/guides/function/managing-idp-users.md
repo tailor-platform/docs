@@ -339,7 +339,19 @@ Password reset emails are sent from `no-reply@idp.erp.dev`.
 
 ### Unenroll MFA Factor
 
-The `unenrollMfa` method removes a single MFA factor from a user, for example when a user has lost their authenticator device. Use a value from `User.mfaFactorIds` for `mfaFactorId`. The operation is subject to the namespace's `unenrollMfa` permission policy and additionally requires read access to the target user (the same `read` policy that governs `user` / `userByName`); a namespace that denies `read` will reject `unenrollMfa` as well.
+The `unenrollMfa` method removes a single MFA factor from a user, identified by `mfaFactorId`. The operation is subject to the namespace's `unenrollMfa` permission policy and additionally requires read access to the target user (the same `read` policy that governs `user` / `userByName`); a namespace that denies `read` will reject `unenrollMfa` as well.
+
+To remove one specific factor:
+
+```js
+export default async (args) => {
+  const idpClient = new tailor.idp.Client({ namespace: args.namespaceName });
+  await idpClient.unenrollMfa({ userId: args.userId, mfaFactorId: args.mfaFactorId });
+  return { success: true };
+};
+```
+
+To reset a user's MFA entirely — for example when the user has lost their authenticator device and needs to re-enroll on a new one — iterate over every entry in `User.mfaFactorIds`:
 
 ```js
 export default async (args) => {
@@ -347,7 +359,7 @@ export default async (args) => {
 
   const user = await idpClient.user(args.userId);
   if (!user.mfaEnrolled) {
-    return { success: false, reason: "User has no enrolled MFA factor" };
+    return { success: false, reason: "User has no enrolled MFA factors" };
   }
 
   await Promise.all(
