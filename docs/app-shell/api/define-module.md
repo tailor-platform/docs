@@ -85,12 +85,6 @@ See [Guards Overview](guards/overview) for details.
 - **Required:** No
 - **Description:** Error boundary component for this module and its child resources. Use `useRouteError` hook to access error details.
 
-### `loader`
-
-- **Type:** `(args: LoaderFunctionArgs) => Promise<unknown> | unknown`
-- **Required:** No
-- **Description:** React Router loader function for data fetching
-
 ## Return Type
 
 ```typescript
