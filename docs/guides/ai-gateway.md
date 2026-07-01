@@ -1,8 +1,9 @@
 ---
 doc_type: guide
+preview: true
 ---
 
-# AI Gateway
+# AI Gateway <PreviewTag />
 
 AI Gateway provides a unified, OpenAI-compatible endpoint for accessing a range of large language models through a single API. The platform manages all model credentials, so you don't need to bring your own API keys. Every request is authenticated against your workspace's auth, and each gateway is isolated to its own workspace-scoped endpoint.
 
