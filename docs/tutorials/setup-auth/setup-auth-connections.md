@@ -66,8 +66,8 @@ tailor-sdk apply
 
 This creates the connection record. The connection exists but is not yet authorized (it has no tokens yet).
 
-::: info Hash-based change detection
-The SDK only re-deploys connections whose config has changed since the last `apply`. Delete `.tailor-sdk/` to force all connections to re-sync.
+::: info In-place updates
+Redeploying updates an existing connection **in-place**, preserving the OAuth token. If a change requires re-authorization (for example, the provider URL or client ID changed), `apply` will warn you to run `authconnection authorize` again.
 :::
 
 ### 3. Authorize the Connection
