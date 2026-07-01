@@ -357,25 +357,22 @@ Use descriptive names that indicate the provider and environment:
 
 ### Environment-Specific Configurations
 
-For development vs production environments, create separate connections:
+Since each environment is deployed to its own workspace from the same `tailor.config.ts`, keep a single connection definition and vary the value via a per-environment `.env` file — the same pattern used for any other environment-specific value (see [Multi-Environment Configuration](/sdk/multi-environment)):
 
 ```typescript
 connections: {
-  "google-oauth-dev": {
+  "google-oauth": {
     type: "oauth2",
     providerUrl: "https://accounts.google.com",
     issuerUrl: "https://accounts.google.com",
-    clientId: process.env.GOOGLE_CLIENT_ID_DEV!,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET_DEV!,
-  },
-  "google-oauth-prod": {
-    type: "oauth2",
-    providerUrl: "https://accounts.google.com",
-    issuerUrl: "https://accounts.google.com",
-    clientId: process.env.GOOGLE_CLIENT_ID_PROD!,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET_PROD!,
+    clientId: process.env.GOOGLE_CLIENT_ID!,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
   },
 },
+```
+
+```bash
+tailor-sdk deploy -w <production-workspace-id> --env-file .env.production
 ```
 
 ## Troubleshooting
