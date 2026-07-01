@@ -99,6 +99,12 @@ This command:
 4. Exchanges the authorization code for tokens using the client secret from your config
 5. Stores tokens securely on the server
 
+Alternatively, run `tailor-sdk authconnection open` to open the connection's page in the Console and authorize it from there — useful when you'd rather not run the CLI flow locally (for example, on a machine without browser access).
+
+```bash
+tailor-sdk authconnection open
+```
+
 Verify the connection is authorized:
 
 ```bash

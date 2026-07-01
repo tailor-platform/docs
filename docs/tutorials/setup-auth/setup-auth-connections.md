@@ -81,6 +81,12 @@ tailor-sdk authconnection authorize --name google-connection \
 
 This opens a browser tab for the OAuth2 consent screen. After you approve, the platform exchanges the authorization code for tokens and stores them securely. Your app code never handles the tokens directly.
 
+You can also run `tailor-sdk authconnection open` to authorize from the Console instead of the local CLI flow:
+
+```bash
+tailor-sdk authconnection open
+```
+
 Verify the connection is authorized:
 
 ```bash
