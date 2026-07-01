@@ -95,12 +95,12 @@ tailor-sdk authconnection list
 
 ### 4. Use the Connection Token at Runtime
 
-Use `auth.getConnectionToken()` in a resolver, executor, or workflow to retrieve the current access token:
+Use `authconnection.getConnectionToken()` from `@tailor-platform/sdk/runtime` in a resolver, executor, or workflow to retrieve the current access token:
 
 ```typescript
 // resolvers/fetch-google-profile.ts
 import { createResolver, t } from "@tailor-platform/sdk";
-import { auth } from "../tailor.config";
+import { authconnection } from "@tailor-platform/sdk/runtime";
 
 export default createResolver({
   name: "fetchGoogleProfile",
@@ -111,7 +111,7 @@ export default createResolver({
     name: t.string(),
   }),
   body: async () => {
-    const tokens = await auth.getConnectionToken("google-connection");
+    const tokens = await authconnection.getConnectionToken("google-connection");
 
     const response = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
       headers: {
@@ -123,12 +123,6 @@ export default createResolver({
     return { email: profile.email, name: profile.name };
   },
 });
-```
-
-The connection name is **type-checked**. If you rename or remove a connection from `defineAuth()`, TypeScript will flag any call sites immediately.
-
-```typescript
-// auth.getConnectionToken("unknown-connection"); // ❌ TypeScript error
 ```
 
 ### 5. Manage Connections via CLI
@@ -152,7 +146,7 @@ Here's a full executor that calls the Google Calendar API whenever a meeting rec
 ```typescript
 // executor/sync-to-google-calendar.ts
 import { createExecutor, recordCreatedTrigger } from "@tailor-platform/sdk";
-import { auth } from "../tailor.config";
+import { authconnection } from "@tailor-platform/sdk/runtime";
 import { meeting } from "../db/meeting";
 
 export default createExecutor({
@@ -162,7 +156,7 @@ export default createExecutor({
   operation: {
     kind: "function",
     body: async ({ newRecord }) => {
-      const tokens = await auth.getConnectionToken("google-connection");
+      const tokens = await authconnection.getConnectionToken("google-connection");
 
       await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
         method: "POST",

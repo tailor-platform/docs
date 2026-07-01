@@ -231,14 +231,14 @@ AuthConnection integrates seamlessly with the Function service, allowing your fu
 
 ### Basic Usage
 
-Use `auth.getConnectionToken()` — imported from `tailor.config.ts` — to retrieve the current access token. When `connections` is defined in `defineAuth()`, the connection name is type-checked and autocompleted against the defined keys:
+Use `authconnection.getConnectionToken()` from `@tailor-platform/sdk/runtime` to retrieve the current access token by connection name:
 
 ```typescript
-import { auth } from "../tailor.config";
+import { authconnection } from "@tailor-platform/sdk/runtime";
 
 export default async () => {
   // Get access token for a connection
-  const tokens = await auth.getConnectionToken("google-oauth");
+  const tokens = await authconnection.getConnectionToken("google-oauth");
 
   // Use the access token to call external APIs
   const response = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
@@ -256,20 +256,16 @@ export default async () => {
 };
 ```
 
-```typescript
-// auth.getConnectionToken("unknown-connection"); // ❌ TypeScript error
-```
-
 ### Advanced Usage with Error Handling
 
 ```typescript
-import { auth } from "../tailor.config";
+import { authconnection } from "@tailor-platform/sdk/runtime";
 
 export default async () => {
   try {
     // Get tokens for multiple connections
-    const googleTokens = await auth.getConnectionToken("google-oauth");
-    const msTokens = await auth.getConnectionToken("ms365-oauth");
+    const googleTokens = await authconnection.getConnectionToken("google-oauth");
+    const msTokens = await authconnection.getConnectionToken("ms365-oauth");
 
     // Call Google API
     const googleResponse = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
@@ -336,7 +332,7 @@ tailor-sdk authconnection list
 tailor-sdk authconnection revoke --name <connection-name>
 ```
 
-When `connections` is not defined in `defineAuth()`, `auth.getConnectionToken()` accepts any string, so you can still read tokens for CLI-managed connections at runtime — you just lose the type-checked autocompletion.
+`authconnection.getConnectionToken()` takes a plain connection name string, so it works the same way for connections managed entirely via the CLI as for connections defined in `defineAuth()`.
 
 ## Best Practices
 
@@ -413,6 +409,7 @@ tailor-sdk deploy -w <production-workspace-id> --env-file .env.production
 
 - [Setting up Auth Connections tutorial](/tutorials/setup-auth/setup-auth-connections) - Step-by-step SDK walkthrough
 - [Auth Service SDK reference](/sdk/services/auth#auth-connections) - Full auth connections API reference
+- [Runtime API](/sdk/runtime#namespaces) - `@tailor-platform/sdk/runtime` namespaces, including `authconnection`
 - [Learn about Function service](/guides/function/overview) - Understand Function runtime capabilities
 - [Secret Manager documentation](/guides/secretmanager) - Secure secret storage patterns
 - [Auth service overview](/guides/auth/overview) - Complete authentication system
