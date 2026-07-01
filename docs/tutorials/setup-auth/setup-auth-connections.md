@@ -58,16 +58,16 @@ Store `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in your `.env` file or CI se
 
 ### 2. Deploy the Connection
 
-Run `tailor-sdk apply` to register the connection with the platform:
+Run `tailor-sdk deploy` to register the connection with the platform:
 
 ```bash
-tailor-sdk apply
+tailor-sdk deploy
 ```
 
 This creates the connection record. The connection exists but is not yet authorized (it has no tokens yet).
 
 ::: info In-place updates
-Redeploying updates an existing connection **in-place**, preserving the OAuth token. If a change requires re-authorization (for example, the provider URL or client ID changed), `apply` will warn you to run `authconnection authorize` again.
+Redeploying updates an existing connection **in-place**, preserving the OAuth token. If a change requires re-authorization (for example, the provider URL or client ID changed), `deploy` will warn you to run `authconnection authorize` again.
 :::
 
 ### 3. Authorize the Connection
@@ -124,6 +124,14 @@ export default createResolver({
   },
 });
 ```
+
+The connection name is **type-checked** against the connections defined in `defineAuth()`. If you rename or remove a connection, TypeScript will flag any call sites immediately.
+
+```typescript
+// authconnection.getConnectionToken("unknown-connection"); // ❌ TypeScript error
+```
+
+Type narrowing comes from the generated `tailor.d.ts`. Run `tailor-sdk generate` (or `deploy`) after adding or renaming connections to refresh it.
 
 ### 5. Manage Connections via CLI
 

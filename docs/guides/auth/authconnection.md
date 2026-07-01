@@ -231,7 +231,7 @@ AuthConnection integrates seamlessly with the Function service, allowing your fu
 
 ### Basic Usage
 
-Use `authconnection.getConnectionToken()` from `@tailor-platform/sdk/runtime` to retrieve the current access token by connection name:
+Use `authconnection.getConnectionToken()` from `@tailor-platform/sdk/runtime` to retrieve the current access token by connection name. When `connections` is defined in `defineAuth()`, the connection name is type-checked and autocompleted against the defined keys:
 
 ```typescript
 import { authconnection } from "@tailor-platform/sdk/runtime";
@@ -255,6 +255,12 @@ export default async () => {
   return userInfo;
 };
 ```
+
+```typescript
+// authconnection.getConnectionToken("unknown-connection"); // ❌ TypeScript error
+```
+
+Type narrowing is provided by the generated `tailor.d.ts` (the `ConnectionNameRegistry` interface). Run `tailor-sdk generate` (or `deploy`) after defining new connections to refresh it. Before the first generate, or when `connections` is not defined in `defineAuth()`, `getConnectionToken()` accepts any string.
 
 ### Advanced Usage with Error Handling
 
@@ -296,22 +302,10 @@ export default async () => {
 
 ### Token Properties
 
-The `getConnectionToken()` method returns an object with the following properties:
+The `getConnectionToken()` method returns an object with the following property:
 
 <Property name="access_token" type="string">
   The OAuth2 access token for API calls
-</Property>
-
-<Property name="refresh_token" type="string">
-  The refresh token (if available from provider)
-</Property>
-
-<Property name="expires_at" type="string">
-  Token expiration timestamp in ISO format
-</Property>
-
-<Property name="token_type" type="string">
-  Token type (typically "Bearer")
 </Property>
 
 ## Managing Connections via CLI
@@ -332,7 +326,7 @@ tailor-sdk authconnection list
 tailor-sdk authconnection revoke --name <connection-name>
 ```
 
-`authconnection.getConnectionToken()` takes a plain connection name string, so it works the same way for connections managed entirely via the CLI as for connections defined in `defineAuth()`.
+For connections not defined in `defineAuth()`'s `connections`, `authconnection.getConnectionToken()` still accepts any string, so you can read tokens for CLI-managed connections the same way — you just lose the type-checked autocompletion.
 
 ## Best Practices
 
