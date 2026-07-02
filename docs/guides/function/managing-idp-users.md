@@ -293,7 +293,7 @@ The `deleteUser` method deletes a user by their ID.
 export default async (args) => {
   const idpClient = new tailor.idp.Client({ namespace: args.namespaceName });
 
-  return await idpClient.deleteUser(args.userId);
+  return idpClient.deleteUser(args.userId);
 };
 ```
 
@@ -305,7 +305,7 @@ The `sendPasswordResetEmail` method sends a password reset email to a user. This
 export default async (args) => {
   const idpClient = new tailor.idp.Client({ namespace: args.namespaceName });
 
-  return await idpClient.sendPasswordResetEmail({
+  return idpClient.sendPasswordResetEmail({
     userId: args.userId,
     redirectUri: "https://your-app.com/reset-password-complete",
     fromName: "My App Support",
@@ -334,7 +334,7 @@ To remove one specific factor:
 ```js
 export default async (args) => {
   const idpClient = new tailor.idp.Client({ namespace: args.namespaceName });
-  return await idpClient.unenrollMfa({
+  return idpClient.unenrollMfa({
     userId: args.userId,
     mfaFactorId: args.mfaFactorId,
   });
@@ -349,13 +349,17 @@ export default async (args) => {
 
   const user = await idpClient.user(args.userId);
 
-  await Promise.all(
+  const results = await Promise.all(
     user.mfaFactorIds.map((mfaFactorId) =>
       idpClient.unenrollMfa({ userId: user.id, mfaFactorId }),
     ),
   );
 
-  return { unenrolledFactorIds: user.mfaFactorIds };
+  const unenrolledFactorIds = user.mfaFactorIds.filter(
+    (_, index) => results[index],
+  );
+
+  return { unenrolledFactorIds };
 };
 ```
 
