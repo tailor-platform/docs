@@ -83,11 +83,10 @@ This creates (or updates) the connection record. A newly created connection exis
 > [!TIP]
 > Once a connection has been deployed at least once, later deploys can pass `clientSecret: ""` (an empty string) without erasing the secret already stored on the platform — an empty value is simply left out of the update, so nothing about the secret changes. This lets a CI pipeline redeploy an existing connection (for example, to pick up a `providerUrl` change) without ever having access to the real secret. The very first deploy that creates the connection still needs the real secret at least once, from wherever that value is available.
 >
-> `clientSecret` is a required field, so it must resolve to an actual string — `undefined` fails config validation before deploy even runs, regardless of how you've typed it:
+> `clientSecret` is a required field, so it must resolve to an actual string — `undefined` fails config validation before deploy even runs. Use a fallback so an unset variable still resolves to a string:
 >
 > ```typescript
-> clientSecret: process.env.GOOGLE_CLIENT_SECRET!, // ❌ throws at deploy time if the var is unset — `!` only silences TypeScript, it doesn't change the runtime value
-> clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "", // ✅ falls back to "" when the var is unset, e.g. in CI
+> clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "", // Falls back to "" when the var is unset, e.g. in CI
 > ```
 >
 > With the `.env` file itself, an explicit empty assignment (`GOOGLE_CLIENT_SECRET=`) also works, since that sets the variable to `""` rather than leaving it unset.
