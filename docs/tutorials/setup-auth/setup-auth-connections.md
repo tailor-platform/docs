@@ -4,6 +4,8 @@ Auth connections enable your application to authenticate with external OAuth2 pr
 
 - To follow along, first complete the [SDK Quickstart](../../sdk/quickstart) and [Setting up Auth](overview).
 
+This tutorial manages the connection through SDK config (`defineAuth()`), which is one of two supported approaches. You can instead create, authorize, and manage a connection entirely from the Console with `tailor-sdk authconnection open` — see [Setup Flow](/guides/auth/authconnection#setup-flow) in the AuthConnection guide for both options and why a given connection should only be managed by one of them.
+
 ## What you'll build
 
 A connection to Google's API that your resolvers and functions can use to call Google services without managing OAuth2 tokens manually.
@@ -58,16 +60,16 @@ Store `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in your `.env` file or CI se
 
 ### 2. Deploy the Connection
 
-Run `tailor-sdk apply` to register the connection with the platform:
+Run `tailor-sdk deploy` to register the connection with the platform:
 
 ```bash
-tailor-sdk apply
+tailor-sdk deploy
 ```
 
 This creates the connection record. The connection exists but is not yet authorized (it has no tokens yet).
 
-::: info Hash-based change detection
-The SDK only re-deploys connections whose config has changed since the last `apply`. Delete `.tailor-sdk/` to force all connections to re-sync.
+::: info In-place updates
+Redeploying updates an existing connection **in-place**, preserving the OAuth token. If a change requires re-authorization (for example, the provider URL or client ID changed), `deploy` will warn you to run `authconnection authorize` again.
 :::
 
 ### 3. Authorize the Connection
@@ -81,6 +83,12 @@ tailor-sdk authconnection authorize --name google-connection \
 
 This opens a browser tab for the OAuth2 consent screen. After you approve, the platform exchanges the authorization code for tokens and stores them securely. Your app code never handles the tokens directly.
 
+You can also run `tailor-sdk authconnection open` to authorize from the Console instead of the local CLI flow:
+
+```bash
+tailor-sdk authconnection open
+```
+
 Verify the connection is authorized:
 
 ```bash
@@ -89,12 +97,12 @@ tailor-sdk authconnection list
 
 ### 4. Use the Connection Token at Runtime
 
-Use `auth.getConnectionToken()` in a resolver, executor, or workflow to retrieve the current access token:
+Use `authconnection.getConnectionToken()` from `@tailor-platform/sdk/runtime` in a resolver, executor, or workflow to retrieve the current access token:
 
 ```typescript
 // resolvers/fetch-google-profile.ts
 import { createResolver, t } from "@tailor-platform/sdk";
-import { auth } from "../tailor.config";
+import { authconnection } from "@tailor-platform/sdk/runtime";
 
 export default createResolver({
   name: "fetchGoogleProfile",
@@ -105,7 +113,7 @@ export default createResolver({
     name: t.string(),
   }),
   body: async () => {
-    const tokens = await auth.getConnectionToken("google-connection");
+    const tokens = await authconnection.getConnectionToken("google-connection");
 
     const response = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
       headers: {
@@ -119,11 +127,13 @@ export default createResolver({
 });
 ```
 
-The connection name is **type-checked**. If you rename or remove a connection from `defineAuth()`, TypeScript will flag any call sites immediately.
+The connection name is **type-checked** against the connections defined in `defineAuth()`. If you rename or remove a connection, TypeScript will flag any call sites immediately.
 
 ```typescript
-// auth.getConnectionToken("unknown-connection"); // ❌ TypeScript error
+// authconnection.getConnectionToken("unknown-connection"); // ❌ TypeScript error
 ```
+
+Type narrowing comes from the generated `tailor.d.ts`. Run `tailor-sdk generate` (or `deploy`) after adding or renaming connections to refresh it.
 
 ### 5. Manage Connections via CLI
 
@@ -146,7 +156,7 @@ Here's a full executor that calls the Google Calendar API whenever a meeting rec
 ```typescript
 // executor/sync-to-google-calendar.ts
 import { createExecutor, recordCreatedTrigger } from "@tailor-platform/sdk";
-import { auth } from "../tailor.config";
+import { authconnection } from "@tailor-platform/sdk/runtime";
 import { meeting } from "../db/meeting";
 
 export default createExecutor({
@@ -156,7 +166,7 @@ export default createExecutor({
   operation: {
     kind: "function",
     body: async ({ newRecord }) => {
-      const tokens = await auth.getConnectionToken("google-connection");
+      const tokens = await authconnection.getConnectionToken("google-connection");
 
       await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
         method: "POST",
