@@ -25,12 +25,16 @@ AuthConnection provides a secure way to:
 
 ## Setup Flow
 
-Setting up an auth connection requires two steps:
+An auth connection can be managed two ways: through your **SDK config** (`defineAuth()` in `tailor.config.ts`, deployed with the rest of your app) or entirely through the **Console**. Either way, setting up a connection is two steps:
 
-1. **Configure and deploy** the connection (registers the OAuth2 provider credentials)
+1. **Create** the connection (registers the OAuth2 provider credentials)
 2. **Authorize** the connection (runs the OAuth2 flow to obtain and store tokens)
 
-### 1. Configure the Connection
+A given connection can only be managed by one side at a time — see [Choosing a Management Method](#choosing-a-management-method) below.
+
+### Option A: Manage via SDK Config
+
+#### 1. Configure the Connection
 
 Add a `connections` block to `defineAuth()` in `tailor.config.ts`:
 
@@ -76,7 +80,7 @@ This creates (or updates) the connection record. A newly created connection exis
 > [!NOTE]
 > Deploy updates existing connections **in-place**, preserving the OAuth token. If a change requires re-authorization (for example, the provider URL or client ID changed), the deploy will warn you to run `authconnection authorize` again.
 
-### 2. Authorize the Connection
+#### 2. Authorize the Connection
 
 ```bash
 tailor-sdk authconnection authorize --name google-connection \
@@ -99,7 +103,7 @@ This command:
 4. Exchanges the authorization code for tokens using the client secret from your config
 5. Stores tokens securely on the server
 
-Alternatively, run `tailor-sdk authconnection open` to open the connection's page in the Console and authorize it from there — useful when you'd rather not run the CLI flow locally (for example, on a machine without browser access).
+Alternatively, run `tailor-sdk authconnection open` to authorize the connection from the Console instead of the local CLI flow — useful on a machine without browser access:
 
 ```bash
 tailor-sdk authconnection open
@@ -110,6 +114,32 @@ Verify the connection is authorized:
 ```bash
 tailor-sdk authconnection list
 ```
+
+### Option B: Manage Entirely via the Console
+
+No `tailor.config.ts` changes are needed — create, authorize, and manage the connection directly in the Tailor Platform Console:
+
+```bash
+tailor-sdk authconnection open
+```
+
+This opens the workspace's connections settings page, where you can:
+
+1. **Create** a new connection — enter the type, provider URL, issuer URL, client ID, and client secret directly in the Console form
+2. **Authorize** it — the Console walks you through the OAuth2 consent flow in the browser
+3. View its status, re-authorize, revoke its tokens, or delete it later from the same page
+
+This is a good fit for connections you don't want tracked in git — for example, ones that differ per developer, or that only ever target a single shared workspace and don't need to travel with the rest of your app's config.
+
+### Choosing a Management Method
+
+A connection name is owned by exactly one side at a time — the same connection cannot be managed by both the Console and your SDK config simultaneously:
+
+- A connection created via the Console (Option B) carries no SDK ownership label. `tailor-sdk deploy` leaves it completely untouched as long as it isn't also declared in `connections`.
+- If you later add a connection with the **same name** to `defineAuth()`'s `connections` and run `deploy`, the SDK finds it already exists without an ownership label and pauses to ask whether it should take it over ("Allow tailor-sdk to manage these resources?"). Confirming adopts it into config management — from that point on, every `deploy` overwrites its fields to match your config, and removing it from `connections` deletes the connection. (`--yes` confirms automatically, which is useful for CI but means this adoption happens without a prompt.)
+- Until you confirm that handover, `deploy` refuses to proceed, so a Console-managed connection is never silently overwritten by config just because a connection with the same name appears in `tailor.config.ts`.
+
+In short: use the Console (Option B) for connections you intend to manage by hand, and SDK config (Option A) for connections you want defined, reviewed, and deployed alongside the rest of your app. Don't mix the two for the same connection name.
 
 ## Provider Configuration Examples
 
@@ -310,10 +340,10 @@ The `getConnectionToken()` method returns an object with the following property:
 
 ## Managing Connections via CLI
 
-Connections created outside `defineAuth()` — or connections you'd rather not check into config — can be managed entirely via the CLI:
+These commands work on any connection regardless of which option created it:
 
 ```bash
-# Open the connections page in the Console (recommended for creating connections/tokens)
+# Open the connections page in the Console
 tailor-sdk authconnection open
 
 # Authorize (opens browser for OAuth2 flow)
@@ -322,11 +352,16 @@ tailor-sdk authconnection authorize --name <connection-name>
 # List all connections
 tailor-sdk authconnection list
 
-# Revoke a connection
+# Revoke a connection's tokens (keeps the connection; re-authorize later)
 tailor-sdk authconnection revoke --name <connection-name>
+
+# Delete a connection entirely
+tailor-sdk authconnection delete --name <connection-name>
 ```
 
-For connections not defined in `defineAuth()`'s `connections`, `authconnection.getConnectionToken()` still accepts any string, so you can read tokens for CLI-managed connections the same way — you just lose the type-checked autocompletion.
+If a connection is declared in `defineAuth()`'s `connections` (Option A), don't `delete` it via the CLI or Console — remove it from `connections` and redeploy instead, otherwise the next `deploy` just recreates it from your config.
+
+For connections not defined in `defineAuth()`'s `connections`, `authconnection.getConnectionToken()` still accepts any string, so you can read tokens for Console-managed connections the same way — you just lose the type-checked autocompletion.
 
 ## Best Practices
 

@@ -4,6 +4,8 @@ Auth connections enable your application to authenticate with external OAuth2 pr
 
 - To follow along, first complete the [SDK Quickstart](../../sdk/quickstart) and [Setting up Auth](overview).
 
+This tutorial manages the connection through SDK config (`defineAuth()`), which is one of two supported approaches. You can instead create, authorize, and manage a connection entirely from the Console with `tailor-sdk authconnection open` — see [Setup Flow](/guides/auth/authconnection#setup-flow) in the AuthConnection guide for both options and why a given connection should only be managed by one of them.
+
 ## What you'll build
 
 A connection to Google's API that your resolvers and functions can use to call Google services without managing OAuth2 tokens manually.
