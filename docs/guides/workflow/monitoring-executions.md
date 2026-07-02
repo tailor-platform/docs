@@ -206,21 +206,15 @@ saveToDb     → Executed again
 
 ### Resuming from Code
 
-You can also resume a failed execution from your own code — for example, from a workflow job function, an executor, or a pipeline resolver — using `tailor.workflow.resumeWorkflow()`. This lets you build self-healing flows that recover from transient failures automatically, without an operator running `tailor-sdk workflow resume` or using the Tailor Console.
+You can also resume a failed execution from your own code (a workflow job function, an executor, or a pipeline resolver) using `tailor.workflow.resumeWorkflow()`. This lets you build self-healing flows that recover from transient failures automatically, without an operator running `tailor-sdk workflow resume` or using the Tailor Console.
 
 **Example:**
 
 ```javascript
 export async function main(args) {
-  try {
-    const resumedId = await tailor.workflow.resumeWorkflow(args.failedExecutionId);
-    console.log("Resumed execution:", resumedId);
-    return { success: true, resumedExecutionId: resumedId };
-  } catch (e) {
-    // e.message: "resumeWorkflow failed: ..."
-    console.error(e.message);
-    return { success: false };
-  }
+  const resumedId = await tailor.workflow.resumeWorkflow(args.failedExecutionId);
+  console.log("Resumed execution:", resumedId);
+  return { resumedExecutionId: resumedId };
 }
 ```
 
@@ -232,7 +226,7 @@ export async function main(args) {
 
 - Execution ID of the resumed execution (string)
 
-`resumeWorkflow()` resumes from the point of failure with the same cached-result behavior as the `resume` command: successful job functions are skipped and their cached results are reused. It rejects with an error (message prefixed with `resumeWorkflow failed:`) when the execution cannot be resumed, so wrap the call in `try`/`catch` when you need to handle that case.
+`resumeWorkflow()` resumes from the point of failure with the same cached-result behavior as the `resume` command, so successful job functions are skipped and their cached results are reused. It rejects with an error whose message is prefixed with `resumeWorkflow failed:` when the execution cannot be resumed. Let that error propagate to fail the calling execution, and add a `try`/`catch` only when you need to control the error or its message.
 
 ### When to Use Resume
 

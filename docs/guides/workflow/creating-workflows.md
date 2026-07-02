@@ -189,7 +189,6 @@ export function main(args) {
   });
 
   return {
-    success: true,
     orderId: validated.id,
     paymentId: payment.id,
   };
@@ -239,7 +238,7 @@ export function main(args) {
   try {
     // Risky operation
     const result = performOperation();
-    return { success: true, result };
+    return { result };
   } catch (error) {
     throw new Error(`Operation failed: ${error.message}`);
   }
