@@ -206,7 +206,7 @@ saveToDb     → Executed again
 
 ### Resuming from Code
 
-You can also resume a failed execution from your own code (a workflow job function, an executor, or a pipeline resolver) using `tailor.workflow.resumeWorkflow()`. This lets you build self-healing flows that recover from transient failures automatically, without an operator running `tailor-sdk workflow resume` or using the Tailor Console.
+You can also resume a failed or pending-retry execution from your own code (a workflow job function, an executor, or a pipeline resolver) using `tailor.workflow.resumeWorkflow()`. This lets you build self-healing flows that recover from transient failures automatically, without an operator running `tailor-sdk workflow resume` or using the Tailor Console.
 
 **Example:**
 
