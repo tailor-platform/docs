@@ -204,6 +204,30 @@ processData  → Skipped (cached)
 saveToDb     → Executed again
 ```
 
+### Resuming from Code
+
+You can also resume a failed or pending-retry execution from your own code (a workflow job function, an executor, or a pipeline resolver) using `tailor.workflow.resumeWorkflow()`. This lets you build self-healing flows that recover from transient failures automatically, without an operator running `tailor-sdk workflow resume` or using the Tailor Console.
+
+**Example:**
+
+```javascript
+export async function main(args) {
+  const resumedId = await tailor.workflow.resumeWorkflow(args.executionId);
+  console.log("Resumed execution:", resumedId);
+  return { resumedExecutionId: resumedId };
+}
+```
+
+**API Reference:**
+
+- **First argument**: Execution ID of a failed or pending-retry execution (string)
+
+**Return value:**
+
+- Execution ID of the resumed execution (string)
+
+`resumeWorkflow()` behaves like the `resume` command described above. The workflow restarts from the main function and reuses the cached results of successful job functions, so only failed or not-yet-executed jobs run again. It rejects with an error whose message is prefixed with `resumeWorkflow failed:` when the execution cannot be resumed. Let that error propagate to fail the calling execution, and add a `try`/`catch` only when you need to control the error or its message.
+
 ### When to Use Resume
 
 Resume is useful when:
