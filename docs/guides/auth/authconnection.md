@@ -81,7 +81,16 @@ This creates (or updates) the connection record. A newly created connection exis
 > Deploy updates existing connections **in-place**, preserving the OAuth token. If a change requires re-authorization (for example, the provider URL or client ID changed), the deploy will warn you to run `authconnection authorize` again.
 
 > [!TIP]
-> Once a connection has been deployed at least once, later deploys can pass `clientSecret: ""` (an empty string) without erasing the secret already stored on the platform — an empty value is simply left out of the update, so nothing about the secret changes. This lets a CI pipeline redeploy an existing connection (for example, to pick up a `providerUrl` change) without ever having access to the real secret. The very first deploy that creates the connection still needs the real secret at least once, from wherever that value is available. Set the environment variable to an explicit empty string (e.g. `GOOGLE_CLIENT_SECRET=` in CI) rather than leaving it unset — `clientSecret` is a required field, so an `undefined` value fails config validation before deploy even runs.
+> Once a connection has been deployed at least once, later deploys can pass `clientSecret: ""` (an empty string) without erasing the secret already stored on the platform — an empty value is simply left out of the update, so nothing about the secret changes. This lets a CI pipeline redeploy an existing connection (for example, to pick up a `providerUrl` change) without ever having access to the real secret. The very first deploy that creates the connection still needs the real secret at least once, from wherever that value is available.
+>
+> `clientSecret` is a required field, so it must resolve to an actual string — `undefined` fails config validation before deploy even runs, regardless of how you've typed it:
+>
+> ```typescript
+> clientSecret: process.env.GOOGLE_CLIENT_SECRET!, // ❌ throws at deploy time if the var is unset — `!` only silences TypeScript, it doesn't change the runtime value
+> clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "", // ✅ falls back to "" when the var is unset, e.g. in CI
+> ```
+>
+> With the `.env` file itself, an explicit empty assignment (`GOOGLE_CLIENT_SECRET=`) also works, since that sets the variable to `""` rather than leaving it unset.
 
 #### 2. Authorize the Connection
 
