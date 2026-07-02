@@ -212,7 +212,7 @@ You can also resume a failed execution from your own code (a workflow job functi
 
 ```javascript
 export async function main(args) {
-  const resumedId = await tailor.workflow.resumeWorkflow(args.failedExecutionId);
+  const resumedId = await tailor.workflow.resumeWorkflow(args.executionId);
   console.log("Resumed execution:", resumedId);
   return { resumedExecutionId: resumedId };
 }
@@ -226,7 +226,7 @@ export async function main(args) {
 
 - Execution ID of the resumed execution (string)
 
-`resumeWorkflow()` resumes from the point of failure with the same cached-result behavior as the `resume` command, so successful job functions are skipped and their cached results are reused. It rejects with an error whose message is prefixed with `resumeWorkflow failed:` when the execution cannot be resumed. Let that error propagate to fail the calling execution, and add a `try`/`catch` only when you need to control the error or its message.
+`resumeWorkflow()` behaves like the `resume` command described above. The workflow restarts from the main function and reuses the cached results of successful job functions, so only failed or not-yet-executed jobs run again. It rejects with an error whose message is prefixed with `resumeWorkflow failed:` when the execution cannot be resumed. Let that error propagate to fail the calling execution, and add a `try`/`catch` only when you need to control the error or its message.
 
 ### When to Use Resume
 
