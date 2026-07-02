@@ -214,7 +214,6 @@ export default async (args) => {
   });
 
   return {
-    success: true,
     userId: newUser.id,
     userName: newUser.name,
   };
@@ -238,7 +237,6 @@ export default async (args) => {
   });
 
   return {
-    success: true,
     userId: newUser.id,
     userName: newUser.name,
   };
@@ -264,7 +262,6 @@ export default async (args) => {
   });
 
   return {
-    success: true,
     userId: updatedUser.id,
     disabled: updatedUser.disabled,
   };
@@ -283,7 +280,6 @@ export default async (args) => {
   });
 
   return {
-    success: true,
     userId: updatedUser.id,
   };
 };
@@ -297,11 +293,7 @@ The `deleteUser` method deletes a user by their ID.
 export default async (args) => {
   const idpClient = new tailor.idp.Client({ namespace: args.namespaceName });
 
-  const success = await idpClient.deleteUser(args.userId);
-
-  return {
-    success: success,
-  };
+  return await idpClient.deleteUser(args.userId);
 };
 ```
 
@@ -313,16 +305,12 @@ The `sendPasswordResetEmail` method sends a password reset email to a user. This
 export default async (args) => {
   const idpClient = new tailor.idp.Client({ namespace: args.namespaceName });
 
-  const success = await idpClient.sendPasswordResetEmail({
+  return await idpClient.sendPasswordResetEmail({
     userId: args.userId,
     redirectUri: "https://your-app.com/reset-password-complete",
     fromName: "My App Support",
     subject: "Password Reset for Your My App Account",
   });
-
-  return {
-    success: success,
-  };
 };
 ```
 
@@ -346,11 +334,10 @@ To remove one specific factor:
 ```js
 export default async (args) => {
   const idpClient = new tailor.idp.Client({ namespace: args.namespaceName });
-  const success = await idpClient.unenrollMfa({
+  return await idpClient.unenrollMfa({
     userId: args.userId,
     mfaFactorId: args.mfaFactorId,
   });
-  return { success };
 };
 ```
 
@@ -361,17 +348,14 @@ export default async (args) => {
   const idpClient = new tailor.idp.Client({ namespace: args.namespaceName });
 
   const user = await idpClient.user(args.userId);
-  if (!user.mfaEnrolled) {
-    return { success: false, reason: "User has no enrolled MFA factors" };
-  }
 
-  const results = await Promise.all(
+  await Promise.all(
     user.mfaFactorIds.map((mfaFactorId) =>
       idpClient.unenrollMfa({ userId: user.id, mfaFactorId }),
     ),
   );
 
-  return { success: results.every(Boolean) };
+  return { unenrolledFactorIds: user.mfaFactorIds };
 };
 ```
 
