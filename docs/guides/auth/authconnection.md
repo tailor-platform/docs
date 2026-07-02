@@ -359,7 +359,7 @@ tailor-sdk authconnection revoke --name <connection-name>
 tailor-sdk authconnection delete --name <connection-name>
 ```
 
-If a connection is declared in `defineAuth()`'s `connections` (Option A), don't `delete` it via the CLI or Console — remove it from `connections` and redeploy instead, otherwise the next `deploy` just recreates it from your config.
+To delete a connection managed via SDK config (Option A), remove it from `connections` and redeploy instead of using `authconnection delete` directly — manage each connection through one method only, as described above.
 
 For connections not defined in `defineAuth()`'s `connections`, `authconnection.getConnectionToken()` still accepts any string, so you can read tokens for Console-managed connections the same way — you just lose the type-checked autocompletion.
 
