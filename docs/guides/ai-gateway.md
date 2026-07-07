@@ -126,6 +126,90 @@ const completion = await client.chat.completions.create({
 
 The Responses API (`/v1/responses`) returns its result as an `output` array rather than the `choices[]` array used by chat completions — parse the response accordingly.
 
+## Web search & grounding
+
+Both OpenAI and Gemini models can answer with live, web-grounded information and return source citations. The tool, endpoint, and response shape differ by provider.
+
+### OpenAI
+
+Use the Responses API (`/v1/responses`) with the `web_search_preview` tool:
+
+```bash {{ title: "OpenAI web search" }}
+curl https://my-aigateway-{WORKSPACE_HASH}.ai.erp.dev/v1/responses \
+  -H "Authorization: Bearer $APP_USER_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-5",
+    "input": "Who won the most recent FIFA World Cup? Include sources.",
+    "tools": [{ "type": "web_search_preview" }]
+  }'
+```
+
+The `output` array holds one or more `web_search_call` items (the searches performed), followed by a `message` whose `output_text` carries the answer and whose `annotations` cite the sources:
+
+```json
+{
+  "output": [
+    { "type": "web_search_call", "status": "completed" },
+    {
+      "type": "message",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "…the answer…",
+          "annotations": [
+            { "type": "url_citation", "url": "https://example.com/post", "title": "Example" }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+:::warning
+Use `web_search_preview`, not the GA `web_search` tool. Through the gateway, `web_search` currently routes successfully but returns **empty `annotations`** (no citations). Until that is resolved upstream, `web_search_preview` is the tool that returns usable citations.
+:::
+
+### Gemini
+
+Gemini grounding uses the `google_search` tool on `/v1/chat/completions` (not the Responses API). Call it **without streaming** — the grounding data is only present on the final response body, not on streamed SSE chunks:
+
+```bash {{ title: "Gemini google_search" }}
+curl https://my-aigateway-{WORKSPACE_HASH}.ai.erp.dev/v1/chat/completions \
+  -H "Authorization: Bearer $APP_USER_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gemini-2.5-flash",
+    "messages": [{ "role": "user", "content": "Who won the most recent FIFA World Cup? Include sources." }],
+    "tools": [{ "type": "google_search" }]
+  }'
+```
+
+Grounding appears on `choices[].message.grounding_metadata` — the search queries the model issued and the sources it used:
+
+```json
+{
+  "choices": [
+    {
+      "message": {
+        "content": "…the answer…",
+        "grounding_metadata": {
+          "webSearchQueries": ["most recent FIFA World Cup winner"],
+          "groundingChunks": [
+            { "web": { "uri": "https://example.com/post", "title": "Example", "domain": "example.com" } }
+          ]
+        }
+      }
+    }
+  ]
+}
+```
+
+:::warning Web search sends data outside your region and compliance boundary
+When you enable web search (`web_search_preview` or `google_search`), your query and relevant request context are sent to an external web search provider — Bing for OpenAI, Google Search for Gemini — to fetch results. That data leaves your workspace's home region and falls outside its data-residency and compliance boundary (see [Model location and region restriction](#model-location-and-region-restriction)). Only enable web search for workspaces where that is acceptable.
+:::
+
 ## Calling from a Function
 
 Server-side [functions](/guides/function/overview) can call the gateway over HTTP with `fetch`. See [Sending requests from Function service](/guides/function/sending-request) for the general pattern of making outbound HTTP requests from a function.
