@@ -132,7 +132,7 @@ Both OpenAI and Gemini models can answer with live, web-grounded information and
 
 ### OpenAI
 
-Use the Responses API (`/v1/responses`) with the `web_search_preview` tool:
+Use the Responses API (`/v1/responses`) with the `web_search` tool:
 
 ```bash {{ title: "OpenAI web search" }}
 curl https://my-aigateway-{WORKSPACE_HASH}.ai.erp.dev/v1/responses \
@@ -141,7 +141,7 @@ curl https://my-aigateway-{WORKSPACE_HASH}.ai.erp.dev/v1/responses \
   -d '{
     "model": "gpt-5",
     "input": "Who won the most recent FIFA World Cup? Include sources.",
-    "tools": [{ "type": "web_search_preview" }]
+    "tools": [{ "type": "web_search" }]
   }'
 ```
 
@@ -167,8 +167,8 @@ The `output` array holds one or more `web_search_call` items (the searches perfo
 }
 ```
 
-:::warning
-Use `web_search_preview`, not the GA `web_search` tool. Through the gateway, `web_search` currently routes successfully but returns **empty `annotations`** (no citations). Until that is resolved upstream, `web_search_preview` is the tool that returns usable citations.
+:::tip
+Under the default `tool_choice: "auto"`, the model only searches when it judges a query needs it — for a fact it already knows it may answer directly, leaving `annotations` empty. To force a search (and citations), set `tool_choice: "required"`. The older `web_search_preview` tool behaves the same way; prefer the GA `web_search` tool.
 :::
 
 ### Gemini
@@ -207,7 +207,7 @@ Grounding appears on `choices[].message.grounding_metadata` — the search queri
 ```
 
 :::warning Web search sends data outside your region and compliance boundary
-When you enable web search (`web_search_preview` or `google_search`), your query and relevant request context are sent to an external web search provider — Bing for OpenAI, Google Search for Gemini — to fetch results. That data leaves your workspace's home region and falls outside its data-residency and compliance boundary (see [Model location and region restriction](#model-location-and-region-restriction)). Only enable web search for workspaces where that is acceptable.
+When you enable web search (`web_search` or `google_search`), your query and relevant request context are sent to an external web search provider — Bing for OpenAI, Google Search for Gemini — to fetch results. That data leaves your workspace's home region and falls outside its data-residency and compliance boundary (see [Model location and region restriction](#model-location-and-region-restriction)). Only enable web search for workspaces where that is acceptable.
 :::
 
 ## Calling from a Function
