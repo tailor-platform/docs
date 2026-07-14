@@ -131,7 +131,7 @@ Declare workspace-scoped execution policies with a per-key `maxConcurrentExecuti
 
 - Enforced by the **runner** at dispatch time — a separate mechanism from the scheduler-level workflow cap above. The two stack: a workflow that is allowed to start can still have its job function dispatches suspended by an execution policy.
 - Dispatches that would exceed the cap are suspended and resume automatically as slots free up.
-- A dispatch without `executionPolicyKey` is unaffected by every declared policy, but still counts against the [platform workspace-wide job function limit](/reference/platform/platform-limits#workflow-job-function-concurrency-limits).
+- A dispatch without `executionPolicyKey` is unaffected by all declared policies, but still counts against the [platform workspace-wide job function limit](/reference/platform/platform-limits#workflow-job-function-concurrency-limits).
 - User policies stack **on top of** the platform hard limits (workspace-wide 100 dispatches, per-key fallback 50 for policies without a user-defined cap). The most restrictive applicable cap wins.
 
 **Declare policies and register them on the SDK config:**

@@ -14,7 +14,7 @@ Platform limits are enforced across different services in the Tailor Platform to
 | Workflow             | Workspace Concurrent Executions | 50 executions | Max concurrent workflow executions per workspace                                | Pending executions remain in `PENDING` status until running executions drop below the cap |
 | Workflow             | Per-Workflow Concurrent Executions | 20 executions | Max concurrent executions of a single workflow                                  | Pending executions remain in `PENDING` status until running executions drop below the cap |
 | Workflow             | Workspace Concurrent Job Functions | 100 dispatches | Max concurrent job function dispatches per workspace (regardless of `executionPolicyKey`) | Dispatch is suspended and workflow moves to `PENDING_RESUME` until dispatches drop below the cap |
-| Workflow             | Per-Key Concurrent Job Functions (fallback) | 50 dispatches | Platform fallback per `executionPolicyKey`, applied only when a matching execution policy has no user-defined `maxConcurrentExecutions` | Dispatch is suspended and workflow moves to `PENDING_RESUME` until dispatches drop below the cap |
+| Workflow             | Per-Key Concurrent Job Functions (fallback) | 50 dispatches | Platform fallback per `executionPolicyKey`, applied only when a matching execution policy has no user-defined `concurrencyPolicy.maxConcurrentExecutions` | Dispatch is suspended and workflow moves to `PENDING_RESUME` until dispatches drop below the cap |
 | Executor             | Workspace Concurrent Job Function Operations | 100 executions | Max concurrently running job function operations per workspace                 | Excess executions remain pending and start automatically, oldest first, as running executions complete |
 | Function             | Memory                          | 32 MB         | Max memory available to a Function execution                                    | Execution terminated with `Memory limit exceeded` error if usage exceeds 32 MB          |
 | JobFunction          | Memory                          | 256 MB        | Max memory available to a JobFunction execution                                 | Execution terminated with `Memory limit exceeded` error if usage exceeds 256 MB         |
@@ -71,7 +71,7 @@ Separately from the scheduler-level workflow caps above, the workflow runner enf
 Two platform hard limits guard job function dispatches:
 
 - **Workspace-wide limit (100)**: Caps the total number of concurrently running job function dispatches within a single workspace. Applies to every dispatch regardless of whether `executionPolicyKey` is set.
-- **Per-key fallback limit (50)**: A safety net that only kicks in when a dispatch supplies an `executionPolicyKey` and the matching execution policy does not declare a user-defined `maxConcurrentExecutions`. Once a policy sets its own cap, that user cap replaces this fallback and the platform per-key limit is no longer consulted.
+- **Per-key fallback limit (50)**: A safety net that only kicks in when a dispatch supplies an `executionPolicyKey` and the matching execution policy does not declare a user-defined `concurrencyPolicy.maxConcurrentExecutions`. Once a policy sets its own cap, that user cap replaces this fallback and the platform per-key limit is no longer consulted.
 
 When a dispatch hits any of these caps (or a user-declared execution policy cap), the workflow is suspended to `PENDING_RESUME` and retried after a short delay (default 5s).
 
