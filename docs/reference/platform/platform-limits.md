@@ -13,6 +13,7 @@ Platform limits are enforced across different services in the Tailor Platform to
 | Recursive Call Limit | Call Depth                      | 10 levels     | Max depth for nested platform-to-platform requests (pipelines, functions, etc.) | Request rejected with BadRequest error if depth exceeds 10 levels                       |
 | Workflow             | Workspace Concurrent Executions | 50 executions | Max concurrent workflow executions per workspace                                | Pending executions remain in `PENDING` status until running executions drop below the cap |
 | Workflow             | Per-Workflow Concurrent Executions | 20 executions | Max concurrent executions of a single workflow                                  | Pending executions remain in `PENDING` status until running executions drop below the cap |
+| Executor             | Workspace Concurrent Job Function Operations | 100 executions | Max concurrently running job function operations per workspace                 | Excess executions remain pending and start automatically, oldest first, as running executions complete |
 | Function             | Memory                          | 32 MB         | Max memory available to a Function execution                                    | Execution terminated with `Memory limit exceeded` error if usage exceeds 32 MB          |
 | JobFunction          | Memory                          | 256 MB        | Max memory available to a JobFunction execution                                 | Execution terminated with `Memory limit exceeded` error if usage exceeds 256 MB         |
 | Function             | TailorDB Select Result Size     | 128 MB        | Max size of data returned from a TailorDB select query                          | Query fails if the result set exceeds 128 MB                                            |
@@ -59,6 +60,23 @@ When either limit is reached, new executions are not rejected. Instead, they rem
 - If the workspace-wide limit is reached, no new executions start in that workspace regardless of per-workflow counts.
 - If the per-workflow limit is reached for a specific workflow, other workflows in the same workspace can still start new executions (as long as the workspace-wide limit is not reached).
 
+## Executor Job Function Concurrency Limit
+
+The Tailor Platform limits the number of concurrently running Executor [job function operations](/guides/executor/job-function-operation) to **100 per workspace**. This ensures fair scheduling across workspaces: a sudden spike of executions in one workspace does not delay job executions in other workspaces.
+
+### How It Works
+
+The limit applies to job function operations only, regardless of how they were triggered (schedule, event, or incoming webhook). Other operation kinds are not counted against this limit; in particular, workflow operations are governed by the [Workflow concurrency limits](#workflow-concurrency-limits) described above.
+
+When the limit is reached, new executions are not rejected and never fail because of the limit. Instead, they remain pending and are started automatically, oldest first, as running executions complete.
+
+### Behavior
+
+- Executions above the limit are queued, not dropped — every execution eventually runs.
+- Queued executions start in creation order, so ordering within a workspace is preserved.
+- During a large burst, the delay before an execution starts is roughly `(queued executions ÷ 100) × average execution duration`. For example, a burst of 10,000 executions that each run for 30 seconds drains in about 50 minutes.
+- Executions triggered by different workspaces are isolated from each other: another workspace's burst does not affect your executions.
+
 ## Memory Limits
 
 The Tailor Platform enforces fixed memory limits on function executions to prevent resource exhaustion. These limits are not configurable.
@@ -91,6 +109,8 @@ When working within platform limits, consider the following best practices:
 1. **Use alternative patterns**: Consider using event-driven architectures, queuing systems, or batch processing for complex workflows that might exceed depth limits.
 
 1. **Design for workflow concurrency**: If your application triggers many workflow executions simultaneously, be aware that excess executions will queue as `PENDING`. Design your application to handle this gracefully rather than assuming immediate execution.
+
+1. **Design for job function concurrency**: Bulk operations that fan out into many job function executions (for example, a data import where each record triggers downstream executors) will be smoothed to 100 concurrent executions. Do not build integrations that depend on a fixed completion time for such bursts — chain downstream steps on completion events instead of fixed schedules.
 
 1. **Design for memory limits**: Process large datasets in batches or stream them rather than loading everything into memory at once.
 
