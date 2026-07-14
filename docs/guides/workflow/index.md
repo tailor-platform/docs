@@ -97,7 +97,7 @@ Job functions within a single workflow execute **sequentially**, not in parallel
 
 ## Concurrency Control
 
-In addition to the [platform-wide caps](/reference/platform/platform-limits#workflow-concurrency-limits) (50 per workspace, 20 per workflow), workflows can declare two independent concurrency policies. Both hold excess work in `PENDING` state rather than rejecting it, but they operate at different points in the execution lifecycle.
+In addition to the [platform-wide caps](/reference/platform/platform-limits#workflow-concurrency-limits) (50 per workspace, 20 per workflow), workflows can declare two independent concurrency policies. Neither rejects excess work, but they defer it in different ways: the workflow-level policy keeps new executions in `PENDING` at the scheduler, and the job function execution policy suspends the running workflow to `PENDING_RESUME` at dispatch time. Both resume automatically as slots free up.
 
 ### Workflow-level Concurrency Policy
 
