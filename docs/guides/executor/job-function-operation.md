@@ -81,6 +81,12 @@ createExecutor({
 | `Invoker`    | object | -                                                                               | No       | The invoker of the operation                                                                  |
 | `Variables`  | string | [JavaScript](/reference/api/js-scripting) / [CEL](/reference/api/cel-scripting) | No       | The variables to pass to the job function. Can access trigger-specific data via `args` object |
 
+## Concurrency
+
+Up to **100 job function operations run concurrently per workspace**, regardless of trigger type. Executions beyond the limit are never rejected — they are queued and start automatically, oldest first, as running executions complete. This means a large burst (for example, a bulk import fanning out into thousands of event-triggered executions) is processed at a steady rate rather than all at once, and executions may start minutes after they were triggered. Design time-sensitive integrations to react to completion events rather than assuming a fixed completion time.
+
+See [Platform Limits](/reference/platform/platform-limits#executor-job-function-concurrency-limit) for details.
+
 ## Use Cases
 
 Job functions are ideal for:
