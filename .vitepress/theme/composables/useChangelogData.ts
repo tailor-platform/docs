@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { ChangelogData, ChangelogItem } from './useChangelog'
 
-const ENDPOINT = 'https://changelog-02ym9zozpf.erp.dev/query'
+const ENDPOINT = 'https://changelog-i0d011qixh.erp.dev/query'
 
 const PAGE_SIZE = 100
 
