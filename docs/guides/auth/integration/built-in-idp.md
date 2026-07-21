@@ -328,6 +328,8 @@ The Built-in IdP supports "Sign in with Google", allowing users to authenticate 
 4. If the user does not yet exist, a new IdP user is automatically created using the Google account's email address (without a password)
 5. The user is signed in and redirected to the application
 
+If you configure a [`beforeLogin` hook](/guides/auth/hook#federated-identity-claims), the Google account's profile (such as `picture`, `name`, `given_name`, `family_name`, and `locale`) is available to it on `claims.federated_identity`, so you can populate your user record from the provider's profile.
+
 :::tip
 Users created via Google OAuth do not have a password set. They can only sign in using Google. To enable password-based login for these users, use the `_sendPasswordResetEmail` mutation to set an initial password.
 :::
@@ -378,6 +380,8 @@ The Built-in IdP supports "Sign in with Microsoft", allowing users to authentica
 3. The Built-in IdP verifies the token and checks the user's identity
 4. If the user does not yet exist, a new IdP user is automatically created using the Microsoft account's preferred username (UPN) (without a password)
 5. The user is signed in and redirected to the application
+
+If you configure a [`beforeLogin` hook](/guides/auth/hook#federated-identity-claims), the Microsoft account's profile (such as `name`, `given_name`, and `family_name`) is available to it on `claims.federated_identity`. Microsoft does not issue `picture`.
 
 :::tip
 Users created via Microsoft OAuth do not have a password set. They can only sign in using Microsoft.
@@ -501,6 +505,151 @@ export const builtinIdp = defineIdp("builtin-idp", {
 When `disable_password_auth` is enabled, existing users who previously signed in with a password will need to use Google OAuth or Microsoft OAuth instead. Ensure that all users have accounts with the configured OAuth provider and email addresses in the allowed domains before enabling this setting.
 :::
 
+### Multi-Factor Authentication (TOTP)
+
+The Built-in IdP supports time-based one-time password (TOTP) MFA. Once enabled, users can register an authenticator app (Google Authenticator, 1Password, Authy, etc.), and you can optionally require MFA for every password-based sign-in. The label shown next to the user account in the authenticator app is the value of `mfaIssuer`.
+
+There are two distinct flows:
+
+**Mandatory enrollment during sign-in (when `requireMfa: true`)**
+
+The IdP sign-in page handles enrollment inline — no application code is needed.
+
+1. The user enters their password on the IdP sign-in page as usual.
+2. If the user has no enrolled factor, the page shows a QR code, the user scans it into their authenticator app, and verifies a TOTP code.
+3. Once verified, the sign-in completes and the OIDC callback fires.
+4. On subsequent sign-ins, the page prompts only for the TOTP code.
+
+**Self-service management (any time `enableMfa: true`)**
+
+`_requestMfaSettingsUrl` issues an MFA settings page URL for the calling user. The signed-in user opens that URL to manage their own factors — add a new authenticator, remove a lost one, or opt in to MFA when `requireMfa: false`.
+
+1. Your application calls the `_requestMfaSettingsUrl` GraphQL query as the signed-in user, supplying a `returnTo` URL.
+2. The IdP validates `returnTo` against `allowedReturnOrigins` and returns the URL.
+3. The application redirects the user to that URL.
+4. The user manages their factors (enroll a new device, remove an existing one) on the settings page.
+5. The user is redirected back to `returnTo`.
+
+**Configuration:**
+
+```typescript
+import { defineIdp, defineStaticWebSite } from "@tailor-platform/sdk";
+
+const website = defineStaticWebSite("my-frontend", { description: "App frontend" });
+
+const idp = defineIdp("builtin-idp", {
+  clients: ["main-client"],
+  userAuthPolicy: {
+    enableMfa: true,
+    requireMfa: false,
+    allowedReturnOrigins: [website.url, "https://admin.example.com"],
+    mfaIssuer: "My App",
+  },
+  permission: {
+    create: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    sendPasswordResetEmail: [
+      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
+    ],
+    unenrollMfa: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+  },
+});
+```
+
+**Configuration options (inside `userAuthPolicy`):**
+
+- `enableMfa` (boolean) — Make TOTP MFA available for users in this namespace. Defaults to `false`. When `true`, the IdP exposes the MFA settings page and the `_requestMfaSettingsUrl` / `_unenrollMfa` GraphQL operations.
+- `requireMfa` (boolean) — Force password-authenticated users to enroll and pass an MFA challenge on every sign-in. Defaults to `false`. Unenrolled users are enrolled inline on the IdP sign-in page (see the **Mandatory enrollment during sign-in** flow above); the application does not need to call `_requestMfaSettingsUrl` to bootstrap enrollment.
+- `allowedReturnOrigins` (string[]) — Origins the IdP self-service pages (such as `/mfa/settings`) are allowed to redirect back to. Each entry is either a literal origin (`https://app.example.com`, scheme + host + optional port, no path/query/fragment) or a static-website placeholder `<name>:url` (e.g. `website.url`) that the CLI resolves to the deployed website's URL at apply time. Required when `enableMfa` is `true`. Up to 50 entries.
+- `mfaIssuer` (string, optional) — Label shown next to the user account in authenticator apps. Up to 64 characters. Falls back to `"Tailor Platform IdP"` when empty.
+
+**Permission option:**
+
+- `permission.unenrollMfa` — Controls who can remove an enrolled MFA factor from a user via the `_unenrollMfa` mutation. **Required when `enableMfa` is `true`.** Set `[{ conditions: [...], permit: true }]` to allow, or `[]` to deny all. Use the same operands and operators as the other permission categories. Typically restricted to administrators.
+
+**Constraints:** the following combinations are rejected at parse time.
+
+- `requireMfa: true` requires `enableMfa: true`.
+- `enableMfa: true` requires at least one entry in `allowedReturnOrigins`.
+- `enableMfa: true` requires `permission` to be defined and to include an explicit `unenrollMfa` policy.
+
+**Sign-in behavior:**
+
+- **`enableMfa: true`, `requireMfa: false`** — MFA is optional. Users opt in from their own MFA settings page (issued by `_requestMfaSettingsUrl`); once enrolled, they are challenged for TOTP on every subsequent sign-in.
+- **`enableMfa: true`, `requireMfa: true`** — MFA is mandatory for password sign-in. The IdP sign-in page enrolls unenrolled users inline before completing the sign-in, so the application does not need to call `_requestMfaSettingsUrl` to bootstrap enrollment.
+- **Social sign-in (Google / Microsoft OAuth)** — Not affected by `requireMfa`. MFA enforcement is the upstream provider's responsibility for these sessions.
+
+:::warning
+`enableMfa` cannot be combined with `disablePasswordAuth: true`. Without password authentication, the MFA settings page has no way to authenticate the user, so the IdP does not expose `_requestMfaSettingsUrl` or `_unenrollMfa` for OAuth-only namespaces.
+:::
+
+#### Issuing a per-user MFA settings page URL
+
+`_requestMfaSettingsUrl` returns an MFA settings page URL bound to the calling user. Call it from your application (typically from a "Security" / "Account" page) as the signed-in user, then redirect the browser to the returned URL:
+
+```graphql
+query RequestMfaSettingsUrl($input: _RequestMfaSettingsUrlInput!) {
+  _requestMfaSettingsUrl(input: $input) {
+    url
+  }
+}
+```
+
+Variables:
+
+```json
+{
+  "input": {
+    "returnTo": "https://app.example.com/account/security"
+  }
+}
+```
+
+The `returnTo` URL must be an absolute URL whose origin matches one of the entries in `allowedReturnOrigins` (the comparison is case-insensitive and elides default ports). The IdP redirects the user back to `returnTo` after they finish enrolling or unenrolling factors.
+
+#### Inspecting MFA enrollment state
+
+The user record exposes two MFA fields. They are read live from Identity Platform on every request (never cached in TailorDB), so they always reflect the current enrollment state.
+
+```graphql
+query GetUserMfa($userId: ID!) {
+  _user(id: $userId) {
+    id
+    name
+    mfaEnrolled
+    mfaFactorIds
+  }
+}
+```
+
+- `mfaEnrolled` (Boolean!) — `true` when the user has at least one MFA factor enrolled.
+- `mfaFactorIds` ([String!]!) — Identity Platform-issued IDs of the user's enrolled factors. Pass one of these to `_unenrollMfa` to remove a single factor.
+
+#### Removing a user's MFA factor (admin)
+
+Use `_unenrollMfa` to remove a single factor on behalf of a user (for example when a user has lost their authenticator device). The mutation is subject to the `unenrollMfa` permission policy and requires read access to the target user.
+
+```graphql
+mutation UnenrollMfa($input: _UnenrollMfaInput!) {
+  _unenrollMfa(input: $input)
+}
+```
+
+Variables:
+
+```json
+{
+  "input": {
+    "userId": "user-id-here",
+    "mfaFactorId": "factor-id-from-mfaFactorIds"
+  }
+}
+```
+
+If `requireMfa: true` and the unenrolled user has no remaining factors, that user must enroll again before their next sign-in.
+
 ### Email Configuration
 
 The Built-in IdP allows you to customize the sender name and subject line for emails sent by the IdP (such as password reset emails). You can configure namespace-level defaults using the `emailConfig` option, and optionally override them per request.
@@ -579,6 +728,7 @@ Once registered, the IdP subgraph provides the following GraphQL operations for 
 - `_users` - List IdP users with pagination and filtering
 - `_user` - Get a specific IdP user by ID
 - `_userBy` - Get a specific IdP user by ID or name
+- `_requestMfaSettingsUrl` - Request a one-time URL to the IdP-hosted MFA settings page. Available when `enableMfa` is `true`. See [Multi-Factor Authentication (TOTP)](#multi-factor-authentication-totp).
 
 **Mutation Operations:**
 
@@ -586,6 +736,7 @@ Once registered, the IdP subgraph provides the following GraphQL operations for 
 - `_updateUser` - Update an existing IdP user
 - `_deleteUser` - Delete an IdP user
 - `_sendPasswordResetEmail` - Send a password reset email to an IdP user
+- `_unenrollMfa` - Remove a single MFA factor from a user. Available when `enableMfa` is `true`. See [Multi-Factor Authentication (TOTP)](#multi-factor-authentication-totp).
 
 ### GraphQL Examples
 

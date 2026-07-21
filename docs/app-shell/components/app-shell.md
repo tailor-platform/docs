@@ -40,7 +40,7 @@ function App() {
 ### title
 
 - **Type:** `string` (optional)
-- **Description:** Application title displayed in the sidebar header
+- **Description:** Application title displayed in the sidebar header. Also used as the browser tab title suffix — AppShell keeps `document.title` in sync with the active route as `"<page> · <title>"`, where `<page>` is the current breadcrumb leaf (including any [`useOverrideBreadcrumb`](../api/use-override-breadcrumb) override). When omitted, the tab shows just the page name.
 
 ```tsx
 <AppShell title="My ERP App" modules={modules}>
@@ -59,6 +59,26 @@ import { Building } from "lucide-react";
 <AppShell title="My App" icon={<Building />} modules={modules}>
   {/* ... */}
 </AppShell>;
+```
+
+### favicon
+
+- **Type:** `string` (optional)
+- **Default:** Bundled default favicon set
+- **Description:** Browser-tab favicon href. Accepts any value valid for `<link rel="icon">` — a public-path URL (e.g. `/favicon.ico`) or a data URI. When provided, AppShell renders a single `<link rel="icon">` with this href, replacing the default favicon set.
+
+When `favicon` is omitted and the host page declares no `<link rel="icon">`, AppShell automatically injects a small default favicon set as embedded data URIs (no asset-copy step required):
+
+- 16×16 PNG tab icon
+- 32×32 PNG tab icon
+- 180×180 Apple touch icon (covers "Add to Home Screen" on iOS and Android)
+
+If the host page already declares a `<link rel="icon">`, AppShell leaves it untouched.
+
+```tsx
+<AppShell favicon="/favicon.ico" modules={modules}>
+  {/* ... */}
+</AppShell>
 ```
 
 ### basePath
@@ -160,6 +180,20 @@ const settingsResources = [
 
 Settings appear in a dropdown menu in the sidebar header, accessible via the settings icon.
 
+### defaultColorTheme
+
+- **Type:** `"light" | "dark" | "system"` (optional)
+- **Default:** `"system"`
+- **Description:** Initial color mode applied before any value is loaded from `localStorage`. Does not override a stored user preference. `"system"` follows the OS light/dark setting.
+
+```tsx
+<AppShell defaultColorTheme="light" modules={modules}>
+  {/* ... */}
+</AppShell>
+```
+
+The end user's selection (via [`AppearanceSwitcher`](appearance-switcher) or a custom toggle using [`useTheme`](../api/use-theme)) is persisted automatically and takes precedence over this prop on subsequent visits.
+
 ### locale
 
 - **Type:** `string` (optional)
@@ -175,6 +209,20 @@ Settings appear in a dropdown menu in the sidebar header, accessible via the set
 Supported locales: `en`, `ja`
 
 [Learn more about Internationalization →](../api/define-i18n-labels)
+
+### timeZone
+
+- **Type:** `string` (optional)
+- **Default:** User's local timezone
+- **Description:** IANA timezone (e.g. `"America/Los_Angeles"`) used by date/time components as the default for resolving "today" and for `ZonedDateTime` values. When omitted, date/time components fall back to the user's local timezone.
+
+```tsx
+<AppShell timeZone="America/Los_Angeles" modules={modules}>
+  {/* ... */}
+</AppShell>
+```
+
+Access the configured timezone in components using [`useTimeZone`](../api/use-time-zone).
 
 ### errorBoundary
 
@@ -410,10 +458,12 @@ function App() {
     <AppShell
       title="My ERP App"
       icon={<Building />}
+      favicon="/favicon.ico"
       basePath="/app"
       modules={modules}
       settingsResources={settingsResources}
       locale="en"
+      defaultColorTheme="system"
       errorBoundary={ErrorBoundary}
       contextData={{ currentUser }}
     >
@@ -441,3 +491,5 @@ export default App;
 - [defineModule](../api/define-module) - Define a top-level module
 - [defineResource](../api/define-resource) - Define a nested resource
 - [useAppShell](../api/use-app-shell) - Access AppShell context
+- [useResolvedLocale](../api/use-resolved-locale) - Access the full BCP-47 locale and language code
+- [useTimeZone](../api/use-time-zone) - Access the configured IANA timezone

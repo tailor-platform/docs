@@ -10,7 +10,7 @@ The `Badge` component displays status indicators, labels, and tags with multiple
 ## Import
 
 ```tsx
-import { Badge } from "@tailor-platform/app-shell";
+import { Badge, type BadgeVariant, type BadgeOptions } from "@tailor-platform/app-shell";
 ```
 
 ## Basic Usage
@@ -20,9 +20,11 @@ import { Badge } from "@tailor-platform/app-shell";
 <Badge variant="success">Success</Badge>
 <Badge variant="warning">Warning</Badge>
 <Badge variant="error">Error</Badge>
+<Badge variant="info">Info</Badge>
 <Badge variant="subtle-success">Subtle Success</Badge>
 <Badge variant="subtle-warning">Subtle Warning</Badge>
 <Badge variant="subtle-error">Subtle Error</Badge>
+<Badge variant="subtle-info">Subtle Info</Badge>
 ```
 
 ## Variants
@@ -37,9 +39,11 @@ Filled variants for high emphasis, plus subtle variants for lower-emphasis statu
 <Badge variant="warning">Pending</Badge>
 <Badge variant="error">Rejected</Badge>
 <Badge variant="neutral">Draft</Badge>
+<Badge variant="info">New</Badge>
 <Badge variant="subtle-success">Matched</Badge>
 <Badge variant="subtle-warning">Needs Attention</Badge>
 <Badge variant="subtle-error">Needs Review</Badge>
+<Badge variant="subtle-info">In Progress</Badge>
 ```
 
 ### Outline Variants with Status Dots
@@ -72,15 +76,32 @@ type BadgeVariant =
   | "warning" // Yellow
   | "error" // Red/destructive
   | "neutral" // Gray/secondary
+  | "info" // Blue
   | "subtle-success" // Low-emphasis green
   | "subtle-warning" // Low-emphasis yellow
   | "subtle-error" // Low-emphasis red/destructive
+  | "subtle-info" // Low-emphasis blue
   // Outline variants with status dots
   | "outline-success"
   | "outline-warning"
   | "outline-error"
   | "outline-info"
   | "outline-neutral";
+```
+
+### BadgeOptions
+
+Shared options used by `DataTable` and `DescriptionCard` badge fields:
+
+```typescript
+interface BadgeOptions {
+  /** Maps each value (stringified) to a Badge variant. Unmapped values use `defaultBadgeVariant`. */
+  badgeVariantMap?: Record<string, BadgeVariant>;
+  /** Maps each value (stringified) to a display label. Unmapped values render the raw value. */
+  badgeLabelMap?: Record<string, string>;
+  /** Variant used when the value is not in `badgeVariantMap`. Default: `"outline-neutral"`. */
+  defaultBadgeVariant?: BadgeVariant;
+}
 ```
 
 ## Examples
@@ -181,9 +202,11 @@ function ProductBadge({ product }: { product: Product }) {
 | `warning`        | ![Yellow badge]        | Pending, in progress, attention needed     |
 | `error`          | ![Red badge]           | Failed, rejected, critical                 |
 | `neutral`        | ![Gray badge]          | Draft, inactive, disabled                  |
+| `info`           | ![Blue badge]          | Informational, new, in-progress            |
 | `subtle-success` | ![Subtle green badge]  | Low-emphasis completed or matched statuses |
 | `subtle-warning` | ![Subtle yellow badge] | Low-emphasis pending or attention states   |
 | `subtle-error`   | ![Subtle red badge]    | Low-emphasis failures or exceptions        |
+| `subtle-info`    | ![Subtle blue badge]   | Low-emphasis informational or in-progress  |
 
 ### Outline Variants
 
@@ -200,7 +223,7 @@ function ProductBadge({ product }: { product: Product }) {
 - Use semantic color meanings consistently (green = success, red = error, etc.)
 - Don't rely solely on color to convey information
 - Consider adding icons or text labels for clarity
-- Badges receive focus when interactive (clickable)
+- Badges are non-interactive: they render with the default cursor (not a pointer) and won't suggest clickability, even when placed inside a clickable container such as a `DataTable` row with `onClickRow`
 
 ## Usage in DescriptionCard
 

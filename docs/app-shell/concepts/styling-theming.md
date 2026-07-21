@@ -5,18 +5,24 @@ description: Learn how to style your AppShell application using Tailwind CSS v4 
 
 # Styling and Theming
 
-Styling is done using Tailwind CSS v4. AppShell exports a `theme.css` file which includes Tailor's preferred color palette and CSS variables.
+Styling is done using Tailwind CSS v4. AppShell exports `@tailor-platform/app-shell/styles`, which includes the default palette and CSS variables.
 
-To configure in your AppShell application, in your global.css or top-level tailwind css file, include this theme.css
-
-Example:
+To configure your application, import AppShell styles from your global CSS or top-level Tailwind CSS file:
 
 ```css
-@import "@tailor-platform/app-shell/theme.css"; /* <-- Include this line */
 @import "tailwindcss";
+@import "@tailor-platform/app-shell/styles";
 ```
 
-After including this, your Application's Tailwind will apply the custom colors to to the utility classes.
+If you want a branded palette, import exactly one theme file after `styles`:
+
+```css
+@import "tailwindcss";
+@import "@tailor-platform/app-shell/styles";
+@import "@tailor-platform/app-shell/themes/bloom";
+```
+
+After including this, your application's Tailwind utilities will resolve against the active AppShell tokens.
 
 E.g.
 
@@ -36,6 +42,61 @@ To avoid this situation, and to ensure correct style resolution, AppShell compon
 
 This is important to note for developing in AppShell.
 
+## Color Themes (Light / Dark / System)
+
+AppShell supports three color modes: `light`, `dark`, and `system` (follows the OS setting).
+
+Set the initial mode via the `defaultColorTheme` prop on `<AppShell>`. The user's selection is persisted to `localStorage` and restored on subsequent visits:
+
+```tsx
+<AppShell defaultColorTheme="system" modules={modules}>
+  {/* ... */}
+</AppShell>
+```
+
+Use the [`useTheme`](../api/use-theme) hook to read or change the theme at runtime:
+
+```tsx
+import { useTheme } from "@tailor-platform/app-shell";
+
+function ThemeToggle() {
+  const { theme, resolvedTheme, setTheme } = useTheme();
+  return (
+    <button onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>
+      Switch to {resolvedTheme === "dark" ? "light" : "dark"} mode
+    </button>
+  );
+}
+```
+
+Drop the pre-built [`AppearanceSwitcher`](../components/appearance-switcher) component anywhere in your layout for a ready-made light/dark/system toggle:
+
+```tsx
+import { AppearanceSwitcher } from "@tailor-platform/app-shell";
+
+<AppearanceSwitcher />;
+```
+
+## Theme Palettes
+
+AppShell ships three palettes, each with light and dark variants:
+
+| Palette   | CSS import                                                     |
+| --------- | -------------------------------------------------------------- |
+| `default` | Included automatically via `@tailor-platform/app-shell/styles` |
+| `cream`   | `@tailor-platform/app-shell/themes/cream`                      |
+| `bloom`   | `@tailor-platform/app-shell/themes/bloom`                      |
+
+Select a palette by importing its CSS file — no prop needed. Import it in your global CSS **after** `@tailor-platform/app-shell/styles`:
+
+```css
+@import "@tailor-platform/app-shell/styles";
+@import "@tailor-platform/app-shell/themes/cream"; /* overrides default palette */
+@import "tailwindcss";
+```
+
+Only import one palette at a time.
+
 ## Z-Index Layering
 
 AppShell defines CSS custom properties for z-index values so you can adjust the stacking order to integrate with other libraries or overlays in your application.
@@ -53,10 +114,27 @@ These properties are defined in `:root` and can be overridden in your own CSS:
 
 ```css
 /* your-app/globals.css */
-@import "@tailor-platform/app-shell/theme.css";
 @import "tailwindcss";
+@import "@tailor-platform/app-shell/styles";
 
 :root {
   --z-popup: 100;
 }
 ```
+
+## Adding a palette
+
+Theme tokens live in `packages/core/src/assets/themes/`. Copy `_template.css` to start a new palette — it lists exactly which sections to fill in for light and dark mode.
+
+| Section               | Required?             | What to set                                                                    |
+| --------------------- | --------------------- | ------------------------------------------------------------------------------ |
+| **1. Brand**          | Yes                   | `primary`, `secondary`, `accent` (+ foregrounds) — both modes                  |
+| **2. Shell gradient** | Branded palettes only | `--shell-gradient-base`, `--shell-gradient-tint`                               |
+| **3. System**         | Tune or copy default  | Surfaces: background, card, popover, muted, borders                            |
+| **4. Palette**        | Optional              | Radius, chart colors, shadows                                                  |
+| **5. Semantic**       | Do not duplicate      | Status and alert tokens inherit from `default.css`                             |
+| **6. Structural**     | Branded palettes      | Copy the structural override block from `bloom.css` or `cream.css` when needed |
+
+A palette is selected by CSS import, not by an AppShell prop. Import exactly one theme file after `@tailor-platform/app-shell/styles`; if you import none, the default palette from `styles` is used.
+
+Preview token values at `/custom-page/color` in the Next.js example app.

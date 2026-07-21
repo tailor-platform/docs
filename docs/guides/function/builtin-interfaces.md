@@ -166,12 +166,22 @@ const executionId = await tailor.workflow.triggerWorkflow(
 const result = await tailor.workflow.triggerJobFunction("calculateTax", {
   amount: 1000,
 });
+
+// Route the dispatch through a workspace-registered execution policy for
+// per-key concurrency control (see the SDK Workflow guide for policy setup).
+const scoped = await tailor.workflow.triggerJobFunction(
+  "syncTenant",
+  { tenantId: "acme" },
+  { executionPolicyKey: `tenant-api.acme` },
+);
 ```
 
 | Function | Returns | Description |
 | --- | --- | --- |
 | `triggerWorkflow(name, args?, options?)` | `Promise<string>` | Trigger a workflow. Returns the execution ID |
-| `triggerJobFunction(name, args?)` | `any` | Trigger a job function and return its result |
+| `triggerJobFunction(name, args?, options?)` | `Promise<any>` | Trigger a job function and return its result. `options.executionPolicyKey` routes the dispatch through a matching execution policy for per-key concurrency control |
+
+For details on declaring execution policies and the key grammar, see [Execution Policies](/sdk/services/workflow#execution-policies) in the SDK Workflow reference.
 
 ## TailorDB Client
 
@@ -235,18 +245,22 @@ const { data: base64 } = await tailordb.file.downloadAsBase64(
   recordId,
 );
 
-// Stream large files (>10MB)
-const stream = await tailordb.file.openDownloadStream(
+// Stream download large files (>10MB)
+await tailordb.file.downloadStream(
   "my-namespace",
   "Document",
   "attachment",
   recordId,
 );
-for await (const chunk of stream) {
-  if (chunk.type === "chunk") {
-    // process chunk.data
-  }
-}
+
+// Stream upload a file
+await tailordb.file.uploadStream(
+  "my-namespace",
+  "Document",
+  "attachment",
+  recordId,
+  readableStream,
+);
 
 // Get metadata without downloading
 const meta = await tailordb.file.getMetadata("my-namespace", "Document", "attachment", recordId);
@@ -264,4 +278,6 @@ await tailordb.file.delete("my-namespace", "Document", "attachment", recordId);
 | `downloadAsBase64(...)` | `Promise<FileDownloadAsBase64Response>` | Download as Base64 string. Throws if >10MB |
 | `delete(...)` | `Promise<void>` | Delete a file |
 | `getMetadata(...)` | `Promise<FileMetadata>` | Get file metadata without downloading |
-| `openDownloadStream(...)` | `Promise<FileStreamIterator>` | Stream large files in chunks |
+| `downloadStream(...)` | `Promise<FileDownloadStreamResponse>` | Download a file as a `ReadableStream` |
+| `uploadStream(..., readableStream, options?)` | `Promise<FileUploadResponse>` | Upload a file using a `ReadableStream` |
+| `openDownloadStream(...)` | `Promise<FileStreamIterator>` | **Deprecated.** Use `downloadStream()` instead |

@@ -58,20 +58,25 @@ The `Outlet` component renders your current route's component.
 ### sidebar
 
 - **Type:** `React.ReactNode` (optional)
-- **Default:** `<DefaultSidebar />`
-- **Description:** Custom sidebar content
+- **Default:** `<SidebarLayout.DefaultSidebar />`
+- **Description:** Replaces the whole sidebar region. Omit it for the built-in sidebar.
 
 ```tsx
-import { SidebarLayout, DefaultSidebar, SidebarItem } from "@tailor-platform/app-shell";
+import { SidebarLayout, SidebarItem } from "@tailor-platform/app-shell";
 
 <SidebarLayout
   sidebar={
-    <DefaultSidebar>
+    <SidebarLayout.DefaultSidebar>
       <SidebarItem label="Custom Link" href="/custom" />
-    </DefaultSidebar>
+    </SidebarLayout.DefaultSidebar>
   }
 />;
 ```
+
+> `SidebarLayout.DefaultSidebar` is the same component as the top-level
+> `DefaultSidebar` export (kept for backwards compatibility). The namespaced form
+> is preferred for discoverability — it pairs with
+> [`SidebarLayout.DefaultHeader`](#header).
 
 ### defaultOpen
 
@@ -94,6 +99,68 @@ import { SidebarLayout, DefaultSidebar, SidebarItem } from "@tailor-platform/app
 // Non-collapsible sidebar (always visible, toggle buttons hidden)
 <SidebarLayout collapsible={false} />
 ```
+
+### header
+
+- **Type:** `React.ReactNode` (optional)
+- **Default:** `<SidebarLayout.DefaultHeader />`
+- **Description:** Replaces the whole top-bar region. Omit it for the built-in header.
+
+Like `sidebar`, `header` is a full-region slot. There are three levels of customization:
+
+**1. Default** — omit `header` entirely:
+
+```tsx
+<SidebarLayout />
+```
+
+**2. Extend the built-in header** — pass `SidebarLayout.DefaultHeader` and use its
+`actions` slot. This is the common case (e.g. adding a notification bell) and
+keeps the trigger + breadcrumb without reconstructing them:
+
+```tsx
+import { SidebarLayout, AppearanceSwitcher, Button } from "@tailor-platform/app-shell";
+import { BellIcon } from "lucide-react";
+
+<SidebarLayout
+  header={
+    <SidebarLayout.DefaultHeader
+      actions={[
+        <Button key="bell" variant="outline" size="icon" aria-label="Notifications">
+          <BellIcon />
+        </Button>,
+        // `actions` REPLACES the default right-hand cluster, so include the
+        // appearance switcher explicitly to keep it.
+        <AppearanceSwitcher key="appearance" />,
+      ]}
+    />
+  }
+/>;
+```
+
+**3. Replace it entirely** — supply your own node:
+
+```tsx
+<SidebarLayout header={<MyCustomHeader />} />
+```
+
+#### `SidebarLayout.DefaultHeader`
+
+The built-in header: sidebar trigger + breadcrumb on the left, and the `actions`
+cluster on the right.
+
+- **`actions`** — `React.ReactNode | React.ReactNode[]` (optional). The entire
+  right-hand cluster, laid out in a horizontal, vertically-centered row with
+  consistent spacing.
+  - **Default:** `[<AppearanceSwitcher />]` — so out-of-the-box behavior is
+    unchanged.
+  - ⚠️ **`actions` replaces the whole right-hand cluster, including the
+    appearance switcher.** If you pass your own actions and still want the
+    switcher, include `<AppearanceSwitcher />` in the array (it is a public
+    export). `actions={[]}` renders an empty right side.
+
+This is the supported extension point for the top bar — it replaces fragile
+workarounds that queried the header DOM and injected a React portal.
 
 ## Features
 
@@ -121,7 +188,7 @@ Breadcrumbs update automatically as users navigate through your application.
 
 ### Theme Toggle
 
-A sun/moon icon button in the header allows users to switch between light and dark themes. The theme preference is persisted to localStorage.
+The built-in header renders an [`AppearanceSwitcher`](appearance-switcher) — a palette-icon button whose dropdown switches the color theme (persisted to localStorage). To add your own controls (notifications, user menu, etc.) alongside it, pass [`SidebarLayout.DefaultHeader`](#header) with an `actions` array that includes `<AppearanceSwitcher />`.
 
 ## Customization Examples
 
@@ -261,6 +328,45 @@ Mobile view (sidebar collapsed):
 └─────────────────────────────────┘
 ```
 
+## Accessing the content scroll container
+
+The AppShell is viewport-bounded (`h-svh`), so the **document itself does not scroll** — the content area does. Code that previously relied on `window`/document scroll (reading `window.scrollY`, listening to `window`'s `scroll` event, `window.scrollTo(...)`, or an `IntersectionObserver` with the default viewport root) should target the content scroll container instead.
+
+Use the `useAppShellScrollContainer()` hook to get a ref to that element from any page:
+
+```tsx
+import { useAppShellScrollContainer } from "@tailor-platform/app-shell";
+import { useEffect, useState } from "react";
+
+function ReadingProgress() {
+  const scrollRef = useAppShellScrollContainer();
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const max = el.scrollHeight - el.clientHeight;
+      setProgress(max > 0 ? el.scrollTop / max : 0);
+    };
+    onScroll();
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [scrollRef]);
+
+  return <progress value={progress} />;
+}
+```
+
+The same element handles imperative scrolling (`scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" })`) and works as an `IntersectionObserver` root (`new IntersectionObserver(cb, { root: scrollRef.current })`).
+
+Notes:
+
+- The element mounts with the layout, above your page, so read `ref.current` inside an effect — it is populated by the time effects run, not during render.
+- On a [`<Layout fill>`](layout.md#fill-mode) page this element does **not** scroll; its children (e.g. a `DataTable`) manage their own scrolling.
+- Outside a `SidebarLayout` (a fully custom layout) the returned ref's `current` is always `null` — such layouts own their own scroll region.
+- For non-React access (CSS, tests, plain DOM) the container also carries a `data-appshell-scroll-container` attribute: `document.querySelector("[data-appshell-scroll-container]")`.
+
 ## Styling
 
 The sidebar and layout use Tailwind CSS classes prefixed with `astw:` to avoid conflicts with your application styles.
@@ -291,7 +397,9 @@ SidebarLayout includes built-in accessibility features:
 ## Related Components
 
 - [AppShell](app-shell) - Root component
-- [DefaultSidebar](sidebar-item) - Default sidebar component
+- [DefaultHeader](default-header) - Built-in header (`SidebarLayout.DefaultHeader`)
+- [DefaultSidebar](default-sidebar) - Built-in sidebar (`SidebarLayout.DefaultSidebar`)
+- [AppearanceSwitcher](appearance-switcher) - Color-theme dropdown, composable into header `actions`
 - [SidebarItem](sidebar-item) - Individual sidebar navigation items
 - [SidebarGroup](sidebar-group) - Group sidebar items
 

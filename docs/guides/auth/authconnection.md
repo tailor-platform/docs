@@ -21,66 +21,136 @@ AuthConnection provides a secure way to:
 - OAuth2 application configured with your chosen provider
 - Basic understanding of OAuth2 flows
 - Function service enabled (for runtime integration)
+- An SDK project with a `tailor.config.ts` — see the [SDK Quickstart](/sdk/quickstart)
 
-## CLI Commands
+## Setup Flow
 
-The `tailorctl workspace authconnection` command manages OAuth2 connections in your workspace.
+An auth connection can be managed two ways: through your **SDK config** (`defineAuth()` in `tailor.config.ts`, deployed with the rest of your app) or entirely through the **Console**. Either way, setting up a connection is two steps:
 
-### Create an Auth Connection
+1. **Create** the connection (registers the OAuth2 provider credentials)
+2. **Authorize** the connection (runs the OAuth2 flow to obtain and store tokens)
+
+A given connection can only be managed by one side at a time — see [Choosing a Management Method](#choosing-a-management-method) below.
+
+### Option A: Manage via SDK Config
+
+#### 1. Configure the Connection
+
+Add a `connections` block to `defineAuth()` in `tailor.config.ts`:
+
+```typescript
+import { defineAuth } from "@tailor-platform/sdk";
+
+export const auth = defineAuth("my-auth", {
+  // ...other auth config
+  connections: {
+    "google-connection": {
+      type: "oauth2",
+      providerUrl: "https://accounts.google.com",
+      issuerUrl: "https://accounts.google.com",
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+  },
+});
+```
+
+Store the client ID and secret in your `.env` file or CI secrets — never commit them.
+
+**Connection config fields:**
+
+| Field          | Type     | Required | Description                                  |
+| -------------- | -------- | -------- | --------------------------------------------- |
+| `type`         | `string` | Yes      | Connection type. Currently only `"oauth2"`.  |
+| `providerUrl`  | `string` | Yes      | OAuth2 provider URL.                          |
+| `issuerUrl`    | `string` | Yes      | Token issuer URL for JWT validation.          |
+| `clientId`     | `string` | Yes      | OAuth2 client ID from the provider.           |
+| `clientSecret` | `string` | Yes      | OAuth2 client secret from the provider.       |
+| `authUrl`      | `string` | No       | Override for the authorization endpoint.      |
+| `tokenUrl`     | `string` | No       | Override for the token endpoint.              |
+
+Deploy to register the connection with the platform:
 
 ```bash
-tailorctl workspace authconnection create \
-  --name <connection-name> \
-  --type TYPE_OAUTH2 \
-  --provider-url <provider-url> \
-  --issuer-url <issuer-url> \
-  --client-id <client-id> \
-  --client-secret <client-secret>
+tailor-sdk deploy
+```
+
+This creates (or updates) the connection record. A newly created connection exists but is not yet authorized — it has no tokens yet.
+
+> [!NOTE]
+> Deploy updates existing connections **in-place**, preserving the OAuth token. If a change requires re-authorization (for example, the provider URL or client ID changed), the deploy will warn you to run `authconnection authorize` again.
+
+> [!TIP]
+> Once a connection has been deployed at least once, later deploys can pass `clientSecret: ""` (an empty string) without erasing the secret already stored on the platform — an empty value is simply left out of the update, so nothing about the secret changes. This lets a CI pipeline redeploy an existing connection (for example, to pick up a `providerUrl` change) without ever having access to the real secret. The very first deploy that creates the connection still needs the real secret at least once, from wherever that value is available.
+>
+> `clientSecret` is a required field, so it must resolve to an actual string — `undefined` fails config validation before deploy even runs. Use a fallback so an unset variable still resolves to a string:
+>
+> ```typescript
+> clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "", // Falls back to "" when the var is unset, e.g. in CI
+> ```
+>
+> With the `.env` file itself, an explicit empty assignment (`GOOGLE_CLIENT_SECRET=`) also works, since that sets the variable to `""` rather than leaving it unset.
+
+#### 2. Authorize the Connection
+
+```bash
+tailor-sdk authconnection authorize --name google-connection \
+  --scopes "openid,profile,email" \
+  --port 8080
 ```
 
 **Parameters:**
 
-- `--name` (required): Unique connection name (lowercase, alphanumeric and hyphens only)
-- `--type` (required): Authentication type (currently only `TYPE_OAUTH2` supported)
-- `--provider-url` (required): OAuth2 provider URL
-- `--issuer-url` (optional): Token issuer URL for JWT validation
-- `--client-id` (required): OAuth2 client ID from the provider
-- `--client-secret` (required): OAuth2 client secret from the provider
-
-### List Auth Connections
-
-```bash
-tailorctl workspace authconnection list
-```
-
-### Authorize an Auth Connection
-
-```bash
-tailorctl workspace authconnection authorize <connection-name> \
-  --scopes <scopes> \
-  --port <callback-port>
-```
-
-**Parameters:**
-
-- `connection-name` (required): Name of the existing auth connection
-- `--scopes` (optional): OAuth2 scopes to request (default: openid,profile,email)
-- `--port` (optional): Local callback server port (default: 8080)
+- `--name` (required): Name of the connection defined in `defineAuth()`
+- `--scopes` (optional): OAuth2 scopes to request (default: `openid,profile,email`)
+- `--port` (optional): Local callback server port (default: `8080`)
 - `--no-browser` (optional): Don't open browser automatically
 
 This command:
 
-1. Starts a local HTTP server for OAuth2 callback
+1. Starts a local HTTP server for the OAuth2 callback
 2. Opens your browser to the provider's authorization page
 3. Handles the callback after authorization
-4. Exchanges the authorization code for tokens using stored client secret
+4. Exchanges the authorization code for tokens using the client secret from your config
 5. Stores tokens securely on the server
 
-### Revoke an Auth Connection
+Alternatively, run `tailor-sdk authconnection open` to authorize the connection from the Console instead of the local CLI flow — useful on a machine without browser access:
 
 ```bash
-tailorctl workspace authconnection revoke <connection-name>
+tailor-sdk authconnection open
 ```
+
+Verify the connection is authorized:
+
+```bash
+tailor-sdk authconnection list
+```
+
+### Option B: Manage Entirely via the Console
+
+No `tailor.config.ts` changes are needed — create, authorize, and manage the connection directly in the Tailor Platform Console:
+
+```bash
+tailor-sdk authconnection open
+```
+
+This opens the workspace's connections settings page, where you can:
+
+1. **Create** a new connection — enter the type, provider URL, issuer URL, client ID, and client secret directly in the Console form
+2. **Authorize** it — the Console walks you through the OAuth2 consent flow in the browser
+3. View its status, re-authorize, revoke its tokens, or delete it later from the same page
+
+This is a good fit for connections you don't want tracked in git — for example, ones that differ per developer, or that only ever target a single shared workspace and don't need to travel with the rest of your app's config.
+
+### Choosing a Management Method
+
+A connection name is owned by exactly one side at a time — the same connection cannot be managed by both the Console and your SDK config simultaneously:
+
+- A connection created via the Console (Option B) carries no SDK ownership label. `tailor-sdk deploy` leaves it completely untouched as long as it isn't also declared in `connections`.
+- If you later add a connection with the **same name** to `defineAuth()`'s `connections` and run `deploy`, the SDK finds it already exists without an ownership label and pauses to ask whether it should take it over ("Allow tailor-sdk to manage these resources?"). Confirming adopts it into config management — from that point on, every `deploy` overwrites its fields to match your config, and removing it from `connections` deletes the connection. (`--yes` confirms automatically, which is useful for CI but means this adoption happens without a prompt.)
+- Until you confirm that handover, `deploy` refuses to proceed, so a Console-managed connection is never silently overwritten by config just because a connection with the same name appears in `tailor.config.ts`.
+
+In short: use the Console (Option B) for connections you intend to manage by hand, and SDK config (Option A) for connections you want defined, reviewed, and deployed alongside the rest of your app. Don't mix the two for the same connection name.
 
 ## Provider Configuration Examples
 
@@ -92,18 +162,24 @@ First, create OAuth2 credentials in [Google Cloud Console](https://console.cloud
 2. Create OAuth 2.0 Client ID
 3. Configure authorized redirect URIs
 
+```typescript
+connections: {
+  "google-oauth": {
+    type: "oauth2",
+    providerUrl: "https://accounts.google.com",
+    issuerUrl: "https://accounts.google.com",
+    clientId: process.env.GOOGLE_CLIENT_ID!,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+  },
+},
+```
+
 ```bash
-# 1. Create the connection
-tailorctl workspace authconnection create \
-  --name google-oauth \
-  --type TYPE_OAUTH2 \
-  --provider-url "https://accounts.google.com" \
-  --issuer-url "https://accounts.google.com" \
-  --client-id "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com" \
-  --client-secret "YOUR_GOOGLE_CLIENT_SECRET"
+# 1. Deploy the connection
+tailor-sdk deploy
 
 # 2. Authorize and get tokens
-tailorctl workspace authconnection authorize google-oauth \
+tailor-sdk authconnection authorize --name google-oauth \
   --scopes "https://www.googleapis.com/auth/admin.directory.user.readonly"
 ```
 
@@ -122,17 +198,24 @@ First, register an application in [Azure Portal](https://portal.azure.com/):
 3. Configure redirect URIs under "Authentication"
 4. Create client secret under "Certificates & secrets"
 
+```typescript
+connections: {
+  "ms365-oauth": {
+    type: "oauth2",
+    providerUrl: "https://login.microsoftonline.com/YOUR_TENANT_ID",
+    issuerUrl: "https://login.microsoftonline.com/YOUR_TENANT_ID/v2.0",
+    clientId: process.env.AZURE_CLIENT_ID!,
+    clientSecret: process.env.AZURE_CLIENT_SECRET!,
+  },
+},
+```
+
 ```bash
-tailorctl workspace authconnection create \
-  --name ms365-oauth \
-  --type TYPE_OAUTH2 \
-  --provider-url "https://login.microsoftonline.com/YOUR_TENANT_ID" \
-  --issuer-url "https://login.microsoftonline.com/YOUR_TENANT_ID/v2.0" \
-  --client-id "YOUR_AZURE_APP_CLIENT_ID" \
-  --client-secret "YOUR_AZURE_APP_CLIENT_SECRET"
+# 1. Deploy the connection
+tailor-sdk deploy
 
 # 2. Authorize and get tokens
-tailorctl workspace authconnection authorize ms365-oauth \
+tailor-sdk authconnection authorize --name ms365-oauth \
   --scopes "https://graph.microsoft.com/.default"
 ```
 
@@ -153,14 +236,20 @@ First, create an app in [Intuit Developer Portal](https://developer.intuit.com/)
 3. Configure redirect URIs
 4. Get your client ID and secret from "Keys & OAuth"
 
+```typescript
+connections: {
+  "quickbooks-oauth": {
+    type: "oauth2",
+    providerUrl: "https://appcenter.intuit.com/connect/oauth2",
+    issuerUrl: "https://oauth.platform.intuit.com/op/v1",
+    clientId: process.env.QUICKBOOKS_CLIENT_ID!,
+    clientSecret: process.env.QUICKBOOKS_CLIENT_SECRET!,
+  },
+},
+```
+
 ```bash
-tailorctl workspace authconnection create \
-  --name quickbooks-oauth \
-  --type TYPE_OAUTH2 \
-  --provider-url "https://appcenter.intuit.com/connect/oauth2" \
-  --issuer-url "https://oauth.platform.intuit.com/op/v1" \
-  --client-id "YOUR_QUICKBOOKS_CLIENT_ID" \
-  --client-secret "YOUR_QUICKBOOKS_CLIENT_SECRET"
+tailor-sdk deploy
 ```
 
 **Common QuickBooks OAuth2 URLs:**
@@ -183,10 +272,14 @@ AuthConnection integrates seamlessly with the Function service, allowing your fu
 
 ### Basic Usage
 
-```javascript
+Use `authconnection.getConnectionToken()` from `@tailor-platform/sdk/runtime` to retrieve the current access token by connection name. When `connections` is defined in `defineAuth()`, the connection name is type-checked and autocompleted against the defined keys:
+
+```typescript
+import { authconnection } from "@tailor-platform/sdk/runtime";
+
 export default async () => {
   // Get access token for a connection
-  const tokens = await tailor.authconnection.getConnectionToken("google-oauth");
+  const tokens = await authconnection.getConnectionToken("google-oauth");
 
   // Use the access token to call external APIs
   const response = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
@@ -204,14 +297,22 @@ export default async () => {
 };
 ```
 
+```typescript
+// authconnection.getConnectionToken("unknown-connection"); // ❌ TypeScript error
+```
+
+Type narrowing is provided by the generated `tailor.d.ts` (the `ConnectionNameRegistry` interface). Run `tailor-sdk generate` (or `deploy`) after defining new connections to refresh it. Before the first generate, or when `connections` is not defined in `defineAuth()`, `getConnectionToken()` accepts any string.
+
 ### Advanced Usage with Error Handling
 
-```javascript
+```typescript
+import { authconnection } from "@tailor-platform/sdk/runtime";
+
 export default async () => {
   try {
     // Get tokens for multiple connections
-    const googleTokens = await tailor.authconnection.getConnectionToken("google-oauth");
-    const msTokens = await tailor.authconnection.getConnectionToken("ms365-oauth");
+    const googleTokens = await authconnection.getConnectionToken("google-oauth");
+    const msTokens = await authconnection.getConnectionToken("ms365-oauth");
 
     // Call Google API
     const googleResponse = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
@@ -242,23 +343,36 @@ export default async () => {
 
 ### Token Properties
 
-The `getConnectionToken()` method returns an object with the following properties:
+The `getConnectionToken()` method returns an object with the following property:
 
 <Property name="access_token" type="string">
   The OAuth2 access token for API calls
 </Property>
 
-<Property name="refresh_token" type="string">
-  The refresh token (if available from provider)
-</Property>
+## Managing Connections via CLI
 
-<Property name="expires_at" type="string">
-  Token expiration timestamp in ISO format
-</Property>
+These commands work on any connection regardless of which option created it:
 
-<Property name="token_type" type="string">
-  Token type (typically "Bearer")
-</Property>
+```bash
+# Open the connections page in the Console
+tailor-sdk authconnection open
+
+# Authorize (opens browser for OAuth2 flow)
+tailor-sdk authconnection authorize --name <connection-name>
+
+# List all connections
+tailor-sdk authconnection list
+
+# Revoke a connection's tokens (keeps the connection; re-authorize later)
+tailor-sdk authconnection revoke --name <connection-name>
+
+# Delete a connection entirely
+tailor-sdk authconnection delete --name <connection-name>
+```
+
+To delete a connection managed via SDK config (Option A), remove it from `connections` and redeploy instead of using `authconnection delete` directly — manage each connection through one method only, as described above.
+
+For connections not defined in `defineAuth()`'s `connections`, `authconnection.getConnectionToken()` still accepts any string, so you can read tokens for Console-managed connections the same way — you just lose the type-checked autocompletion.
 
 ## Best Practices
 
@@ -279,24 +393,22 @@ Use descriptive names that indicate the provider and environment:
 
 ### Environment-Specific Configurations
 
-For development vs production environments, create separate connections:
+Since each environment is deployed to its own workspace from the same `tailor.config.ts`, keep a single connection definition and vary the value via a per-environment `.env` file — the same pattern used for any other environment-specific value (see [Multi-Environment Configuration](/sdk/multi-environment)):
+
+```typescript
+connections: {
+  "google-oauth": {
+    type: "oauth2",
+    providerUrl: "https://accounts.google.com",
+    issuerUrl: "https://accounts.google.com",
+    clientId: process.env.GOOGLE_CLIENT_ID!,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+  },
+},
+```
 
 ```bash
-# Development
-tailorctl workspace authconnection create \
-  --name google-oauth-dev \
-  --type TYPE_OAUTH2 \
-  --provider-url "https://accounts.google.com" \
-  --client-id "DEV_CLIENT_ID.apps.googleusercontent.com" \
-  --client-secret "DEV_CLIENT_SECRET"
-
-# Production
-tailorctl workspace authconnection create \
-  --name google-oauth-prod \
-  --type TYPE_OAUTH2 \
-  --provider-url "https://accounts.google.com" \
-  --client-id "PROD_CLIENT_ID.apps.googleusercontent.com" \
-  --client-secret "PROD_CLIENT_SECRET"
+tailor-sdk deploy -w <production-workspace-id> --env-file .env.production
 ```
 
 ## Troubleshooting
@@ -322,6 +434,11 @@ tailorctl workspace authconnection create \
 - Implement refresh token flow in your application
 - Monitor token expiration times
 
+**Re-authorization Required After Deploy**
+
+- If `tailor-sdk deploy` warns that a connection needs re-authorization, run `tailor-sdk authconnection authorize --name <connection-name>` again
+- This happens when identity-changing fields (`providerUrl`, `issuerUrl`, `clientId`, `type`) are modified
+
 **Function Runtime Errors**
 
 - Ensure the connection name exists and is authorized
@@ -330,6 +447,9 @@ tailorctl workspace authconnection create \
 
 ## Next Steps
 
+- [Setting up Auth Connections tutorial](/tutorials/setup-auth/setup-auth-connections) - Step-by-step SDK walkthrough
+- [Auth Service SDK reference](/sdk/services/auth#auth-connections) - Full auth connections API reference
+- [Runtime API](/sdk/runtime#namespaces) - `@tailor-platform/sdk/runtime` namespaces, including `authconnection`
 - [Learn about Function service](/guides/function/overview) - Understand Function runtime capabilities
 - [Secret Manager documentation](/guides/secretmanager) - Secure secret storage patterns
 - [Auth service overview](/guides/auth/overview) - Complete authentication system

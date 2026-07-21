@@ -9,6 +9,8 @@ export const navItemOrder: Record<string, string[]> = {
     "auth",
     "application",
     "events",
+    "opentelemetry",
+    "ai-gateway",
   ],
   tutorials: [
     "app-endpoint",
@@ -19,7 +21,7 @@ export const navItemOrder: Record<string, string[]> = {
     "develop-from-scratch",
   ],
   sdk: ["quickstart", "cli", "services", "generator"],
-  reference: ["changelog","security", "api", "platform", "concepts", "infrastructure"],
+  reference: ["changelog", "api", "platform", "concepts", "infrastructure", "character-encodings", "security"],
   "getting-started": ["quickstart", "core-concepts", "console"],
   "app-shell": [
     "introduction",
@@ -77,6 +79,9 @@ export const excludedSections: string[] = ["public"];
 export const customTitles: Record<string, string> = {
   "app-shell": "AppShell",
   "wait-resolve": "Wait / Resolve",
+  index: "Overview",
+  "ai-gateway": "AI Gateway",
+  aigateway: "AI Gateway",
 };
 
 // Define custom ordering for sidebar items within sections
@@ -85,6 +90,19 @@ export const defaultSidebarOrder: string[] = ["overview", "quickstart"];
 
 // Section-specific overrides (only if you need different ordering for a specific section)
 export const sidebarItemOrder: Record<string, string[]> = {
+  guides: [
+    "application",
+    "events",
+    "resolver",
+    "secretmanager",
+    "static-website-hosting",
+    "opentelemetry",
+    "tailordb",
+    "executor",
+    "function",
+    "auth",
+    "ai-gateway",
+  ],
   "setup-auth": [
     "overview",
     "setup-identity-provider",
@@ -93,7 +111,7 @@ export const sidebarItemOrder: Record<string, string[]> = {
     "login",
   ],
   function: ["overview", "builtin-interfaces"],
-  reference: ["changelog","api", "platform", "concepts", "infrastructure", "security"],
+  reference: ["changelog", "api", "platform", "concepts", "infrastructure", "character-encodings", "security"],
   "app-shell": [
     "introduction",
     "quickstart",

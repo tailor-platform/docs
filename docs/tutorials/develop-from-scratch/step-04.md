@@ -12,12 +12,7 @@ Only change from Step 3: added `executor` to `tailor.config.ts`.
 import { defineAuth, defineConfig, defineGenerators } from "@tailor-platform/sdk";
 import { user } from "./src/db/user";
 
-if (!process.env.WORKSPACE_ID) {
-  throw new Error("WORKSPACE_ID environment variable is not set");
-}
-
 export default defineConfig({
-  workspaceId: process.env.WORKSPACE_ID,
   name: "project-management",
   db: { "main-db": { files: [`./src/db/*.ts`] } },
   auth: defineAuth("main-auth", {
@@ -50,7 +45,7 @@ export const generators = defineGenerators([
 ]);
 ```
 
-`createExecutor` takes an object config with `name`, `trigger`, and `operation`. The trigger `recordCreatedTrigger` takes `{ type: task }`. Available trigger context: `newRecord` (created), `oldRecord`/`newRecord` (updated), `record` (deleted).
+`createExecutor` takes an object config with `name`, `trigger`, and `operation`. The trigger `recordCreatedTrigger` takes `{ type: task }`. Available trigger context: `newRecord` (created), `oldRecord`/`newRecord` (updated), `oldRecord` (deleted).
 
 ```typescript {{title: 'src/executor/newTaskSlackNotification.ts'}}
 import { createExecutor, recordCreatedTrigger } from "@tailor-platform/sdk";
@@ -68,7 +63,7 @@ export default createExecutor({
     headers: {
       "Content-Type": "application/json",
     },
-    body: ({ newRecord }) => ({
+    requestBody: ({ newRecord }) => ({
       text: "New Task created :tada: " + newRecord.name,
     }),
   },

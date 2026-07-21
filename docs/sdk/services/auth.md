@@ -22,6 +22,7 @@ Configure Auth service using `defineAuth()`:
 
 - **One auth per application**: Each application can have exactly one Auth service
 - **Configuration location**: Define in `tailor.config.ts` using `defineAuth()` and reference directly in the config's `auth` field
+- **`userProfile` and `machineUserAttributes` are mutually exclusive**: Specifying both fails at deploy/generate time with ``Specify either `userProfile` or `machineUserAttributes`, not both.``
 
 ```typescript
 import { defineAuth } from "@tailor-platform/sdk";
@@ -93,6 +94,16 @@ export const user = db.type("User", {
 ```
 
 **type**: The TailorDB type that stores user records.
+
+**namespace** (optional): The TailorDB namespace where the user type is defined. Usually auto-resolved from your `db` configuration, so you don't need to specify it. Required only when multiple TailorDB namespaces exist and the type lives in an external TailorDB:
+
+```typescript
+userProfile: {
+  namespace: "external-ns", // Explicitly specify the namespace
+  type: user,
+  usernameField: "email",
+},
+```
 
 **usernameField**: The field in the TailorDB type used as the username. This field must have a unique constraint (`.unique()`) since it is used to uniquely identify users.
 
@@ -297,7 +308,7 @@ export default createResolver({
 });
 ```
 
-Type narrowing is provided by the generated `tailor.d.ts` (the `MachineUserNameRegistry` interface). Run `tailor-sdk generate` (or `apply`) after defining new machine users to refresh it.
+Type narrowing is provided by the generated `tailor.d.ts` (the `MachineUserNameRegistry` interface). Run `tailor-sdk generate` (or `deploy`) after defining new machine users to refresh it.
 
 > **Deprecated:** The `auth.invoker("<name>")` helper is still available for backward compatibility. Prefer the string form — it does not require importing `auth` from `tailor.config.ts` into runtime files, avoiding bundling config-layer (Node-only) dependencies.
 
@@ -354,9 +365,18 @@ See [IdP](idp) for configuring identity providers.
 
 ## Auth Connections
 
-Auth connections enable OAuth2 authentication with external providers (Google, Microsoft 365, QuickBooks, etc.) for application-to-application flows. Functions can access connection tokens at runtime via `tailor.authconnection.getConnectionToken()`.
+Auth connections enable OAuth2 authentication with external providers (Google, Microsoft 365, QuickBooks, etc.) for application-to-application flows. Functions can access connection tokens at runtime via `authconnection.getConnectionToken()` (from `@tailor-platform/sdk/runtime`).
 
 For the official Tailor Platform documentation, see [AuthConnection Guide](/guides/auth/authconnection).
+
+> [!NOTE]
+> Deploy updates connections **in-place**, preserving the OAuth token. If the connection requires re-authorization after an update, the deploy will warn you:
+>
+> ```bash
+> tailor-sdk authconnection authorize --name <connection-name>
+> # Or via the Console:
+> tailor-sdk authconnection open
+> ```
 
 ### Setup Flow
 
@@ -409,27 +429,25 @@ The authorize command opens a browser for the OAuth2 flow. The authorization cod
 | `authUrl`      | `string` | No       | Override for the authorization endpoint.    |
 | `tokenUrl`     | `string` | No       | Override for the token endpoint.            |
 
-### Change Detection
+### Retrieving Connection Tokens
 
-The SDK uses hash-based change detection for connection configs. Only connections whose configuration has changed since the last `apply` are updated (revoked and recreated). Deleting the `.tailor-sdk/` directory forces all connections to be re-sent.
-
-### `auth.getConnectionToken()`
-
-`auth.getConnectionToken()` retrieves connection tokens at runtime by calling `tailor.authconnection.getConnectionToken()` internally. When `connections` is defined in `defineAuth()`, the connection name is type-checked and autocompleted against the defined keys:
+Use `authconnection.getConnectionToken()` from `@tailor-platform/sdk/runtime` to retrieve connection tokens at runtime. The connection name is type-checked and autocompleted against the connections defined in `defineAuth()`'s `connections`:
 
 ```typescript
-import { auth } from "../tailor.config";
+import { authconnection } from "@tailor-platform/sdk/runtime";
 
 // In a resolver, executor, or workflow:
-const tokens = await auth.getConnectionToken("google-connection");
+const tokens = await authconnection.getConnectionToken("google-connection");
 const response = await fetch("https://www.googleapis.com/...", {
   headers: { Authorization: `Bearer ${tokens.access_token}` },
 });
 
-// auth.getConnectionToken("unknown"); // Type error — only "google-connection" is allowed
+// authconnection.getConnectionToken("unknown"); // Type error — only "google-connection" is allowed
 ```
 
-When `connections` is not defined, `getConnectionToken()` accepts any string. This supports connections managed entirely via the CLI.
+Type narrowing is provided by the generated `tailor.d.ts` (the `ConnectionNameRegistry` interface). Run `tailor-sdk generate` (or `deploy`) after defining new connections to refresh it. Before the first generate, or when `connections` is not defined in `defineAuth()`, `getConnectionToken()` accepts any string — this also supports connections managed entirely via the CLI.
+
+> **Deprecated:** `auth.getConnectionToken("<name>")` still works, but is deprecated. Importing `auth` from `tailor.config.ts` into runtime files pulls config-layer (Node-only) dependencies into the bundle.
 
 See [Built-in Interfaces](/guides/function/builtin-interfaces.html#auth-connection) for the full runtime API.
 
@@ -438,6 +456,9 @@ See [Built-in Interfaces](/guides/function/builtin-interfaces.html#auth-connecti
 Auth connections can also be managed via the CLI:
 
 ```bash
+# Open the connections page in the Console (recommended for creating connections/tokens)
+tailor-sdk authconnection open
+
 # Authorize (opens browser for OAuth2 flow)
 tailor-sdk authconnection authorize --name google-connection
 
@@ -448,7 +469,7 @@ tailor-sdk authconnection list
 tailor-sdk authconnection revoke --name google-connection
 ```
 
-Connection creation is handled by `tailor-sdk deploy` via the config.
+Connection creation is handled by `tailor-sdk deploy` via the config, but recreation on deploy can drop the authorized token (see the warning at the top of this section) — for shared and CI workflows, create connections and tokens from the Console (`tailor-sdk authconnection open`) instead.
 
 See [Auth Resource Commands](../cli/auth) for full CLI documentation.
 
@@ -472,8 +493,9 @@ export const auth = defineAuth("my-auth", {
   },
   hooks: {
     beforeLogin: {
-      handler: async ({ claims, idpConfigName }) => {
+      handler: async ({ claims, idpConfigName, env }) => {
         // Provision or update user based on IdP claims
+        // `env` exposes the variables defined in `defineConfig({ env })`
       },
       invoker: "hook-invoker",
     },
@@ -481,9 +503,28 @@ export const auth = defineAuth("my-auth", {
 });
 ```
 
-**handler**: An async function that receives `{ claims, idpConfigName }` and is called before each login. `claims` contains the token claims from the identity provider, and `idpConfigName` is the name of the IdP configuration used for authentication.
+**handler**: An async function that receives `{ claims, idpConfigName, env }` and is called before each login. `claims` contains the token claims from the identity provider, `idpConfigName` is the name of the IdP configuration used for authentication, and `env` exposes the environment variables defined in `defineConfig({ env })` (the same values available via `context.env` in resolvers).
 
 **invoker**: The machine user whose permissions are used to execute the hook. Must reference a machine user defined in the same auth configuration.
+
+### Federated identity claims
+
+When a user signs in through a Built-in IdP OAuth provider (Google or Microsoft), the upstream provider's profile is available on `claims.federated_identity`. It is `undefined` for password logins, so guard before reading it. Commonly present claims (`name`, `given_name`, `family_name`, `picture`, `locale`) are typed; any other claim the provider issues is forwarded as-is. Availability varies by provider (for example, Microsoft does not issue `picture`).
+
+```typescript
+hooks: {
+  beforeLogin: {
+    handler: async ({ claims }) => {
+      const federated = claims.federated_identity;
+      if (federated?.provider === "google") {
+        // Populate the user record from the upstream profile
+        const avatarUrl = federated.claims.picture;
+      }
+    },
+    invoker: "hook-invoker",
+  },
+}
+```
 
 ## CLI Commands
 
@@ -509,14 +550,3 @@ tailor-sdk oauth2client get <name>
 ```
 
 See [Auth Resource Commands](../cli/auth) for full documentation.
-
-## SDK vs Platform Naming
-
-> **Note for Platform developers**: The SDK uses different names than the underlying Platform API for user attributes:
->
-> | SDK             | Platform API    | Description                      |
-> | --------------- | --------------- | -------------------------------- |
-> | `attributes`    | `attribute_map` | Key-value map of user attributes |
-> | `attributeList` | `attributes`    | Ordered list of UUID values      |
->
-> This mapping is handled automatically by the SDK. If you're reading Platform documentation or API responses, be aware of this naming difference.

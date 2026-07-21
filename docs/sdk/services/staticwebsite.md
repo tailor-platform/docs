@@ -9,6 +9,7 @@ Static Website provides:
 - Static file hosting
 - Type-safe URL references for configuration
 - IP address restrictions
+- Custom domain support
 
 For the official Tailor Platform documentation, see [Static Website Guide](/guides/static-website-hosting).
 
@@ -61,6 +62,20 @@ defineStaticWebSite("my-website", {
 });
 ```
 
+### customDomains
+
+Associate custom domains with the static website:
+
+```typescript
+defineStaticWebSite("my-website", {
+  customDomains: ["app.example.com"],
+});
+```
+
+After deploying, use `tailor-sdk staticwebsite domain get <domain>` to check domain status and retrieve the CNAME targets required for DNS configuration.
+
+A domain can be associated with only one workspace at a time. To set custom domains only in the workspace that owns the domain, see [Multi-Environment Configuration](../multi-environment.md#settings-that-belong-to-a-single-environment).
+
 ## Type-safe URL References
 
 The returned website object provides a `url` property that resolves to the actual URL at deployment time. Use this for type-safe configuration:
@@ -109,8 +124,14 @@ const website = defineStaticWebSite("my-frontend", {
 });
 
 const idp = defineIdp("my-idp", {
-  authorization: "loggedIn",
   clients: ["default-client"],
+  permission: {
+    create: [{ conditions: [[{ user: "_loggedIn" }, "=", true]], permit: true }],
+    read: [{ conditions: [[{ user: "_loggedIn" }, "=", true]], permit: true }],
+    update: [{ conditions: [[{ user: "_loggedIn" }, "=", true]], permit: true }],
+    delete: [{ conditions: [[{ user: "_loggedIn" }, "=", true]], permit: true }],
+    sendPasswordResetEmail: [{ conditions: [[{ user: "_loggedIn" }, "=", true]], permit: true }],
+  },
 });
 
 const auth = defineAuth("my-auth", {

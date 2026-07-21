@@ -50,6 +50,7 @@ The following table shows the current lifecycle stage for Tailor Platform servic
 
 | Service/Feature                                                | Stage                               | Notes                                                      |
 | -------------------------------------------------------------- | ----------------------------------- | ---------------------------------------------------------- |
+| **[AI Gateway](/guides/ai-gateway)**                           | <Tag color="emerald">Preview</Tag>  | Unified OpenAI-compatible endpoint for accessing LLMs      |
 | **[Built-in IdP](/guides/auth/integration/built-in-idp)**      | <Tag color="emerald">Preview</Tag>  | Identity provider functionality for authentication         |
 | **tailorctl manifest**                                         | <Tag color="zinc">Maintenance</Tag> | CUE-based manifest configuration for tailorctl             |
 | **TailorDB Draft**                                             | <Tag color="amber">Deprecated</Tag> | Draft record functionality - use separate tables instead   |

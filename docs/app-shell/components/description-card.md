@@ -67,7 +67,7 @@ Plain text display with optional truncation and copy button.
 
 ### badge
 
-Displays value as a Badge component with variant mapping.
+Displays value as a Badge component with variant mapping. Accepts a single value or an array of values.
 
 ```tsx
 {
@@ -88,6 +88,27 @@ Displays value as a Badge component with variant mapping.
 ```
 
 Badge values are rendered in sentence case by default. Set `meta.sentenceCaseBadges` to `false` when you need to display the original value from your data.
+
+#### Array badges with overflow
+
+When the field value is an array, each item is rendered as a separate badge. Use `maxVisible` to cap the number shown — extra items appear in a hover popover:
+
+```tsx
+<DescriptionCard
+  data={{ tags: ["urgent", "fragile", "international"] }}
+  fields={[
+    {
+      key: "tags",
+      label: "Tags",
+      type: "badge",
+      meta: {
+        badgeVariantMap: { urgent: "error", fragile: "warning", international: "outline-info" },
+        maxVisible: 2,
+      },
+    },
+  ]}
+/>
+```
 
 ### money
 
@@ -127,7 +148,9 @@ Format examples:
 - `short`: 3/6/2026
 - `medium`: Mar 6, 2026
 - `long`: March 6, 2026 at 2:30 PM
-- `relative`: 2 hours ago
+- `relative`: 2 hours ago / In 3 days
+
+Relative dates support both past and future values and are automatically localized based on the AppShell locale (English and Japanese are built in).
 
 ### link
 
@@ -144,6 +167,8 @@ Renders a clickable link.
   },
 }
 ```
+
+Internal links (when `external` is not set or `false`) use react-router `<Link>` for client-side navigation. External links (when `external: true`) open in a new tab using a standard `<a>` tag.
 
 ### address
 
@@ -168,7 +193,7 @@ Formats multi-line address display.
 
 ### reference
 
-Links to related documents with auto-generated URLs.
+Links to related documents with auto-generated URLs using react-router `<Link>` for client-side navigation.
 
 ```tsx
 {

@@ -2,19 +2,9 @@
 
 Commands for managing and deploying static websites.
 
-<!-- politty:command:staticwebsite:heading:start -->
-
 ## staticwebsite
 
-<!-- politty:command:staticwebsite:heading:end -->
-
-<!-- politty:command:staticwebsite:description:start -->
-
 Manage static websites in your workspace.
-
-<!-- politty:command:staticwebsite:description:end -->
-
-<!-- politty:command:staticwebsite:usage:start -->
 
 **Usage**
 
@@ -22,48 +12,26 @@ Manage static websites in your workspace.
 tailor-sdk staticwebsite [command]
 ```
 
-<!-- politty:command:staticwebsite:usage:end -->
-
-<!-- politty:command:staticwebsite:subcommands:start -->
+See [Global Options](../cli-reference.md#global-options) for options available to all commands.
 
 **Commands**
 
 | Command                                         | Description                                           |
 | ----------------------------------------------- | ----------------------------------------------------- |
 | [`staticwebsite deploy`](#staticwebsite-deploy) | Deploy a static website from a local build directory. |
+| [`staticwebsite domain`](#staticwebsite-domain) | Manage custom domains for static websites.            |
 | [`staticwebsite list`](#staticwebsite-list)     | List all static websites in a workspace.              |
 | [`staticwebsite get`](#staticwebsite-get)       | Get details of a specific static website.             |
 
-<!-- politty:command:staticwebsite:subcommands:end -->
-
-<!-- politty:command:staticwebsite:global-options-link:start -->
-
-See [Global Options](../cli-reference.md#global-options) for options available to all commands.
-
-<!-- politty:command:staticwebsite:global-options-link:end -->
-<!-- politty:command:staticwebsite deploy:heading:start -->
-
 ### staticwebsite deploy
 
-<!-- politty:command:staticwebsite deploy:heading:end -->
-
-<!-- politty:command:staticwebsite deploy:description:start -->
-
 Deploy a static website from a local build directory.
-
-<!-- politty:command:staticwebsite deploy:description:end -->
-
-<!-- politty:command:staticwebsite deploy:usage:start -->
 
 **Usage**
 
 ```
 tailor-sdk staticwebsite deploy [options]
 ```
-
-<!-- politty:command:staticwebsite deploy:usage:end -->
-
-<!-- politty:command:staticwebsite deploy:options:start -->
 
 **Options**
 
@@ -74,101 +42,7 @@ tailor-sdk staticwebsite deploy [options]
 | `--name <NAME>`                 | `-n`  | Static website name              | Yes      | -       | -                              |
 | `--dir <DIR>`                   | `-d`  | Path to the static website files | Yes      | -       | -                              |
 
-<!-- politty:command:staticwebsite deploy:options:end -->
-
-<!-- politty:command:staticwebsite deploy:global-options-link:start -->
-
 See [Global Options](../cli-reference.md#global-options) for options available to all commands.
-
-<!-- politty:command:staticwebsite deploy:global-options-link:end -->
-<!-- politty:command:staticwebsite list:heading:start -->
-
-### staticwebsite list
-
-<!-- politty:command:staticwebsite list:heading:end -->
-
-<!-- politty:command:staticwebsite list:description:start -->
-
-List all static websites in a workspace.
-
-<!-- politty:command:staticwebsite list:description:end -->
-
-<!-- politty:command:staticwebsite list:usage:start -->
-
-**Usage**
-
-```
-tailor-sdk staticwebsite list [options]
-```
-
-<!-- politty:command:staticwebsite list:usage:end -->
-
-<!-- politty:command:staticwebsite list:options:start -->
-
-**Options**
-
-| Option                          | Alias | Description                                              | Required | Default  | Env                            |
-| ------------------------------- | ----- | -------------------------------------------------------- | -------- | -------- | ------------------------------ |
-| `--workspace-id <WORKSPACE_ID>` | `-w`  | Workspace ID                                             | No       | -        | `TAILOR_PLATFORM_WORKSPACE_ID` |
-| `--profile <PROFILE>`           | `-p`  | Workspace profile                                        | No       | -        | `TAILOR_PLATFORM_PROFILE`      |
-| `--order <ORDER>`               | -     | Sort order (asc or desc)                                 | No       | `"desc"` | -                              |
-| `--limit <LIMIT>`               | `-l`  | Maximum number of items to return (0 or omit: unlimited) | No       | -        | -                              |
-
-<!-- politty:command:staticwebsite list:options:end -->
-
-<!-- politty:command:staticwebsite list:global-options-link:start -->
-
-See [Global Options](../cli-reference.md#global-options) for options available to all commands.
-
-<!-- politty:command:staticwebsite list:global-options-link:end -->
-<!-- politty:command:staticwebsite get:heading:start -->
-
-### staticwebsite get
-
-<!-- politty:command:staticwebsite get:heading:end -->
-
-<!-- politty:command:staticwebsite get:description:start -->
-
-Get details of a specific static website.
-
-<!-- politty:command:staticwebsite get:description:end -->
-
-<!-- politty:command:staticwebsite get:usage:start -->
-
-**Usage**
-
-```
-tailor-sdk staticwebsite get [options] <name>
-```
-
-<!-- politty:command:staticwebsite get:usage:end -->
-
-<!-- politty:command:staticwebsite get:arguments:start -->
-
-**Arguments**
-
-| Argument | Description         | Required |
-| -------- | ------------------- | -------- |
-| `name`   | Static website name | Yes      |
-
-<!-- politty:command:staticwebsite get:arguments:end -->
-
-<!-- politty:command:staticwebsite get:options:start -->
-
-**Options**
-
-| Option                          | Alias | Description       | Required | Default | Env                            |
-| ------------------------------- | ----- | ----------------- | -------- | ------- | ------------------------------ |
-| `--workspace-id <WORKSPACE_ID>` | `-w`  | Workspace ID      | No       | -       | `TAILOR_PLATFORM_WORKSPACE_ID` |
-| `--profile <PROFILE>`           | `-p`  | Workspace profile | No       | -       | `TAILOR_PLATFORM_PROFILE`      |
-
-<!-- politty:command:staticwebsite get:options:end -->
-
-<!-- politty:command:staticwebsite get:global-options-link:start -->
-
-See [Global Options](../cli-reference.md#global-options) for options available to all commands.
-
-<!-- politty:command:staticwebsite get:global-options-link:end -->
 
 **Example:**
 
@@ -187,6 +61,27 @@ tailor-sdk staticwebsite deploy -n my-website -d ./dist -w ws_abc123
 - Unsupported file types or invalid files will be skipped with warnings
 - The deployment URL is returned after successful deployment
 
+## staticwebsite list
+
+List all static websites in a workspace.
+
+**Usage**
+
+```
+tailor-sdk staticwebsite list [options]
+```
+
+**Options**
+
+| Option                          | Alias | Description                                              | Required | Default  | Env                            |
+| ------------------------------- | ----- | -------------------------------------------------------- | -------- | -------- | ------------------------------ |
+| `--workspace-id <WORKSPACE_ID>` | `-w`  | Workspace ID                                             | No       | -        | `TAILOR_PLATFORM_WORKSPACE_ID` |
+| `--profile <PROFILE>`           | `-p`  | Workspace profile                                        | No       | -        | `TAILOR_PLATFORM_PROFILE`      |
+| `--order <ORDER>`               | -     | Sort order (asc or desc)                                 | No       | `"desc"` | -                              |
+| `--limit <LIMIT>`               | `-l`  | Maximum number of items to return (0 or omit: unlimited) | No       | -        | -                              |
+
+See [Global Options](../cli-reference.md#global-options) for options available to all commands.
+
 **Example:**
 
 ```bash
@@ -196,6 +91,100 @@ tailor-sdk staticwebsite list
 # List with JSON output
 tailor-sdk staticwebsite list --json
 ```
+
+## staticwebsite domain
+
+Manage custom domains for static websites.
+
+**Usage**
+
+```
+tailor-sdk staticwebsite domain <command>
+```
+
+See [Global Options](../cli-reference.md#global-options) for options available to all commands.
+
+**Commands**
+
+| Command                                                   | Description                               |
+| --------------------------------------------------------- | ----------------------------------------- |
+| [`staticwebsite domain list`](#staticwebsite-domain-list) | List custom domains for a static website. |
+| [`staticwebsite domain get`](#staticwebsite-domain-get)   | Get details of a custom domain.           |
+
+### staticwebsite domain get
+
+Get details of a custom domain.
+
+**Usage**
+
+```
+tailor-sdk staticwebsite domain get [options] <domain>
+```
+
+**Arguments**
+
+| Argument | Description        | Required |
+| -------- | ------------------ | -------- |
+| `domain` | Custom domain name | Yes      |
+
+**Options**
+
+| Option                          | Alias | Description       | Required | Default | Env                            |
+| ------------------------------- | ----- | ----------------- | -------- | ------- | ------------------------------ |
+| `--workspace-id <WORKSPACE_ID>` | `-w`  | Workspace ID      | No       | -       | `TAILOR_PLATFORM_WORKSPACE_ID` |
+| `--profile <PROFILE>`           | `-p`  | Workspace profile | No       | -       | `TAILOR_PLATFORM_PROFILE`      |
+
+See [Global Options](../cli-reference.md#global-options) for options available to all commands.
+
+#### staticwebsite domain list
+
+List custom domains for a static website.
+
+**Usage**
+
+```
+tailor-sdk staticwebsite domain list [options] <name>
+```
+
+**Arguments**
+
+| Argument | Description         | Required |
+| -------- | ------------------- | -------- |
+| `name`   | Static website name | Yes      |
+
+**Options**
+
+| Option                          | Alias | Description       | Required | Default | Env                            |
+| ------------------------------- | ----- | ----------------- | -------- | ------- | ------------------------------ |
+| `--workspace-id <WORKSPACE_ID>` | `-w`  | Workspace ID      | No       | -       | `TAILOR_PLATFORM_WORKSPACE_ID` |
+| `--profile <PROFILE>`           | `-p`  | Workspace profile | No       | -       | `TAILOR_PLATFORM_PROFILE`      |
+
+See [Global Options](../cli-reference.md#global-options) for options available to all commands.
+
+### staticwebsite get
+
+Get details of a specific static website.
+
+**Usage**
+
+```
+tailor-sdk staticwebsite get [options] <name>
+```
+
+**Arguments**
+
+| Argument | Description         | Required |
+| -------- | ------------------- | -------- |
+| `name`   | Static website name | Yes      |
+
+**Options**
+
+| Option                          | Alias | Description       | Required | Default | Env                            |
+| ------------------------------- | ----- | ----------------- | -------- | ------- | ------------------------------ |
+| `--workspace-id <WORKSPACE_ID>` | `-w`  | Workspace ID      | No       | -       | `TAILOR_PLATFORM_WORKSPACE_ID` |
+| `--profile <PROFILE>`           | `-p`  | Workspace profile | No       | -       | `TAILOR_PLATFORM_PROFILE`      |
+
+See [Global Options](../cli-reference.md#global-options) for options available to all commands.
 
 **Example:**
 

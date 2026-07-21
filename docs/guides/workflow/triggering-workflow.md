@@ -32,7 +32,6 @@ export async function main(args) {
   console.log("Notification workflow started:", executionId);
 
   return {
-    success: true,
     notificationExecutionId: executionId,
   };
 }

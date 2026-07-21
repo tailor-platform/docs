@@ -23,7 +23,7 @@ Define TailorDB Types in files matching glob patterns specified in `tailor.confi
 - **Multiple types per file**: You can define multiple TailorDB types in a single file
 - **Export method**: Use named exports (`export const`)
 - **Export both value and type**: Always export both the runtime value and TypeScript type
-- **Uniqueness**: Type names must be unique across all TailorDB files
+- **Uniqueness**: Type names must be unique across all TailorDB namespaces in the application
 
 ```typescript
 import { db } from "@tailor-platform/sdk";
@@ -254,6 +254,29 @@ type User {
 - `toward.as` - Customizes the field name for accessing the related type from this type
 - `backward` - Customizes the field name for accessing this type from the related type
 
+Relation names share the same GraphQL field namespace as fields, files, and other relations on
+the type. The SDK rejects duplicate or empty relation names. Use `toward.as` when multiple fields
+on the same type point to the same target type, because their default forward names are derived
+from the target type name:
+
+```typescript
+const post = db.type("Post", {
+  authorID: db.uuid().relation({
+    type: "n-1",
+    toward: { type: user, as: "author" },
+    backward: "authoredPosts",
+  }),
+  reviewerID: db.uuid().relation({
+    type: "n-1",
+    toward: { type: user, as: "reviewer" },
+    backward: "reviewedPosts",
+  }),
+});
+```
+
+Use `toward.as` or `backward` when a generated relation name would conflict with an existing
+field, files entry, or relation on the same type.
+
 ### Hooks
 
 Add hooks to execute functions during data creation or update. Hooks receive three arguments:
@@ -317,15 +340,24 @@ export const user = db
   });
 ```
 
+**Note:** `.hooks()` can only be called once on a type. Duplicate type-level calls fail at compile time and throw at runtime.
+
 ### Validation
 
-Add validation rules to fields. Validators receive three arguments (executed after hooks):
+Add validation rules to fields. Validators receive three arguments (executed after hooks and built-in type validation):
 
 - `value`: Field value after hook transformation
 - `data`: Entire record data after hook transformations (for accessing other field values)
 - `user`: User performing the operation
 
 Validators return `true` for success, `false` for failure. Use array form `[validator, errorMessage]` for custom error messages.
+
+**Note:** Custom validators run only when built-in type validation succeeds, so `value` always has the field's declared type. For array fields, the validator is called once with the complete array, not per element:
+
+```typescript
+// value is string[], not string
+db.string({ array: true }).validate(({ value }) => value.length >= 2);
+```
 
 #### Field-level Validation
 
@@ -380,6 +412,8 @@ export const user = db
   });
 ```
 
+**Note:** `.validate()` can only be called once on a type. Duplicate type-level calls fail at compile time and throw at runtime.
+
 ### Vector Search
 
 ```typescript
@@ -410,6 +444,22 @@ export const user = db.type("User", {
 ```
 
 ## Type Modifiers
+
+Type builder methods that set one type-level configuration can be called only once on the same type. Duplicate calls fail at compile time and throw at runtime. This applies to `.description()`, `.hooks()`, `.validate()`, `.features()`, `.indexes()`, `.files()`, `.permission()`, and `.gqlPermission()`.
+
+Conditional assignment is still supported when only one branch calls the method:
+
+```typescript
+let user = db.type("User", {
+  name: db.string(),
+});
+
+if (enableFiles) {
+  user = user.files({
+    avatar: "profile image",
+  });
+}
+```
 
 ### Composite Indexes
 
@@ -526,6 +576,8 @@ Available options:
 | ---------- | ------------------------------------- |
 | `optional` | Makes the selected fields optional    |
 | `array`    | Makes the selected fields array types |
+
+**Note:** The `array` option cannot change fields with custom validation — their validators expect the original value shape. Define a new field with a matching validator instead.
 
 #### `omitFields(keys)`
 

@@ -13,6 +13,7 @@ interface SyncConfig {
 
 const ROOT = process.cwd();
 const DOCS_ROOT = path.resolve(ROOT, "../../docs");
+const DOUBLE_EXT_MD = /\.[^.]+\.md$/;
 
 const configs: Record<string, SyncConfig> = {
   sdk: {
@@ -124,7 +125,10 @@ const indexBackup = fs.existsSync(indexBackupPath)
 // 2. Clean and copy
 fs.rmSync(config.dst, { recursive: true, force: true });
 fs.mkdirSync(config.dst, { recursive: true });
-fs.cpSync(config.src, config.dst, { recursive: true });
+fs.cpSync(config.src, config.dst, {
+  recursive: true,
+  filter: (src) => !DOUBLE_EXT_MD.test(path.basename(src)),
+});
 
 // 3. Remove unwanted files
 for (const file of config.removeFiles) {

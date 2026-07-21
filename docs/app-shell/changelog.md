@@ -1,5 +1,514 @@
 # @tailor-platform/app-shell
 
+## 1.8.0
+
+### Minor Changes
+
+- a4f735c: Add DateField, DatePicker, and Calendar components (@internationalized/date + Base UI implementation)
+
+  Introduces three accessible date-input components, implemented on `@internationalized/date` (value layer) and Base UI (`Popover`) with hand-rolled segmented-input and calendar-grid behaviour:
+
+  - `DateField` — segmented date/time input with label, description, and error message
+  - `DatePicker` — date field with a popover calendar
+  - `Calendar` — standalone calendar grid
+
+  All three accept `LocalizedString` labels/descriptions and resolve locale + timezone from the AppShell context. The `@internationalized/date` value types (`CalendarDate`, `CalendarDateTime`, `ZonedDateTime`, …) and helpers (`parseDate`, `getLocalTimeZone`, …) are re-exported from `@tailor-platform/app-shell`.
+
+  New AppShell context hooks:
+
+  - `useResolvedLocale()` — full BCP-47 locale (e.g. `"en-GB"`) plus the language code
+  - `useTimeZone()` — returns a `TimeZone` object with `.value` (IANA string), `.today()`, and `.now()` bound to the configured timezone
+
+  AppShell now accepts an optional `timeZone` prop.
+
+  > This is the **`@internationalized/date` + Base UI** variant — the lighter foundation tracked in the design proposal (§9). Net-new dependency is just `@internationalized/date` (~11 KB gz); Base UI is already in the bundle. Public API and accessibility contract are identical to the react-aria variant.
+  >
+  > **Known limitation:** the segmented input is built from `role="spinbutton"` elements that aren't `contentEditable`, so on-screen-keyboard typing on touch devices is limited — the calendar popover is the touch-friendly path (desktop keyboard entry works fully). The APG behaviour is unit-tested but not yet screen-reader-audited.
+
+- ef5c788: DataTable now scrolls internally: add `fill` prop to `Layout` to pin page chrome and scroll only the table rows.
+
+  ```tsx
+  <Layout fill>
+    <Layout.Header title="Products" />
+    <Layout.Column>
+      <DataTable.Root value={table}>
+        <DataTable.Toolbar>…</DataTable.Toolbar>
+        <DataTable.Table />
+        <DataTable.Footer>
+          <DataTable.Pagination />
+        </DataTable.Footer>
+      </DataTable.Root>
+    </Layout.Column>
+  </Layout>
+  ```
+
+  With `fill`, the page title, table toolbar, column header row (sticky), and footer stay visible at all heights — only the rows region scrolls vertically. Without `fill`, pages grow and scroll as before. Tables short enough to fit render without a scrollbar or layout shift.
+
+  **Behavior change:** the AppShell layout is now viewport-bounded (`h-svh` instead of `min-h-svh`), so page content scrolls inside the content area rather than on the document. Code relying on `window`/document scroll position should target the content area instead.
+
+  Also fixes the empty/error state reserving `pageSize`-worth of height — it is now capped at 5 rows, so large page sizes no longer produce a huge blank region below "No data".
+
+- ef5c788: Add `useAppShellScrollContainer()` — a supported handle to the content scroll container
+
+  Now that the shell is viewport-bounded (`h-svh`) and page content scrolls inside the content area rather than on the document, consumers that previously relied on `window`/document scroll need a stable way to reach the element that actually scrolls.
+
+  `useAppShellScrollContainer()` returns a ref to that element:
+
+  ```tsx
+  const scrollRef = useAppShellScrollContainer();
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () =>
+      setProgress(el.scrollTop / (el.scrollHeight - el.clientHeight));
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [scrollRef]);
+  ```
+
+  Use it wherever you would previously have reached for `window.scrollY`, a `window` `scroll` listener, `window.scrollTo(...)`, or an `IntersectionObserver` with the default viewport root.
+
+  - On a `<Layout fill>` page the element does not scroll (its children manage their own scrolling).
+  - Outside a `SidebarLayout` the ref's `current` is always `null`.
+  - The container also carries a `data-appshell-scroll-container` attribute for non-React access (CSS, tests, `document.querySelector`).
+
+- aa9306a: Add a `header` slot to `SidebarLayout` and a `SidebarLayout.DefaultHeader` building block
+
+  `SidebarLayout` now accepts a full-region `header?: ReactNode` prop, mirroring the existing `sidebar` slot. It defaults to the built-in header (`SidebarLayout.DefaultHeader`), so existing usage is unchanged.
+
+  To extend the built-in header (e.g. add a notification bell or user menu) without reconstructing the trigger and breadcrumb, use `SidebarLayout.DefaultHeader` with its `actions` slot:
+
+  ```tsx
+  <SidebarLayout
+    header={
+      <SidebarLayout.DefaultHeader
+        actions={[
+          <NotificationBell key="bell" />,
+          <AppearanceSwitcher key="appearance" />,
+        ]}
+      />
+    }
+  />
+  ```
+
+  - `DefaultHeader`'s `actions` prop (single node or array) controls the entire right-hand cluster, laid out in a horizontal, vertically-centered row.
+  - `actions` **defaults to `[<AppearanceSwitcher />]`**, and **passing `actions` replaces the whole cluster including the switcher** — include `<AppearanceSwitcher />` explicitly to keep it. This keeps the API a single slot instead of accumulating one-off props.
+  - `DefaultHeader` is available as `SidebarLayout.DefaultHeader` and as a top-level `DefaultHeader` export.
+  - `DefaultSidebar` is now also exposed as `SidebarLayout.DefaultSidebar` for symmetry; the top-level `DefaultSidebar` export is retained for backwards compatibility.
+
+  This provides an official, composable extension point for the top bar, replacing fragile consumer workarounds that queried the header DOM and injected a React portal.
+
+- 078130e: Add a `size` prop to `Tabs` and make `capsule` icon-only tabs square
+
+  `Tabs.Root` now accepts `size?: "xs" | "sm" | "default" | "lg"` (default `"default"`), mirroring `Button`'s height tiers. It sets a **minimum** height on the `capsule` variant — taller content still grows — so a capsule track sits flush next to a `Button`:
+
+  | `size`    | capsule track | matches Button |
+  | --------- | ------------- | -------------- |
+  | `xs`      | 28px          | `size="xs"`    |
+  | `sm`      | 32px          | `size="sm"`    |
+  | `default` | 36px          | default        |
+  | `lg`      | 40px          | `size="lg"`    |
+
+  Two `capsule` fixes from the same change:
+
+  - The list no longer hard-locks to `h-10` (40px); its height derives from the tab size floor.
+  - A tab whose only child is an icon now renders **square** (`min-width` follows `min-height`), instead of the previous wider-than-tall, shrunken look — ideal for icon-only view toggles.
+
+  The default `capsule` height moves from 40px to 36px to align with `Button`'s default height. `size` only affects the `capsule` variant; `line` and `default` are unchanged.
+
+### Patch Changes
+
+- eeb10ab: Remove the `stream` option from `useAIChat()` and `AIGatewayChatRequest`.
+
+  AppShell now selects the appropriate transport (streaming vs JSON) automatically based on the model. Passing `stream` is no longer needed.
+
+## 1.7.0
+
+### Minor Changes
+
+- 7f33506: Allow the standalone `Select`, `Combobox`, and `Autocomplete` (including their `.Async` variants) to receive an accessible name via `aria-label`, `aria-labelledby`, and `id`. Previously these props were silently dropped, leaving the combobox with only its current value as an accessible name — a WCAG 4.1.2 issue for filters and toolbars used outside a `Form`. The props are now forwarded to the underlying trigger/input.
+
+  ```tsx
+  // Announced as "Direction filter, combobox" instead of just its value
+  <Select
+    items={items}
+    value={value}
+    onValueChange={setValue}
+    aria-label="Direction filter"
+  />
+
+  // Or point at a visible label
+  <span id="dir-label">From</span>
+  <Combobox items={items} aria-labelledby="dir-label" />
+  ```
+
+### Patch Changes
+
+- ff30974: Fix `@tailor-platform/app-shell/styles` so consumer Tailwind utilities like `bg-card`, `border-border`, and `text-muted-foreground` resolve again without requiring `theme.css`.
+
+  `theme.css` remains a no-op compatibility shim, while `styles` now restores the Tailwind theme bridge and keeps the precompiled AppShell component CSS importable from a single entrypoint.
+
+## 1.6.1
+
+### Patch Changes
+
+- 147aacf: Fix Vitest and other Node-evaluated test setups that import `@tailor-platform/app-shell` by keeping the package's JS entry free of CSS imports.
+
+  `@tailor-platform/app-shell/styles` continues to ship the default AppShell styles and bundled Inter font assets. Applications should import that stylesheet explicitly, as shown in the docs and examples.
+
+## 1.6.0
+
+### Minor Changes
+
+- 820b75b: Add `DocumentProgressCard` — a generic, presentational card for a document's lifecycle/fulfilment state: an optional headline percentage, a stacked progress bar, and a status legend driven by arbitrary `segments`. It's domain-agnostic, so it stretches to any status breakdown (shipped / cancelled / pending, PO received / returned / yet-to-receive, etc.).
+
+  ```tsx
+  import { DocumentProgressCard } from "@tailor-platform/app-shell";
+
+  <DocumentProgressCard
+    title="Shipment status"
+    percent={60}
+    segments={[
+      { label: "Shipped", value: 30, color: "green" },
+      { label: "Returned", value: 3, color: "red" },
+      { label: "Pending", value: 17, color: "neutral" },
+    ]}
+  />;
+  ```
+
+  Each segment is `{ label, value, color }`. Pass an explicit `percent`, an optional `total` (leave a value larger than the segment sum to render an unfilled track remainder), and an optional `legend` override for when the legend should differ from the bar (e.g. overlapping buckets). Percentage and any domain-specific breakdown are derived in the consumer — see the docs for a purchase-order fulfilment recipe.
+
+- d1cac39: Add `Grid` — a generic, presentational CSS-Grid layout primitive for arranging arbitrary children into equal or custom-width columns, with responsive reflow, gap control, auto-fit, and optional `Grid.Item` spanning. Complements `Layout` (page scaffold) by handling content-level grids.
+
+  ```tsx
+  import { Grid } from "@tailor-platform/app-shell";
+
+  // Responsive KPI grid: 1 → 2 → 4 columns
+  <Grid columns={{ initial: 1, sm: 2, lg: 4 }} gap={4}>
+    <Card.Root>…</Card.Root>
+  </Grid>
+
+  // Auto-fitting gallery — no breakpoints needed
+  <Grid minChildWidth={240} gap={6}>{items}</Grid>
+
+  // Custom column widths + spanning
+  <Grid columns="280px 1fr" gap={6}>
+    <Grid.Item colSpan={2}>Wide</Grid.Item>
+  </Grid>
+  ```
+
+  Props: `columns`, `rows`, `gap`/`gapX`/`gapY` (defaults to `3` / 12px), `minChildWidth`, `flow`, `align`, `justify`. `Grid.Item` supports `colSpan`, `rowSpan`, `colStart`, `colEnd` — all responsive.
+
+- 2beb757: Add `align?: "left" | "center" | "right"` to `Table.Head` and `Table.Cell` so raw table primitives can align numeric and status columns without relying on consumer Tailwind utility overrides.
+
+  ```tsx
+  <Table.Head align="right">Amount</Table.Head>
+  <Table.Cell align="right">123</Table.Cell>
+
+  <Table.Head align="center">Status</Table.Head>
+  <Table.Cell align="center">Active</Table.Cell>
+  ```
+
+- 116d2cc: Add a low-level AI Gateway client and a simple text-only chat hook for AppShell.
+
+  ```tsx
+  import { createAIGatewayClient, useAIChat } from "@tailor-platform/app-shell";
+
+  const aiClient = createAIGatewayClient({ gatewayUri, authClient });
+  const { messages, sendMessage, stop } = useAIChat({
+    client: aiClient,
+    model: "gpt-5-mini",
+  });
+  ```
+
+- ae2396b: Add `useURLCollectionVariables` for wiring collection state (filters, sort, page size) to the URL query string in a single call. It seeds initial state from the current router search params and writes changes back as the user filters, sorts, or pages.
+
+  ```tsx
+  const { variables, control } = useURLCollectionVariables({
+    tableMetadata,
+    params: { pageSize: 20 },
+  });
+  ```
+
+  For cases that need URL persistence without react-router's `useSearchParams` (e.g. a custom binding), the pure `withURLCollectionState(options, [searchParams, setSearchParams])` decorator is also exported and can be composed with `useCollectionVariables` directly.
+
+  `useCollectionVariables` now reports state updates through `onParamsChange` using the same `params` shape it accepts.
+
+### Patch Changes
+
+- 40e0f1c: Restore the `@tailor-platform/app-shell/theme.css` export as a no-op compatibility shim.
+
+  Apps that still import `@tailor-platform/app-shell/theme.css` alongside `@tailor-platform/app-shell/styles` now keep building while the real theme tokens continue to come from `styles`.
+
+## 1.5.0
+
+### Minor Changes
+
+- 00f9aa7: Manage the browser tab from AppShell — title and favicon.
+
+  - **Title**: AppShell now keeps `document.title` in sync with the active route as `"<page> · <title>"`, where `<page>` is the current breadcrumb leaf (including any `useOverrideBreadcrumb` override, so detail pages show their record name automatically) and `<title>` is the `title` prop passed to `<AppShell>`. Works for every page with no per-page wiring; when no `title` is set the tab shows just the page name.
+  - **Favicon**: new `favicon` prop on `<AppShell>` sets the document favicon (any `<link rel="icon">` href — a public-path URL or a data URI). When omitted it defaults to the bundled Tailor favicon, so apps get correct branding out of the box.
+
+  Both are rendered declaratively (React 19 hoists `<title>`/`<link rel="icon">` into `<head>`), so it works in client-only apps, streaming SSR, and Server Components.
+
+  If your app already updates `document.title` manually, you can drop that wiring and let AppShell own the tab title. A host-page `<link rel="icon">` can remain in place unless you explicitly pass the new `favicon` prop.
+
+- 5353303: Introduce theming support — **ColorTheme** axis, static **theme palettes** via CSS imports, a new `AppearanceSwitcher` component, and bundled Inter variable fonts.
+
+  #### ColorTheme (end-user preference, persisted)
+
+  `ColorTheme` (`"light" | "dark" | "system"`) is the end-user color mode preference. Applied to `<html>` as `.light` / `.dark` class.
+
+  - `<AppShell defaultColorTheme="system">` sets the initial preference; user choice is persisted to localStorage.
+  - `useTheme()` hook returns `{ theme, resolvedTheme, setTheme }`.
+
+  #### Theme Palettes (static CSS imports)
+
+  Each palette (`default`, `cream`, `bloom`) ships both light and dark variants.
+  Select a palette by importing its CSS file — no prop needed:
+
+  ```ts
+  import "@tailor-platform/app-shell/themes/cream";
+  ```
+
+  The default palette is included automatically via `@tailor-platform/app-shell/styles`.
+
+  #### AppearanceSwitcher
+
+  - New `<AppearanceSwitcher />` component for toggling color theme (light / dark / system).
+
+### Patch Changes
+
+- 3d48b24: Remove `loader` from file-based page definitions (`Page.appShellPageProps`). This removes an accidentally exposed incomplete API and makes `guards` the single source of page-level route behavior in file-based routing.
+- 3138c6a: Fix DataTable checkbox vertical alignment. Remove unnecessary wrapper div and `translate-y-[2px]` hack so checkboxes align correctly with row content via `align-middle`.
+- 5353303: Set explicit `--accent` values per palette and mode, reorganise palette CSS into numbered tiers with a `_template.css` authoring guide, add `--alert-*` semantic tokens to the default palette, and wire `Alert` variants to those tokens (including lighter dark-mode foregrounds).
+- Updated dependencies [3d48b24]
+  - @tailor-platform/app-shell-vite-plugin@0.2.3
+
+## 1.4.1
+
+### Patch Changes
+
+- f176477: Fix cursor consistency across `Button` and `Badge`:
+
+  - **`Button`**: restore the pointer cursor. Tailwind v4 dropped the Preflight
+    rule that gave `button`/`[role="button"]` a `cursor: pointer`, so the base
+    `Button` showed the default arrow cursor while components that hardcode
+    `astw:cursor-pointer` (e.g. `ActionPanel`) did not. Added `astw:cursor-pointer`
+    to the `buttonVariants` base classes so all `Button` instances are consistent.
+    Disabled buttons keep the default cursor via the existing
+    `astw:disabled:pointer-events-none`.
+  - **`Badge`**: pin `astw:cursor-default`. A `Badge` is non-interactive but
+    renders a `<div>` with no cursor of its own, so it inherited `cursor: pointer`
+    from clickable ancestors (e.g. a `DataTable` row with `onClickRow`). Explicitly
+    setting the default cursor stops a badge from signalling clickability.
+
+## 1.4.0
+
+### Minor Changes
+
+- 5a251fd: Add `Alert` compound component with `neutral`, `success`, `warning`, `error`, and `info` variants. Each variant renders a contextual icon automatically.
+
+  ```tsx
+  import { Alert } from "@tailor-platform/app-shell";
+
+  <Alert.Root variant="success">
+    <Alert.Title>Saved</Alert.Title>
+    <Alert.Description>Your changes have been saved.</Alert.Description>
+  </Alert.Root>;
+  ```
+
+- 49f10e3: Improve Sheet component customizability:
+
+  - Add `size` prop to `Sheet.Content` for width variations (`sm`, `md`, `lg`, `xl`, `full`)
+  - Add `action` prop to `Sheet.Header` for placing action buttons to the right of the title
+  - Increase `Sheet.Title` font size to `text-lg` for better visibility
+  - Move close button to the left side of the header, with title inline next to it
+  - Header now has a bottom border, Footer has a top border for visual separation
+
+  ```tsx
+  <Sheet.Root side="right">
+    <Sheet.Trigger render={<Button />}>Open</Sheet.Trigger>
+    <Sheet.Content size="lg">
+      <Sheet.Header action={<Button size="sm">Save</Button>}>
+        <Sheet.Title>Edit Record</Sheet.Title>
+      </Sheet.Header>
+    </Sheet.Content>
+  </Sheet.Root>
+  ```
+
+### Patch Changes
+
+- 58b76ce: Add `info` and `subtle-info` badge variants for informational or in-progress status labels (blue palette, matching the existing `outline-info` dot color). Also extend the primitives demo to show all five outline variants (previously only `outline-success` was rendered).
+
+  ```tsx
+  <Badge variant="info">New</Badge>
+  <Badge variant="subtle-info">In Progress</Badge>
+  ```
+
+- 98270c5: Add optional `variant` prop to `ActionItem` for the `ActionPanel` component. Use `variant: "destructive"` to style dangerous actions (e.g., delete) with red text and hover background.
+
+## 1.3.0
+
+### Minor Changes
+
+- 902fad2: Add `Tabs` compound component for tab-based navigation, backed by Base UI's Tabs primitive.
+
+  ```tsx
+  import { Tabs } from "@tailor-platform/app-shell";
+
+  <Tabs.Root defaultValue="overview">
+    <Tabs.List>
+      <Tabs.Tab value="overview">Overview</Tabs.Tab>
+      <Tabs.Tab value="projects">Projects</Tabs.Tab>
+    </Tabs.List>
+    <Tabs.Panel value="overview">Overview content</Tabs.Panel>
+    <Tabs.Panel value="projects">Projects content</Tabs.Panel>
+  </Tabs.Root>;
+  ```
+
+- 2197c3f: Add array badge support to DataTable and DescriptionCard with shared `BadgeList` rendering and overflow popover.
+
+  ```tsx
+  // DataTable — badge column with array accessor
+  column({
+    ...infer("tags"),
+    type: "badge",
+    typeOptions: {
+      badgeVariantMap: { Premium: "warning", Office: "outline-info" },
+      maxVisible: 2,
+    },
+  })
+
+  // DescriptionCard — array badges with maxVisible
+  <DescriptionCard
+    data={{ tags: ["urgent", "fragile", "international"] }}
+    fields={[{
+      key: "tags",
+      label: "Tags",
+      type: "badge",
+      meta: {
+        badgeVariantMap: { urgent: "error", fragile: "warning", international: "outline-info" },
+        maxVisible: 2,
+      },
+    }]}
+  />
+  ```
+
+  Additional changes:
+
+  - Unify badge variant resolution into shared `resolveBadgeVariant()` utility with `"outline-neutral"` as the default variant (previously `"neutral"` in DataTable)
+  - Export `BadgeVariant` and `BadgeOptions` types from the public API
+  - `inferColumns()` no longer sets a default `render` function — columns without an explicit `type` or `render` now display `—` for null/empty values (aligns with typed-column behavior)
+  - Deprecate `BadgeVariantType` in favor of `BadgeVariant`
+
+### Patch Changes
+
+- 4998df4: Fix and improve `DescriptionCard` component:
+
+  - Fix relative date formatting producing incorrect output for future dates (negative time diff)
+  - Add i18n label support for relative date strings
+  - Use react-router `<Link>` for internal navigation in link and reference fields instead of plain `<a>` tags
+
+- b70e3d5: Updated @base-ui/react (1.4.1 -> 1.5.0)
+- 99f6b6d: Updated graphql (^16.13.2 -> ^16.14.0)
+
+## 1.2.0
+
+### Minor Changes
+
+- 8a09b26: Add `align: "left" | "right"` to `DataTable` `Column`. When set to `"right"`, the header label, body cell, and loading-skeleton bar are right-aligned together — eliminating the inline `<span className="text-right">` wrappers callers were adding inside `render` for numeric columns (Amount, Score, Total).
+
+  `align` is **auto-defaulted to `"right"` for `type: "number"` and `type: "money"`** so the common case Just Works without extra config. Other types default to `"left"`. Pass `"left"` explicitly to opt a numeric column out.
+
+  ```tsx
+  // Auto-aligned right — no `align` needed
+  column({
+    label: "Total",
+    type: "money",
+    accessor: (row) => row.total,
+    typeOptions: { currency: "USD" },
+  });
+
+  // Explicit alignment for a custom-render column
+  column({
+    label: "Amount",
+    align: "right",
+    render: (row) => formatMoney(row.amount),
+  });
+  ```
+
+- b644bdb: Add `truncate: boolean` to `DataTable` `Column`. When set, the cell content is truncated with an ellipsis on overflow, and an app-shell `<Tooltip>` is auto-wired to reveal the full value on hover when the cell value is a stringifiable primitive. The tooltip resolves through the same precedence rule the built-in `type` renderers use — `accessor` first, then `row[col.id]` — so `inferColumns` consumers get the tooltip for free without an explicit accessor. Pair `truncate` with `width` on neighboring columns to anchor row width, since truncate cells use `max-w-0` to stay shrinkable.
+
+  ```tsx
+  column({
+    label: "Description",
+    render: (row) => row.description,
+    accessor: (row) => row.description,
+    truncate: true,
+  });
+
+  // Or with `inferColumns`, no explicit `accessor` needed — the inferred
+  // column pins `id` to the field name so the tooltip resolves automatically:
+  column({ ...infer("description"), truncate: true });
+  ```
+
+  `inferColumns` now also pins `id` to the metadata field name (previously omitted). This makes the cell renderer's `row[col.id]` fallback resolve cleanly and stabilizes the React key / column-visibility identifier across re-renders.
+
+- 4c89923: Add `defaultOpen` and `collapsible` props to `SidebarLayout` for controlling sidebar behavior.
+
+  ```tsx
+  // Sidebar closed by default on desktop
+  <SidebarLayout defaultOpen={false} />
+
+  // Non-collapsible sidebar (always visible, toggle buttons hidden)
+  <SidebarLayout collapsible={false} />
+  ```
+
+- c4fbfa2: Add `type` and `typeOptions` to `DataTable` `Column` for built-in cell rendering. Set `type` to `text`, `number`, `money`, `date`, `badge`, or `link` to skip writing a `render` function for the common cases. `render` stays required for untyped columns and becomes an optional override when `type` is set.
+
+  `Column<TRow>` is a discriminated union on `type`, so wrong-shape options are a compile error rather than silently ignored at runtime — and `type: "link"` requires `typeOptions.href`.
+
+  ```tsx
+  column({
+    label: "Total",
+    accessor: (row) => row.total,
+    type: "money",
+    typeOptions: { currency: "USD" },
+  });
+
+  column({
+    label: "Status",
+    accessor: (row) => row.status,
+    type: "badge",
+    typeOptions: {
+      badgeVariantMap: { active: "success", draft: "neutral" },
+      badgeLabelMap: { active: "Active", draft: "Draft" },
+    },
+  });
+  ```
+
+### Patch Changes
+
+- c4fbfa2: Narrow `Column.accessor`'s return type per built-in `type` so the typed cell renderers reject values they can't display. Returning an array or a plain object from a `text` / `number` / `money` / `date` / `badge` / `link` accessor is now a compile error instead of silently rendering `[object Object]` or a stringified list. `null` and `undefined` are still allowed and continue to render the `—` placeholder. Columns without a `type` retain the loose `unknown` return type — they pair with `render` to draw whatever shape they like.
+
+  ```tsx
+  column({
+    label: "Tags",
+    type: "text",
+    // ^ compile error: text accessor cannot return an array.
+    accessor: (row) => row.tags,
+  });
+  ```
+
+- eecff8e: Add `subtle-success`, `subtle-warning`, and `subtle-error` badge variants for low-emphasis status labels.
+
+  ```tsx
+  <Badge variant="subtle-success">Matched</Badge>
+  <Badge variant="subtle-warning">Needs Attention</Badge>
+  <Badge variant="subtle-error">Needs Review</Badge>
+  ```
+
 ## 1.1.1
 
 ### Patch Changes

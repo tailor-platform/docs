@@ -25,7 +25,6 @@ Core concepts and technical fundamentals of the platform.
 
 - [Terminology & Concepts](/reference/concepts/terminology_concepts) - Platform terminology and key concepts
 - [Tailor Resource Names (TRN)](/reference/concepts/trn) - Resource naming conventions and structure
-- [Character Encodings](/reference/concepts/character-encodings) - Supported character encodings and conversion
 
 ## Infrastructure
 

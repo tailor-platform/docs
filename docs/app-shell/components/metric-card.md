@@ -71,6 +71,7 @@ import { MetricCard } from "@tailor-platform/app-shell";
 
 ## Related
 
+- [Grid](grid) — Arrange MetricCards in responsive columns (e.g. KPI grids).
 - [Layout](layout) — Page layout for placing MetricCards in a grid.
 - [DescriptionCard](description-card) — Structured key-value cards for detail views.
 - [Badge](badge) — Status badges that can complement metric displays.

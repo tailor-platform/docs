@@ -11,15 +11,15 @@ A static website hosting enables deployment of single page applications (SPAs) d
 Define static websites in your workspace configuration. Without IP restrictions, websites are automatically cached via CDN for optimal performance.
 
 ```typescript {{ title: "Static Website Configuration" }}
-import { defineStaticWebsite } from "@tailor-platform/sdk";
+import { defineStaticWebSite } from "@tailor-platform/sdk";
 
 // Basic static website
-export const mySpa = defineStaticWebsite("my-spa", {
+export const mySpa = defineStaticWebSite("my-spa", {
   description: "Single page application",
 });
 
 // With IP restrictions (disables caching)
-export const internalApp = defineStaticWebsite("internal-app", {
+export const internalApp = defineStaticWebSite("internal-app", {
   description: "Internal application with restricted access",
   allowedIpAddresses: ["198.51.100.0/24", "203.0.113.0/24"],
 });
@@ -63,3 +63,73 @@ export default defineTailorConfig({
 ```
 
 The static website URL format is: `https://{static-website-name}-{WORKSPACE_HASH}.web.erp.dev`
+
+## Custom Domains
+
+You can use your own subdomain (e.g. `app.example.com`) instead of the auto-generated URL. Apex domains (e.g. `example.com`) are not yet supported. A domain can only belong to one static website. Adding a domain that is already in use will fail.
+
+Each static website supports up to 10 custom domains. After adding a domain, you need to configure DNS CNAME records to complete the setup.
+
+### Adding Custom Domains
+
+There are two ways to add custom domains to a static website.
+
+#### SDK Configuration
+
+Add the `customDomains` field to your `defineStaticWebSite()` definition. Domains are provisioned automatically when you run `tailor-sdk deploy`.
+
+```typescript {{ title: "Static Website with Custom Domains" }}
+import { defineStaticWebSite } from "@tailor-platform/sdk";
+
+export const mySpa = defineStaticWebSite("my-spa", {
+  description: "Single page application",
+  customDomains: ["app.example.com"],
+});
+```
+
+#### CLI
+
+Use the API command to add a custom domain directly.
+
+```bash {{ title: "Add a Custom Domain" }}
+tailor-sdk api AddCustomDomain --body '{
+  "workspace_id": "<workspace-id>",
+  "static_website_name": "my-spa",
+  "domain": "app.example.com"
+}'
+```
+
+You can list and inspect custom domains with dedicated subcommands:
+
+```bash {{ title: "List and Get Custom Domains" }}
+# List all custom domains for a static website
+tailor-sdk staticwebsite domain list my-spa
+
+# Get details of a specific custom domain
+tailor-sdk staticwebsite domain get app.example.com
+```
+
+### DNS Configuration
+
+After adding a custom domain, configure CNAME records with your DNS provider. The required targets are returned in the response and can also be retrieved with `tailor-sdk staticwebsite domain get`.
+
+| Record Type | Host | Target | Purpose |
+| ----------- | ---- | ------ | ------- |
+| CNAME | `app.example.com` | Value of `trafficCnameTarget` | Routes traffic to the CDN |
+| CNAME | `_acme-challenge.app.example.com` | Value of `certificateCnameTarget` | TLS certificate issuance (DNS challenge) |
+
+For new domains, setting the traffic CNAME is sufficient. The TLS certificate is issued automatically via HTTP challenge. If you are migrating from another service and cannot switch traffic yet, set the `_acme-challenge` record first to issue the certificate via DNS challenge, then update the traffic CNAME when ready.
+
+### Domain Status
+
+Custom domains progress through the following statuses:
+
+| Status | Description |
+| ------ | ----------- |
+| `pending` | Domain registered, challenge not yet started |
+| `verifying` | Challenge in progress, verifying certificate |
+| `cert_issued` | TLS certificate issued, waiting for traffic CNAME |
+| `active` | TLS certificate active and domain is serving traffic |
+| `failed` | Provisioning failed (see `errorMessage` for details) |
+
+If the challenge does not complete within 7 days, the domain is automatically removed. To retry, add the domain again.
