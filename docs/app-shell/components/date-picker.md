@@ -98,8 +98,9 @@ Segment order, first-day-of-week, and month/weekday names all follow the resolve
 
 ## Keyboard
 
-- **Segments:** `↑`/`↓` increment/decrement, digits type-to-fill (auto-advance), `←`/`→` move between segments, `Backspace` clears.
-- **Calendar grid:** arrows move by day/week, `Home`/`End` to week start/end, `PageUp`/`PageDown` by month, `Shift`+`PageUp`/`PageDown` by year, `Enter`/`Space` selects.
+- **Segments:** `↑`/`↓` increment/decrement, digits type-to-fill (auto-advance), `←`/`→` move between segments, `Backspace` clears, `/` commits the current segment and advances (so a single `1` means January, not the start of `1x`).
+- **Whole-date shortcuts** (QuickBooks Online-style, case-insensitive): `t` today · `m`/`h` start/end of the entered month (current month when empty) · `y`/`r` start/end of the year · `w`/`k` start/end of the week (locale-aware) · `-` previous day · `=`/`+` next day (both step across month **and** year boundaries; `+` needs no Shift). A 1–2 digit year expands to the 2000s on blur (`26` → `2026`). These work **from a focused date segment** (they set the field value, clamped to `minValue`/`maxValue`) **and while the calendar popover is open** (they move the highlighted day like the arrow keys — press `Enter` to confirm; `minValue`/`maxValue` clamp and unavailable days can't be confirmed).
+- **Calendar grid:** arrows move by day/week, `Home`/`End` to week start/end, `PageUp`/`PageDown` by month, `Shift`+`PageUp`/`PageDown` by year, `Enter`/`Space` selects. `Alt`+`↓` opens the calendar from the field (`DatePicker`).
 
 ## Accessibility
 
@@ -115,21 +116,22 @@ The tables below list props this variant **actually implements** for v1 (date gr
 
 ### DateFieldProps
 
-| Prop                                      | Type                             | Description                                                             |
-| ----------------------------------------- | -------------------------------- | ----------------------------------------------------------------------- |
-| `label`                                   | `LocalizedString`                | Field label                                                             |
-| `description`                             | `LocalizedString`                | Helper text below the field                                             |
-| `errorMessage`                            | `LocalizedString`                | Error text; also sets the invalid state                                 |
-| `value` / `defaultValue`                  | `DateValue \| null`              | Controlled / uncontrolled value (`CalendarDate` at date granularity)    |
-| `onChange`                                | `(v: DateValue \| null) => void` | Fires on a complete, valid value; `null` when cleared                   |
-| `isDisabled` / `isReadOnly` / `isInvalid` | `boolean`                        | State flags                                                             |
-| `isRequired`                              | `boolean`                        | Sets `aria-required` on the segments (no visual required indicator yet) |
-| `placeholderValue`                        | `DateValue`                      | Seeds unset segments (increment start + segment order)                  |
-| `autoFocus`                               | `boolean`                        | Focus the first segment on mount                                        |
-| `locale`                                  | `string`                         | BCP-47 locale override (defaults to the AppShell formatting locale)     |
-| `name`                                    | `string`                         | Emits a hidden `<input>` with the ISO value for form submission         |
-| `aria-label`                              | `string`                         | Accessible name when there's no visible `label` (e.g. compact filters)  |
-| `className`                               | `string`                         | Root element class                                                      |
+| Prop                                      | Type                                                          | Description                                                                                    |
+| ----------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `label`                                   | `LocalizedString`                                             | Field label                                                                                    |
+| `description`                             | `LocalizedString`                                             | Helper text below the field                                                                    |
+| `errorMessage`                            | `LocalizedString`                                             | Error text; also sets the invalid state                                                        |
+| `value` / `defaultValue`                  | `DateValue \| null`                                           | Controlled / uncontrolled value (`CalendarDate` at date granularity)                           |
+| `onChange`                                | `(v: DateValue \| null) => void`                              | Fires on a complete, valid value; `null` when cleared                                          |
+| `isDisabled` / `isReadOnly` / `isInvalid` | `boolean`                                                     | State flags                                                                                    |
+| `isRequired`                              | `boolean`                                                     | Sets `aria-required` on the segments (no visual required indicator yet)                        |
+| `placeholderValue`                        | `DateValue`                                                   | Seeds unset segments (increment start + segment order)                                         |
+| `autoFocus`                               | `boolean`                                                     | Focus the first segment on mount                                                               |
+| `locale`                                  | `string`                                                      | BCP-47 locale override (defaults to the AppShell formatting locale)                            |
+| `name`                                    | `string`                                                      | Emits a hidden `<input>` with the ISO value for form submission                                |
+| `firstDayOfWeek`                          | `"sun" \| "mon" \| "tue" \| "wed" \| "thu" \| "fri" \| "sat"` | Override the locale's week start for the `w`/`k` keyboard shortcuts; omit to follow the locale |
+| `aria-label`                              | `string`                                                      | Accessible name when there's no visible `label` (e.g. compact filters)                         |
+| `className`                               | `string`                                                      | Root element class                                                                             |
 
 > `DateField` has no calendar, so `minValue` / `maxValue` / `isDateUnavailable` don't apply to it — they're honoured by `DatePicker` and `Calendar` below.
 
