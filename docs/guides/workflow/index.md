@@ -79,8 +79,8 @@ Workflows support nested function calls, similar to regular programming:
 ```javascript
 export function main(args) {
   // Call functions sequentially
-  const data = tailor.workflow.triggerJobFunction("fetchData", {});
-  const processed = tailor.workflow.triggerJobFunction("processData", data);
+  const data = tailor.workflow.execJobFunction("fetchData", {});
+  const processed = tailor.workflow.execJobFunction("processData", data);
   return processed;
 }
 ```
@@ -127,7 +127,7 @@ See [Concurrency Policy](/sdk/services/workflow#concurrency-policy) in the SDK W
 
 ### Job Function Execution Policies
 
-Declare workspace-scoped execution policies with a per-key `maxConcurrentExecutions` cap, then route job function dispatches through them by passing `executionPolicyKey` on `job.trigger()` / `tailor.workflow.triggerJobFunction()`.
+Declare workspace-scoped execution policies with a per-key `maxConcurrentExecutions` cap, then route job function dispatches through them by passing `executionPolicyKey` on `job.trigger()` / `tailor.workflow.execJobFunction()`.
 
 - Enforced by the **runner** at dispatch time — a separate mechanism from the scheduler-level workflow cap above. The two stack: a workflow that is allowed to start can still have its job function dispatches suspended by an execution policy.
 - Dispatches that would exceed the cap are suspended and resume automatically as slots free up.
@@ -191,7 +191,7 @@ export const syncTenant = createWorkflowJob({
 });
 ```
 
-The same `executionPolicyKey` option is available on `tailor.workflow.triggerJobFunction(name, args, options)` when dispatching by name from a Function-service script.
+The same `executionPolicyKey` option is available on `tailor.workflow.execJobFunction(name, args, options)` when dispatching by name from a Function-service script.
 
 **Matching modes:**
 
