@@ -11,7 +11,7 @@ This functionality is especially useful for applications that require efficient 
 For instance, consider the definition of the `titleAndSku` index as follows:
 
 ```typescript {{ title: 'tailordb/product.ts' }}
-db.type("Product", {
+db.table("Product", {
   title: db.string(),
   sku: db.string(),
 }).indexes({

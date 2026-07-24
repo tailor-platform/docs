@@ -56,18 +56,18 @@ resource "tailor_secretmanager_secret" "my-secret" {
 - **value_wo**:(String) The actual secret value (write-only for security)
 - **value_wo_version**:(Number) Version number for the secret value
 
-You can also manage secrets using the tailor-sdk command-line interface:
+You can also manage secrets using the tailor command-line interface:
 
 ```bash
 # Create a vault
-tailor-sdk secret vault create default
+tailor secret vault create default
 
 # Create a secret in the vault
-tailor-sdk secret create --vault-name default --name my-secret --value my-secret-value
+tailor secret create --vault-name default --name my-secret --value my-secret-value
 ```
 
-- `tailor-sdk secret vault create`: Creates a new vault in the current workspace (vault name as positional argument)
-- `tailor-sdk secret create`: Adds a new secret to an existing vault
+- `tailor secret vault create`: Creates a new vault in the current workspace (vault name as positional argument)
+- `tailor secret create`: Adds a new secret to an existing vault
 - Use `--vault-name` to specify the target vault name
 - Use `--name` to set the secret identifier
 - Use `--value` to provide the secret value

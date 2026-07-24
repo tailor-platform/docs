@@ -62,8 +62,8 @@ Store your Loop API key as a secret in the Tailor PF using one of the following 
 Run the following commands to create a vault named loop-vault and to store the secret key.
 
 ```bash
-tailor-sdk secret vault create loop-vault
-tailor-sdk secret create --vault-name loop-vault --name loop-key --value {$api_key}
+tailor secret vault create loop-vault
+tailor secret create --vault-name loop-vault --name loop-key --value {$api_key}
 ```
 
 #### Through the Console

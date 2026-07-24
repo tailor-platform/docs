@@ -4,7 +4,7 @@ Auth connections enable your application to authenticate with external OAuth2 pr
 
 - To follow along, first complete the [SDK Quickstart](../../sdk/quickstart) and [Setting up Auth](overview).
 
-This tutorial manages the connection through SDK config (`defineAuth()`), which is one of two supported approaches. You can instead create, authorize, and manage a connection entirely from the Console with `tailor-sdk authconnection open` — see [Setup Flow](/guides/auth/authconnection#setup-flow) in the AuthConnection guide for both options and why a given connection should only be managed by one of them.
+This tutorial manages the connection through SDK config (`defineAuth()`), which is one of two supported approaches. You can instead create, authorize, and manage a connection entirely from the Console with `tailor authconnection open` — see [Setup Flow](/guides/auth/authconnection#setup-flow) in the AuthConnection guide for both options and why a given connection should only be managed by one of them.
 
 ## What you'll build
 
@@ -60,10 +60,10 @@ Store `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in your `.env` file or CI se
 
 ### 2. Deploy the Connection
 
-Run `tailor-sdk deploy` to register the connection with the platform:
+Run `tailor deploy` to register the connection with the platform:
 
 ```bash
-tailor-sdk deploy
+tailor deploy
 ```
 
 This creates the connection record. The connection exists but is not yet authorized (it has no tokens yet).
@@ -77,22 +77,22 @@ Redeploying updates an existing connection **in-place**, preserving the OAuth to
 Run the authorize command to complete the OAuth2 flow:
 
 ```bash
-tailor-sdk authconnection authorize --name google-connection \
+tailor authconnection authorize --name google-connection \
   --scopes "openid,profile,email"
 ```
 
 This opens a browser tab for the OAuth2 consent screen. After you approve, the platform exchanges the authorization code for tokens and stores them securely. Your app code never handles the tokens directly.
 
-You can also run `tailor-sdk authconnection open` to authorize from the Console instead of the local CLI flow:
+You can also run `tailor authconnection open` to authorize from the Console instead of the local CLI flow:
 
 ```bash
-tailor-sdk authconnection open
+tailor authconnection open
 ```
 
 Verify the connection is authorized:
 
 ```bash
-tailor-sdk authconnection list
+tailor authconnection list
 ```
 
 ### 4. Use the Connection Token at Runtime
@@ -133,20 +133,20 @@ The connection name is **type-checked** against the connections defined in `defi
 // authconnection.getConnectionToken("unknown-connection"); // ❌ TypeScript error
 ```
 
-Type narrowing comes from the generated `tailor.d.ts`. Run `tailor-sdk generate` (or `deploy`) after adding or renaming connections to refresh it.
+Type narrowing comes from the generated `tailor.d.ts`. Run `tailor generate` (or `deploy`) after adding or renaming connections to refresh it.
 
 ### 5. Manage Connections via CLI
 
 ```bash
 # List all connections and their status
-tailor-sdk authconnection list
+tailor authconnection list
 
 # Re-authorize a connection (e.g. token expired or scopes changed)
-tailor-sdk authconnection authorize --name google-connection \
+tailor authconnection authorize --name google-connection \
   --scopes "openid,profile,email,https://www.googleapis.com/auth/calendar"
 
 # Revoke a connection
-tailor-sdk authconnection revoke --name google-connection
+tailor authconnection revoke --name google-connection
 ```
 
 ## Complete Example: Calling an External API from an Executor

@@ -37,7 +37,7 @@ Here's how to define a `Product` type using the SDK:
 ```typescript
 import { db } from "@tailor-platform/sdk";
 
-export const product = db.type("Product", "Product data schema", {
+export const product = db.table("Product", "Product data schema", {
   title: db.string().description("Title of the product").index(),
   description: db.string().description("Description of the product"),
   price: db.float(),
@@ -123,7 +123,7 @@ A TailorDB type definition consists of:
 - **Fields** (Required): Field definitions with types and modifiers
 
 ```typescript
-export const task = db.type("Task", "Task management entity", {
+export const task = db.table("Task", "Task management entity", {
   title: db.string().description("Task title"),
   completed: db.bool(),
   dueDate: db.datetime({ optional: true }),
@@ -139,7 +139,7 @@ See [Fields](fields) for detailed field configuration options.
 TailorDB follows a **secure-by-default** principle. All operations are denied unless explicitly granted.
 
 ```typescript
-db.type("Task", {
+db.table("Task", {
   title: db.string(),
   ownerId: db.uuid(),
   ...db.fields.timestamps(),
@@ -163,7 +163,7 @@ See [Permission](permission) for more information.
 Enable additional GraphQL operations with the `.features()` modifier:
 
 ```typescript
-db.type("Product", {
+db.table("Product", {
   name: db.string(),
   price: db.float(),
   ...db.fields.timestamps(),
@@ -180,7 +180,7 @@ See [Advanced Settings](advanced-settings/overview) for more information.
 Create multi-field indexes for query optimization:
 
 ```typescript
-db.type("Order", {
+db.table("Order", {
   customerId: db.uuid(),
   orderDate: db.datetime(),
   ...db.fields.timestamps(),

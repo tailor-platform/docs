@@ -11,14 +11,14 @@ Workflows can be triggered in production environments using two primary methods:
 
 ## Job Functions (Programmatic)
 
-You can start another workflow from within a job function using `tailor.workflow.triggerWorkflow()`. This is useful for workflow composition, parallel execution, and implementing multi-stage processes.
+You can start another workflow from within a job function using `tailor.workflow.startWorkflow()`. This is useful for workflow composition, parallel execution, and implementing multi-stage processes.
 
 **Example:**
 
 ```javascript
 export async function main(args) {
   // Start another workflow asynchronously
-  const executionId = await tailor.workflow.triggerWorkflow(
+  const executionId = await tailor.workflow.startWorkflow(
     "notification-workflow",
     { orderId: args.orderId, email: args.customerEmail },
     {
@@ -56,7 +56,7 @@ export async function main(args) {
 - Starting parallel sub-workflows for different tasks
 - Implementing workflow composition patterns
 
-`triggerWorkflow()` starts a workflow asynchronously and returns immediately with an execution ID. It does not wait for the workflow to complete. Use this for fire-and-forget or parallel execution patterns.
+`startWorkflow()` starts a workflow asynchronously and returns immediately with an execution ID. It does not wait for the workflow to complete. Use this for fire-and-forget or parallel execution patterns.
 
 ## Executor (Event-Driven Automation)
 
@@ -286,7 +286,7 @@ Both triggering methods support authentication through Machine Users:
 **In Job Functions:**
 
 ```javascript
-const executionId = await tailor.workflow.triggerWorkflow(
+const executionId = await tailor.workflow.startWorkflow(
   "my-workflow",
   { data: "value" },
   {
@@ -318,10 +318,10 @@ Note: In the SDK, authentication is handled through the `authInvoker` configurat
 
 ## Starting Workflows
 
-Start a workflow execution using the `tailor-sdk workflow start` command:
+Start a workflow execution using the `tailor workflow start` command:
 
 ```bash
-tailor-sdk workflow start my-workflow \
+tailor workflow start my-workflow \
   --machineuser admin-machine-user \
   --arg '{"orderId": "12345"}'
 ```
@@ -331,7 +331,7 @@ The workflow name is specified as a positional argument (the first argument afte
 **Usage:**
 
 ```bash
-tailor-sdk workflow start [options] <name>
+tailor workflow start [options] <name>
 ```
 
 **Arguments:**
@@ -358,7 +358,7 @@ Status: pending
 Pass input data to your workflow using the `--arg` option:
 
 ```bash
-tailor-sdk workflow start my-workflow \
+tailor workflow start my-workflow \
   --machineuser admin-machine-user \
   --arg '{"orderId": "12345", "priority": "high"}'
 ```
@@ -380,7 +380,7 @@ Workflows execute with machine user authentication context.
 **Machine User Authentication:**
 
 ```bash
-tailor-sdk workflow start my-workflow \
+tailor workflow start my-workflow \
   --machineuser my-machine-user \
   --arg '{"data": "value"}'
 ```

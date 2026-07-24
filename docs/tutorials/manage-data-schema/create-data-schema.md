@@ -23,7 +23,7 @@ Create a new file `db/task.ts` in your project and define the Task type:
 import { db } from "@tailor-platform/sdk";
 import { project } from "./project";
 
-export const task = db.type("Task", {
+export const task = db.table("Task", {
   title: db.string().description("Task title"),
   description: db.string().optional().description("Task description"),
   status: db

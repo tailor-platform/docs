@@ -21,7 +21,7 @@ This approach preserves historical data and enables change monitoring and analys
 Let's create a history table for the `StockSummary` type to log its data changes.
 
 ```typescript
-db.type("StockSummaryHistory", {
+db.table("StockSummaryHistory", {
   variantID: db.uuid({ required: true, description: "Variant ID" }),
   variant: db.link("ProductVariant", "variantID"),
   onHoldQuantity: db.float({ required: true, description: "onHoldQuantity" }),
@@ -56,7 +56,7 @@ db.type("StockSummaryHistory", {
 By enabling `publishEvents` in the `StockSummary` features, you can create an event-based trigger that executes on every `StockSummary` record update.
 
 ```typescript
-db.type("StockSummary", {
+db.table("StockSummary", {
   // fields...
 }).features({
   publishEvents: true,

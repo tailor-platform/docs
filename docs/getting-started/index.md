@@ -15,7 +15,7 @@ Here is a quick look at the console.
 
 ## Tailor Platform SDK
 
-The `tailor-sdk` is the command-line interface for building, deploying, and managing applications on the Tailor Platform. It provides a comprehensive set of tools for working with TailorDB, Functions, Workflows and Auth.
+The `tailor` is the command-line interface for building, deploying, and managing applications on the Tailor Platform. It provides a comprehensive set of tools for working with TailorDB, Functions, Workflows and Auth.
 
 ### Installation
 

@@ -14,7 +14,7 @@ After integrating your Identity Provider (IdP) with the Auth service, a user mus
 
 1. **User Profile Management**: How Tailor Platform connects authentication with TailorDB user profiles
 2. **OAuth2 Client Configuration**: How Tailor Platform's auth service acts as a standalone authentication service
-3. **Login Process**: Using OAuth2 flows with `tailor-sdk`
+3. **Login Process**: Using OAuth2 flows with `tailor`
 
 ## Authentication Architecture
 
@@ -173,17 +173,17 @@ Browser clients provide enhanced security for SPAs through multiple mechanisms:
 
 ## Part 3: Login Process
 
-### Using `tailor-sdk` for Testing
+### Using `tailor` for Testing
 
-The `tailor-sdk` command provides a convenient way to test your OAuth2 configuration:
+The `tailor` command provides a convenient way to test your OAuth2 configuration:
 
 ```bash
-tailor-sdk login
+tailor login
 ```
 
 **What happens during this flow:**
 
-1. **OAuth2 Authorization**: `tailor-sdk` initiates the OAuth2 authorization code flow
+1. **OAuth2 Authorization**: `tailor` initiates the OAuth2 authorization code flow
 2. **IdP Redirect**: Your browser opens to Tailor Platform's auth service, which redirects to your configured IdP
 3. **User Authentication**: You authenticate with your IdP (Auth0, Okta, etc.)
 4. **Profile Lookup**: Tailor Platform looks up your user profile in TailorDB using the email from your IdP

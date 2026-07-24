@@ -78,8 +78,8 @@ Store your QuickBooks access token as a secret in the Tailor PF using one of the
 Run the following commands to create a vault named quickbooks-vault and to store the secret key.
 
 ```bash
-tailor-sdk secret vault create quickbooks-vault
-tailor-sdk secret create --vault-name quickbooks-vault --name quickbooks-key --value {$access_token}
+tailor secret vault create quickbooks-vault
+tailor secret create --vault-name quickbooks-vault --name quickbooks-key --value {$access_token}
 ```
 
 #### Through the Console

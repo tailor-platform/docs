@@ -355,7 +355,7 @@ Using `groupBy` with aggregation queries in GraphQL allows you to perform calcul
 To use the aggregation query, you'll need to enable advanced APIs. For example, to enable aggregation on the `Order` type
 
 ```typescript
-db.type("Order", {
+db.table("Order", {
   name: db.string(),
   // ... other fields
 }).features({

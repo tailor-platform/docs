@@ -9,6 +9,8 @@ These provide direct access to platform services without external HTTP calls or 
 
 All interfaces are typed via [`@tailor-platform/function-types`](https://github.com/tailor-platform/function/tree/main/packages/types) — install the package to get full TypeScript support.
 
+Importing from `@tailor-platform/sdk` no longer activates these ambient `tailor.*` / `tailordb.*` globals automatically. Add `import "@tailor-platform/sdk/runtime/globals"` as a side-effect import in your function file (or use the typed wrappers from `@tailor-platform/sdk/runtime` instead) — see [Runtime](/sdk/runtime) for details.
+
 ## Overview
 
 | Service | Description |
@@ -17,7 +19,7 @@ All interfaces are typed via [`@tailor-platform/function-types`](https://github.
 | [Secret Manager](#secret-manager) | Retrieve secrets from vaults |
 | [Auth Connection](#auth-connection) | Get access tokens for external auth connections |
 | [Character Encoding](#character-encoding) | Convert between character encodings (iconv) |
-| [Workflow](#workflow) | Trigger workflows and job functions |
+| [Workflow](#workflow) | Start workflows and job functions |
 | [TailorDB Client](#tailordb-client) | Execute SQL queries against TailorDB |
 | [TailorDB File](#tailordb-file) | Upload, download, and manage files in TailorDB |
 
@@ -142,16 +144,16 @@ const result = converter.convert(inputBuffer);
 
 **Interface**: `tailor.workflow`
 
-Trigger workflows and job functions from within a function.
+Start workflows and job functions from within a function.
 
 ```typescript
-// Trigger a workflow
-const executionId = await tailor.workflow.triggerWorkflow("processOrder", {
+// Start a workflow
+const executionId = await tailor.workflow.startWorkflow("processOrder", {
   orderId: "order-123",
 });
 
-// Trigger with a specific machine user
-const executionId = await tailor.workflow.triggerWorkflow(
+// Start with a specific machine user
+const executionId = await tailor.workflow.startWorkflow(
   "processOrder",
   { orderId: "order-123" },
   {
@@ -162,14 +164,14 @@ const executionId = await tailor.workflow.triggerWorkflow(
   },
 );
 
-// Trigger a job function
-const result = await tailor.workflow.triggerJobFunction("calculateTax", {
+// Start a job function
+const result = await tailor.workflow.startJobFunction("calculateTax", {
   amount: 1000,
 });
 
 // Route the dispatch through a workspace-registered execution policy for
 // per-key concurrency control (see the SDK Workflow guide for policy setup).
-const scoped = await tailor.workflow.triggerJobFunction(
+const scoped = await tailor.workflow.startJobFunction(
   "syncTenant",
   { tenantId: "acme" },
   { executionPolicyKey: `tenant-api.acme` },
@@ -178,8 +180,8 @@ const scoped = await tailor.workflow.triggerJobFunction(
 
 | Function | Returns | Description |
 | --- | --- | --- |
-| `triggerWorkflow(name, args?, options?)` | `Promise<string>` | Trigger a workflow. Returns the execution ID |
-| `triggerJobFunction(name, args?, options?)` | `Promise<any>` | Trigger a job function and return its result. `options.executionPolicyKey` routes the dispatch through a matching execution policy for per-key concurrency control |
+| `startWorkflow(name, args?, options?)` | `Promise<string>` | Start a workflow. Returns the execution ID |
+| `startJobFunction(name, args?, options?)` | `Promise<any>` | Start a job function and return its result. `options.executionPolicyKey` routes the dispatch through a matching execution policy for per-key concurrency control |
 
 For details on declaring execution policies and the key grammar, see [Execution Policies](/sdk/services/workflow#execution-policies) in the SDK Workflow reference.
 
@@ -280,4 +282,3 @@ await tailordb.file.delete("my-namespace", "Document", "attachment", recordId);
 | `getMetadata(...)` | `Promise<FileMetadata>` | Get file metadata without downloading |
 | `downloadStream(...)` | `Promise<FileDownloadStreamResponse>` | Download a file as a `ReadableStream` |
 | `uploadStream(..., readableStream, options?)` | `Promise<FileUploadResponse>` | Upload a file using a `ReadableStream` |
-| `openDownloadStream(...)` | `Promise<FileStreamIterator>` | **Deprecated.** Use `downloadStream()` instead |

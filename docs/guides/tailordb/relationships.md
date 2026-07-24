@@ -55,13 +55,13 @@ In a 1:1 relationship, each record in Type A can be associated with at most one 
 ```typescript
 import { db } from "@tailor-platform/sdk";
 
-export const species = db.type("Species", "Species data schema", {
+export const species = db.table("Species", "Species data schema", {
   name: db.string().description("Name of the species").required(),
   ...db.fields.timestamps(),
 });
 export type species = typeof species;
 
-export const character = db.type("Character", "Character data schema", {
+export const character = db.table("Character", "Character data schema", {
   name: db.string().description("Name of the character").required(),
   speciesId: db
     .uuid()
@@ -131,13 +131,13 @@ In a 1:N relationship, each record in Type A can be associated with multiple rec
 ```typescript
 import { db } from "@tailor-platform/sdk";
 
-export const species = db.type("Species", "Species data schema", {
+export const species = db.table("Species", "Species data schema", {
   name: db.string().description("Name of the species").required(),
   ...db.fields.timestamps(),
 });
 export type species = typeof species;
 
-export const character = db.type("Character", "Character data schema", {
+export const character = db.table("Character", "Character data schema", {
   name: db.string().description("Name of the character").required(),
   speciesId: db
     .uuid()

@@ -5,10 +5,10 @@ containing all applications, including each Tailor Platform service.
 Since changing workspace settings affects all the applications within the workspace,
 only [Platform users](#what-is-the-platform-user) have permission to manage workspaces.
 
-You can use the interactive mode of `tailor-sdk` to view all the options available for workspace management by running the following command.
+You can use the interactive mode of `tailor` to view all the options available for workspace management by running the following command.
 
 ```bash
-tailor-sdk workspace
+tailor workspace
   Commands:
   workspace app                   Manage workspace applications
   workspace create                Create a new Tailor Platform workspace.
@@ -28,14 +28,14 @@ By default, a maximum of 10 workspaces can be created per organization.
 The Platform user is the user who can log in to Tailor Platform using the following command:
 
 ```bash
-tailor-sdk login
+tailor login
 ```
 
 When you sign up for an account, we create a Platform user with an admin role for you to manage your workspace. Please note that the [users you add to your application](/tutorials/setup-auth/login/create-user) are not Platform users and therefore cannot manage your workspace.\
 To add a new Platform user, you can invite anyone with a Tailor Platform account to your workspace using the following command:
 
 ```bash
-tailor-sdk workspace user invite --email $userEmailAddress --role $(admin|editor|viewer)
+tailor workspace user invite --email $userEmailAddress --role $(admin|editor|viewer)
 ```
 
 Depending on the role assigned, the Platform user will have different permissions to manage workspaces.
@@ -81,13 +81,13 @@ The `viewer` role can only view all application and workspace settings.
 Platform users with an `admin` role can destroy a workspace using the following command:
 
 ```bash
-tailor-sdk workspace delete -w {WORKSPACE_ID}
+tailor workspace delete -w {WORKSPACE_ID}
 ```
 
 If you need to restore a destroyed workspace, you can do so within 2 weeks of deletion using the following command:
 
 ```bash
-tailor-sdk workspace restore -w {WORKSPACE_ID}
+tailor workspace restore -w {WORKSPACE_ID}
 ```
 
 After 2 weeks, all data associated with the workspace will be permanently removed and cannot be recovered.

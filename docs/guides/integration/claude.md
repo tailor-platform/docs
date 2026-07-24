@@ -64,7 +64,7 @@ npm run deploy -- --workspace-id <your-workspace-id>
 After deployment, look up the issued `CLIENT_ID` with the SDK CLI:
 
 ```bash
-tailor-sdk oauth2client list
+tailor oauth2client list
 ```
 
 ```bash

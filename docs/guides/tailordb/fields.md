@@ -21,7 +21,7 @@ With just this, the GraphQL API is automatically generated.
 ```typescript {{title: "tailordb/product.ts"}}
 import { db } from "@tailor-platform/sdk";
 
-export const product = db.type("Product", "Product data schema", {
+export const product = db.table("Product", "Product data schema", {
   title: db.string().description("Title of the product").index(),
   description: db.string().description("Description of the product"),
   ...db.fields.timestamps(),
@@ -338,7 +338,7 @@ serial: db.string()
 ```typescript {{title: "tailordb/episode.ts"}}
 import { db } from "@tailor-platform/sdk";
 
-export const episode = db.type("Episode", "Episode data schema", {
+export const episode = db.table("Episode", "Episode data schema", {
   title: db.string().description("Title of the episode"),
   serial: db
     .string()

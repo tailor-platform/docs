@@ -21,7 +21,7 @@ Create a `Project` type in your application. In your project's `db/` directory, 
 ```typescript
 import { db } from "@tailor-platform/sdk";
 
-export const project = db.type("Project", {
+export const project = db.table("Project", {
   name: db.string().description("Project name"),
   description: db.string().optional().description("Project description"),
   status: db

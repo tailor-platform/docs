@@ -11,7 +11,7 @@ Currently, Vector Search can only be enabled for `#TypeString` and cannot be use
 ```typescript
 import { db } from "@tailor-platform/sdk";
 
-export const product = db.type("Product", "Product model", {
+export const product = db.table("Product", "Product model", {
   // ...
   description: db.string().description("Product description").vector(),
   ...db.fields.timestamps(),

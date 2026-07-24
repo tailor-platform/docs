@@ -52,7 +52,7 @@ Maps authenticated identities to a TailorDB type:
 // tailordb/user.ts
 import { db } from "@tailor-platform/sdk";
 
-export const user = db.type("User", {
+export const user = db.table("User", {
   email: db.string().unique(), // usernameField must have unique constraint
   role: db.enum(["admin", "user"]),
   ...db.fields.timestamps(),
@@ -78,7 +78,7 @@ machineUsers: {
 Get a machine user token using the CLI:
 
 ```bash
-tailor-sdk machineuser token <name>
+tailor machineuser token <name>
 ```
 
 ### OAuth 2.0 Clients
@@ -364,7 +364,7 @@ const auth = defineAuth("my-auth", {
 After adding the Machine user, run the following command to get the access token.
 
 ```bash
-tailor-sdk machineuser token {MACHINE_USER_NAME}
+tailor machineuser token {MACHINE_USER_NAME}
 ```
 
 Once you get an access token, you can use it in the playground to run queries.
@@ -376,7 +376,7 @@ You can use the machine user's credentials in the client application to authenti
 Run the following command to view the machine user credentials.
 
 ```bash
-tailor-sdk machineuser list
+tailor machineuser list
 ```
 
 #### Request an Access Token

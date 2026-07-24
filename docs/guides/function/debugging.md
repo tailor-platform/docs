@@ -39,14 +39,14 @@ After deploying the function with [these steps](/guides/function/sending-request
 
 ## Viewing Function Logs
 
-Use the `tailor-sdk function logs` command to view function execution logs:
+Use the `tailor function logs` command to view function execution logs:
 
 ```bash {{ title: 'List all function logs' }}
-tailor-sdk function logs
+tailor function logs
 ```
 
 ```bash {{ title: 'View specific execution logs' }}
-tailor-sdk function logs <execution-id>
+tailor function logs <execution-id>
 ```
 
 Example output:

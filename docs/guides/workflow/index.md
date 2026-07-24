@@ -16,7 +16,7 @@ With Workflow service, you can:
 - Automatically preserve execution state at each step
 - Resume failed workflows from the point of failure
 - Access TailorDB and other platform services with proper authentication
-- Monitor execution progress through Tailor Console and tailor-sdk CLI
+- Monitor execution progress through Tailor Console and tailor CLI
 
 ### Workflow vs Function
 
@@ -79,8 +79,8 @@ Workflows support nested function calls, similar to regular programming:
 ```javascript
 export function main(args) {
   // Call functions sequentially
-  const data = tailor.workflow.triggerJobFunction("fetchData", {});
-  const processed = tailor.workflow.triggerJobFunction("processData", data);
+  const data = tailor.workflow.startJobFunction("fetchData", {});
+  const processed = tailor.workflow.startJobFunction("processData", data);
   return processed;
 }
 ```
@@ -93,7 +93,7 @@ The execution stack:
 
 Each function's result is cached and passed to the next function in the chain.
 
-Job functions within a single workflow execute **sequentially**, not in parallel. Each function completes before the next one starts. For concurrent execution, you can start multiple workflows asynchronously using `tailor.workflow.triggerWorkflow()`.
+Job functions within a single workflow execute **sequentially**, not in parallel. Each function completes before the next one starts. For concurrent execution, you can start multiple workflows asynchronously using `tailor.workflow.startWorkflow()`.
 
 ## Concurrency Control
 
@@ -105,7 +105,7 @@ Set `concurrencyPolicy.maxConcurrentExecutions` on the workflow definition to ca
 
 - Enforced by the **scheduler** when it picks up `PENDING` executions. Executions that would exceed the cap stay `PENDING` and are re-evaluated on the next scheduler tick.
 - Scoped per workflow definition. Other workflows in the same workspace are unaffected.
-- Applies to every entry point (`triggerWorkflow`, executor triggers, CLI `workflow start`) equally.
+- Applies to every entry point (`startWorkflow`, executor triggers, CLI `workflow start`) equally.
 
 ```typescript {{ title: 'workflows/import-orders.ts' }}
 import { createWorkflow } from "@tailor-platform/sdk";
@@ -127,7 +127,7 @@ See [Concurrency Policy](/sdk/services/workflow#concurrency-policy) in the SDK W
 
 ### Job Function Execution Policies
 
-Declare workspace-scoped execution policies with a per-key `maxConcurrentExecutions` cap, then route job function dispatches through them by passing `executionPolicyKey` on `job.trigger()` / `tailor.workflow.triggerJobFunction()`.
+Declare workspace-scoped execution policies with a per-key `maxConcurrentExecutions` cap, then route job function dispatches through them by passing `executionPolicyKey` on `job.start()` / `tailor.workflow.startJobFunction()`.
 
 - Enforced by the **runner** at dispatch time — a separate mechanism from the scheduler-level workflow cap above. The two stack: a workflow that is allowed to start can still have its job function dispatches suspended by an execution policy.
 - Dispatches that would exceed the cap are suspended and resume automatically as slots free up.
@@ -176,14 +176,14 @@ export const syncTenant = createWorkflowJob({
   name: "sync-tenant",
   body: async (input: { tenantId: string }) => {
     // Exact-key policy: pass `.key` directly (typed).
-    await pushMetrics.trigger(
+    await pushMetrics.start(
       { tenantId: input.tenantId },
       { executionPolicyKey: executionPolicies.premium.key },
     );
 
     // Wildcard policy: build the concrete key with `.keyFor(suffix)`.
     // Resolves to e.g. "tenant-api.acme"; each tenant gets its own pool of 3.
-    await syncOrders.trigger(
+    await syncOrders.start(
       { tenantId: input.tenantId },
       { executionPolicyKey: executionPolicies.tenantApi.keyFor(input.tenantId) },
     );
@@ -191,7 +191,7 @@ export const syncTenant = createWorkflowJob({
 });
 ```
 
-The same `executionPolicyKey` option is available on `tailor.workflow.triggerJobFunction(name, args, options)` when dispatching by name from a Function-service script.
+The same `executionPolicyKey` option is available on `tailor.workflow.startJobFunction(name, args, options)` when dispatching by name from a Function-service script.
 
 **Matching modes:**
 

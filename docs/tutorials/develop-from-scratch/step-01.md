@@ -12,8 +12,8 @@ This step establishes the foundational database schema for your project manageme
   "private": true,
   "type": "module",
   "scripts": {
-    "deploy": "tailor-sdk apply",
-    "generate": "tailor-sdk generate"
+    "deploy": "tailor apply",
+    "generate": "tailor generate"
   },
   "dependencies": {
     "@tailor-platform/function-kysely-tailordb": "0.1.3",
@@ -61,7 +61,7 @@ export default defineConfig({
 ```typescript {{title: 'src/db/user.ts'}}
 import { db } from "@tailor-platform/sdk";
 
-export const user = db.type("User", {
+export const user = db.table("User", {
   name: db.string().description("Name of the user"),
   email: db.string().unique().description("Email address of the user"),
   role: db.enum(["MANAGER", "STAFF"]),
@@ -72,7 +72,7 @@ export const user = db.type("User", {
 ```typescript {{title: 'src/db/project.ts'}}
 import { db } from "@tailor-platform/sdk";
 
-export const project = db.type("Project", {
+export const project = db.table("Project", {
   name: db.string().description("Name of the Project"),
   description: db.string({ optional: true }).description("Description of the project"),
   status: db.enum([
@@ -94,7 +94,7 @@ import { db } from "@tailor-platform/sdk";
 import { project } from "./project";
 import { user } from "./user";
 
-export const task = db.type("Task", {
+export const task = db.table("Task", {
   name: db.string().description("Name of the Task"),
   description: db.string({ optional: true }).description("Description of the task"),
   projectId: db

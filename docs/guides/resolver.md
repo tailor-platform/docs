@@ -134,8 +134,8 @@ The `body` function receives a `context` object with:
 
 | Property        | Description                                     |
 | --------------- | ----------------------------------------------- |
-| `context.input` | The validated input arguments                   |
-| `context.user`  | Current user information (id, attributes, etc.) |
+| `context.input`  | The validated input arguments                                                |
+| `context.caller` | The user or machine user who called the resolver, or `null` for anonymous calls |
 
 **Example**
 
@@ -373,7 +373,7 @@ body: async (context) => {
 In the SDK, the `context` object is passed to the `body` function and provides access to:
 
 - `context.input` - The validated input arguments
-- `context.user` - Current user information (id, attributes, workspace_id, etc.)
+- `context.caller` - The user or machine user who called the resolver (id, attributes, workspaceId, etc.), or `null` for anonymous calls
 
 Data from previous operations is simply stored in TypeScript variables:
 
@@ -417,13 +417,13 @@ export default createResolver({
 });
 ```
 
-Access user context for authorization:
+Access caller context for authorization:
 
 ```typescript
 body: async (context) => {
-  // Access current user information
-  const currentUserId = context.user.id;
-  const userAttributes = context.user.attributes;
+  // Access current caller information (null for anonymous calls)
+  const currentUserId = context.caller?.id;
+  const userAttributes = context.caller?.attributes;
 
   // Use in your logic
   return { userId: currentUserId };
