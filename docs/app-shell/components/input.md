@@ -73,3 +73,4 @@ import { type InputProps } from "@tailor-platform/app-shell";
 ## Related Components
 
 - [Button](button) - Pair with inputs in forms
+- [Checkbox](checkbox) - Boolean control with the same `Field` / React Hook Form integration
