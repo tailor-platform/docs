@@ -15,7 +15,7 @@ Common use cases include:
 
 ## How OTLP exporters work
 
-The platform collects the OpenTelemetry signals your services emit and forwards them, over OTLP (the OpenTelemetry Protocol), to each **OTLP exporter** you have configured. An OTLP exporter is the resource *you* define — it points at one backend and decides which signals that backend receives. The internal platform component that performs this routing is **TelemetryRouter**; you don't configure it directly, but it is the source of the `tailor_telemetryrouter_` prefix on the resources below.
+The platform collects the OpenTelemetry signals your services emit and forwards them, over OTLP (the OpenTelemetry Protocol), to each **OTLP exporter** you have configured. These signals include both the traces and logs the platform generates automatically and any structured logs your [Functions](/guides/function/overview) emit via the [`tailor.logger`](/guides/function/builtin-interfaces#logger) API. An OTLP exporter is the resource *you* define — it points at one backend and decides which signals that backend receives. The internal platform component that performs this routing is **TelemetryRouter**; you don't configure it directly, but it is the source of the `tailor_telemetryrouter_` prefix on the resources below.
 
 ```mermaid
 flowchart TD
