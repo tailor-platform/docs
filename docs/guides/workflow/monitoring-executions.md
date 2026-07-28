@@ -129,6 +129,44 @@ tailor-sdk workflow executions <execution-id> --wait --logs
 
 The `start` command returns an execution ID that you can use with `workflow executions` to monitor progress.
 
+## Execution Events
+
+Besides polling, a workflow can publish its execution lifecycle as platform events, so that an executor reacts to each state transition as it happens. Refer to [Workflow events](/guides/events#workflow) for the event catalog and payloads.
+
+Publishing is controlled per resource by `publishEvents`, and you normally do not have to set it. When an executor subscribes to a workflow's execution events, `deploy` enables publishing automatically on the resources that produce them:
+
+- A `workflowExecution*` trigger enables it on the workflow it names, which publishes the `workflow.workflow_execution.*` events.
+- A `workflowJobExecution*` trigger enables it on every job the named workflow runs, which publishes the `workflow.workflow_execution.job_execution.*` events.
+
+Set `publishEvents` explicitly to override that. Use `true` to publish workflow-level events without a subscribing executor:
+
+```typescript {{ title: 'workflows/order-processing.ts' }}
+import { createWorkflow } from "@tailor-platform/sdk";
+import { processOrder } from "./jobs/process-order";
+
+export default createWorkflow({
+  name: "order-processing",
+  mainJob: processOrder,
+  publishEvents: true,
+});
+```
+
+A job takes the same field for its own execution events:
+
+```typescript {{ title: 'workflows/jobs/process-order.ts' }}
+import { createWorkflowJob } from "@tailor-platform/sdk";
+
+export const processOrder = createWorkflowJob({
+  name: "process-order",
+  publishEvents: true,
+  body: async () => ({ processed: true }),
+});
+```
+
+Use `false` to keep publishing off. `deploy` fails if an executor subscribes to events that the value opts out of, so a subscription cannot silently go unfulfilled.
+
+To consume these events, configure an executor with a workflow execution trigger. See [Event-based Trigger](/guides/executor/event-based-trigger#workflow-execution-events).
+
 ## Monitoring in Tailor Console
 
 You can also monitor workflow executions through the [Tailor Console](https://console.tailor.tech) web interface.
