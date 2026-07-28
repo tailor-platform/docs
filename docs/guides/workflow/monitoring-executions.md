@@ -333,5 +333,5 @@ export const myWorkflow = createWorkflow({
 After defining your workflow, deploy it using:
 
 ```bash
-tailor-sdk apply
+tailor-sdk deploy
 ```
