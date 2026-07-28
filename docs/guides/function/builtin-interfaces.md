@@ -20,6 +20,7 @@ All interfaces are typed via [`@tailor-platform/function-types`](https://github.
 | [Workflow](#workflow) | Trigger workflows and job functions |
 | [TailorDB Client](#tailordb-client) | Execute SQL queries against TailorDB |
 | [TailorDB File](#tailordb-file) | Upload, download, and manage files in TailorDB |
+| [Logger](#logger) | Emit structured logs with severity levels and queryable attributes |
 
 ## IdP Client
 
@@ -281,3 +282,31 @@ await tailordb.file.delete("my-namespace", "Document", "attachment", recordId);
 | `downloadStream(...)` | `Promise<FileDownloadStreamResponse>` | Download a file as a `ReadableStream` |
 | `uploadStream(..., readableStream, options?)` | `Promise<FileUploadResponse>` | Upload a file using a `ReadableStream` |
 | `openDownloadStream(...)` | `Promise<FileStreamIterator>` | **Deprecated.** Use `downloadStream()` instead |
+
+## Logger
+
+**Interface**: `tailor.logger`
+
+Emit structured logs with a severity level and optional attributes. The message is written to standard output, and the full entry with its attributes is exported as an OpenTelemetry log through [TelemetryRouter](/guides/opentelemetry) to your configured backend.
+
+```typescript
+tailor.logger.info("order processed", {
+  orderId: "o-123",
+  amount: 4980,
+  items: ["sku-1", "sku-2"],
+});
+
+// Set attributes once, applied to every subsequent log in the same execution
+tailor.logger.setAttributes({ tenantId: "t-001", requestId: "req-abc" });
+tailor.logger.info("start"); // tenantId / requestId attached
+```
+
+| Method | Description |
+| --- | --- |
+| `debug(message, attributes?)` | Emit a log at debug severity |
+| `info(message, attributes?)` | Emit a log at info severity |
+| `warn(message, attributes?)` | Emit a log at warning severity |
+| `error(message, attributes?)` | Emit a log at error severity |
+| `setAttributes(attributes)` | Set attributes applied to every subsequent log in the current execution |
+
+Attribute limits and other details are documented in the JSDoc.
