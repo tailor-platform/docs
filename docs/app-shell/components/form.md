@@ -249,6 +249,7 @@ The `Field` context handles only accessibility wiring (`htmlFor`, `aria-describe
 ## Related
 
 - [Input](input) — Standalone styled input, useful outside of forms.
+- [Checkbox](checkbox) — Boolean control that integrates automatically with `Field`.
 - [Select](select) — Dropdown that integrates automatically with `Field`.
 - [Combobox](combobox) — Searchable combobox that integrates automatically with `Field`.
 - [Autocomplete](autocomplete) — Free-text input with suggestions that integrates automatically with `Field`.

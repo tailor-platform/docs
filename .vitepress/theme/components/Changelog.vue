@@ -1,12 +1,8 @@
 <template>
   <div class="changelog-container">
-    <div v-if="loading" class="changelog-loading">
-      Loading changelog…
-    </div>
+    <div v-if="loading" class="changelog-loading">Loading changelog…</div>
 
-    <div v-else-if="error" class="changelog-error">
-      Failed to load changelog: {{ error }}
-    </div>
+    <div v-else-if="error" class="changelog-error">Failed to load changelog: {{ error }}</div>
 
     <template v-else>
       <FilterTabs v-model="selectedProduct" :options="PRODUCTS" :counts="productCounts" />
@@ -29,10 +25,17 @@
               </template>
             </div>
             <div class="release-card-badges">
-              <span class="product-badge" :data-product="entry.product.toLowerCase().replace(/\s+/g, '-')">
+              <span
+                class="product-badge"
+                :data-product="entry.product.toLowerCase().replace(/\s+/g, '-')"
+              >
                 {{ entry.product }}
               </span>
-              <span v-if="entry.product !== 'Platform Core'" class="version-badge" :data-type="entry.versionType">
+              <span
+                v-if="entry.product !== 'Platform Core'"
+                class="version-badge"
+                :data-type="entry.versionType"
+              >
                 v{{ extractVersion(entry.version) }}
               </span>
               <span v-if="entry.breaking" class="breaking-badge">⚠️ Breaking</span>
@@ -61,9 +64,9 @@
           </div>
 
           <div v-else-if="entry.githubUrl" class="narrative-full-notes">
-            To learn more, check out the <a :href="entry.githubUrl" target="_blank" rel="noopener">full release notes →</a>
+            To learn more, check out the
+            <a :href="entry.githubUrl" target="_blank" rel="noopener">full release notes →</a>
           </div>
-
         </div>
       </div>
 
@@ -82,32 +85,41 @@
           Showing {{ paginatedEntries.length }} of {{ filteredEntries.length }} releases
           <span v-if="selectedProduct !== 'All'"> for {{ selectedProduct }}</span>
         </p>
-        <p v-if="changelogData" class="last-updated">Last updated: {{ formatDate(changelogData.lastUpdated) }}</p>
+        <p v-if="changelogData" class="last-updated">
+          Last updated: {{ formatDate(changelogData.lastUpdated) }}
+        </p>
       </div>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { useChangelogData } from '../composables/useChangelogData'
-import { useChangelog, formatDate, PRODUCTS } from '../composables/useChangelog'
-import FilterTabs from './FilterTabs.vue'
+import { onMounted } from "vue";
+import { useChangelogData } from "../composables/useChangelogData";
+import { useChangelog, formatDate, PRODUCTS } from "../composables/useChangelog";
+import FilterTabs from "./FilterTabs.vue";
 
-const { data: changelogData, loading, error, load } = useChangelogData()
-const { selectedProduct, filteredEntries, paginatedEntries, hasMore, remaining, loadMore, productCounts } =
-  useChangelog(changelogData)
+const { data: changelogData, loading, error, load } = useChangelogData();
+const {
+  selectedProduct,
+  filteredEntries,
+  paginatedEntries,
+  hasMore,
+  remaining,
+  loadMore,
+  productCounts,
+} = useChangelog(changelogData);
 
-onMounted(() => load())
+onMounted(() => load());
 
 function extractVersion(version?: string): string {
-  if (!version) return ''
-  const lastAt = version.lastIndexOf('@')
-  return lastAt > 0 ? version.slice(lastAt + 1) : version
+  if (!version) return "";
+  const lastAt = version.lastIndexOf("@");
+  return lastAt > 0 ? version.slice(lastAt + 1) : version;
 }
 
 function anchorId(id: string): string {
-  return id.replace(/[@/]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
+  return id.replace(/[@/]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
 }
 </script>
 
