@@ -267,12 +267,12 @@ export default createExecutor({
 
 **Key differences from single-event triggers:**
 
-| | Single-event (`recordUpdatedTrigger`) | Multi-event (`recordTrigger`) |
-|---|---|---|
-| Import | `recordUpdatedTrigger` | `recordTrigger` |
-| Events | Fixed to one event | Pass `events: [...]` array |
-| Args | Always has `oldRecord` + `newRecord` | Use `args.event` to narrow the type |
-| Use case | Simple, focused handlers | Shared logic across create/update/delete |
+|          | Single-event (`recordUpdatedTrigger`) | Multi-event (`recordTrigger`)            |
+| -------- | ------------------------------------- | ---------------------------------------- |
+| Import   | `recordUpdatedTrigger`                | `recordTrigger`                          |
+| Events   | Fixed to one event                    | Pass `events: [...]` array               |
+| Args     | Always has `oldRecord` + `newRecord`  | Use `args.event` to narrow the type      |
+| Use case | Simple, focused handlers              | Shared logic across create/update/delete |
 
 The `event` field on args is typed to match the `events` array you pass, so TypeScript will narrow correctly in `if (event === "created")` branches.
 
