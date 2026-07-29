@@ -37,9 +37,7 @@ const idp = defineIdp("builtin-idp", {
     read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
-    sendPasswordResetEmail: [
-      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
-    ],
+    sendPasswordResetEmail: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
   },
   userAuthPolicy: {
     useNonEmailIdentifier: false,
@@ -83,13 +81,13 @@ The role values used in permission conditions (e.g., `"ADMIN"`) are examples. Re
 
 #### Operations
 
-| Operation | Description | Available operands |
-| --- | --- | --- |
-| `create` | Controls who can create IdP users | `user`, `idpUser`, literal values |
-| `read` | Controls who can read IdP users | `user`, `idpUser`, literal values |
-| `update` | Controls who can update IdP users | `user`, `oldIdpUser`, `newIdpUser`, literal values |
-| `delete` | Controls who can delete IdP users | `user`, `idpUser`, literal values |
-| `sendPasswordResetEmail` | Controls who can send password reset emails | `user`, `idpUser`, literal values |
+| Operation                | Description                                 | Available operands                                 |
+| ------------------------ | ------------------------------------------- | -------------------------------------------------- |
+| `create`                 | Controls who can create IdP users           | `user`, `idpUser`, literal values                  |
+| `read`                   | Controls who can read IdP users             | `user`, `idpUser`, literal values                  |
+| `update`                 | Controls who can update IdP users           | `user`, `oldIdpUser`, `newIdpUser`, literal values |
+| `delete`                 | Controls who can delete IdP users           | `user`, `idpUser`, literal values                  |
+| `sendPasswordResetEmail` | Controls who can send password reset emails | `user`, `idpUser`, literal values                  |
 
 #### Policy Evaluation
 
@@ -127,9 +125,7 @@ const idp = defineIdp("builtin-idp", {
     read: [{ conditions: [[{ user: "_loggedIn" }, "=", true]], permit: true }],
     update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
-    sendPasswordResetEmail: [
-      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
-    ],
+    sendPasswordResetEmail: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
   },
 });
 ```
@@ -174,9 +170,7 @@ const idp = defineIdp("builtin-idp", {
       },
     ],
     delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
-    sendPasswordResetEmail: [
-      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
-    ],
+    sendPasswordResetEmail: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
   },
 });
 ```
@@ -294,9 +288,7 @@ export const builtinIdp = defineIdp("builtin-idp", {
     read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
-    sendPasswordResetEmail: [
-      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
-    ],
+    sendPasswordResetEmail: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
   },
   userAuthPolicy: {
     useNonEmailIdentifier: false,
@@ -350,9 +342,7 @@ export const builtinIdp = defineIdp("builtin-idp", {
     read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
-    sendPasswordResetEmail: [
-      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
-    ],
+    sendPasswordResetEmail: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
   },
   userAuthPolicy: {
     allowGoogleOauth: true,
@@ -387,7 +377,6 @@ If you configure a [`beforeLogin` hook](/guides/auth/hook#federated-identity-cla
 Users created via Microsoft OAuth do not have a password set. They can only sign in using Microsoft.
 :::
 
-
 To enable Microsoft OAuth, set `allowMicrosoftOauth` to `true`, specify `allowedEmailDomains`, and set `disablePasswordAuth` to `true` in the `userAuthPolicy` block:
 
 ```typescript
@@ -400,9 +389,7 @@ export const builtinIdp = defineIdp("builtin-idp", {
     read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
-    sendPasswordResetEmail: [
-      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
-    ],
+    sendPasswordResetEmail: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
   },
   userAuthPolicy: {
     allowMicrosoftOauth: true,
@@ -440,9 +427,7 @@ export const builtinIdp = defineIdp("builtin-idp", {
     read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
-    sendPasswordResetEmail: [
-      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
-    ],
+    sendPasswordResetEmail: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
   },
   userAuthPolicy: {
     allowGoogleOauth: true,
@@ -489,9 +474,7 @@ export const builtinIdp = defineIdp("builtin-idp", {
     read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
-    sendPasswordResetEmail: [
-      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
-    ],
+    sendPasswordResetEmail: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
   },
   userAuthPolicy: {
     allowGoogleOauth: true,
@@ -550,9 +533,7 @@ const idp = defineIdp("builtin-idp", {
     read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
-    sendPasswordResetEmail: [
-      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
-    ],
+    sendPasswordResetEmail: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     unenrollMfa: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
   },
 });
@@ -677,9 +658,7 @@ export const builtinIdp = defineIdp("builtin-idp", {
     read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
     delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
-    sendPasswordResetEmail: [
-      { conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true },
-    ],
+    sendPasswordResetEmail: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
   },
   emailConfig: {
     fromName: "My App Support",

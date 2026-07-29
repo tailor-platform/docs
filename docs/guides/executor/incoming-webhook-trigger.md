@@ -78,7 +78,7 @@ To customize the response, pass a `response` option to `incomingWebhookTrigger()
 ```typescript
 incomingWebhookTrigger<WebhookPayload>({
   response: (args) => ({ challenge: args.body.challenge }),
-})
+});
 ```
 
 ## Properties

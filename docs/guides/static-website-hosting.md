@@ -55,9 +55,7 @@ export default defineTailorConfig({
     name: "my-app",
     // Add static website URL to CORS
     cors: ["https://my-spa-{WORKSPACE_HASH}.web.erp.dev"],
-    subgraphs: [
-      /* ... */
-    ],
+    subgraphs: [/* ... */],
   },
 });
 ```
@@ -113,10 +111,10 @@ tailor-sdk staticwebsite domain get app.example.com
 
 After adding a custom domain, configure CNAME records with your DNS provider. The required targets are returned in the response and can also be retrieved with `tailor-sdk staticwebsite domain get`.
 
-| Record Type | Host | Target | Purpose |
-| ----------- | ---- | ------ | ------- |
-| CNAME | `app.example.com` | Value of `trafficCnameTarget` | Routes traffic to the CDN |
-| CNAME | `_acme-challenge.app.example.com` | Value of `certificateCnameTarget` | TLS certificate issuance (DNS challenge) |
+| Record Type | Host                              | Target                            | Purpose                                  |
+| ----------- | --------------------------------- | --------------------------------- | ---------------------------------------- |
+| CNAME       | `app.example.com`                 | Value of `trafficCnameTarget`     | Routes traffic to the CDN                |
+| CNAME       | `_acme-challenge.app.example.com` | Value of `certificateCnameTarget` | TLS certificate issuance (DNS challenge) |
 
 For new domains, setting the traffic CNAME is sufficient. The TLS certificate is issued automatically via HTTP challenge. If you are migrating from another service and cannot switch traffic yet, set the `_acme-challenge` record first to issue the certificate via DNS challenge, then update the traffic CNAME when ready.
 
@@ -124,12 +122,12 @@ For new domains, setting the traffic CNAME is sufficient. The TLS certificate is
 
 Custom domains progress through the following statuses:
 
-| Status | Description |
-| ------ | ----------- |
-| `pending` | Domain registered, challenge not yet started |
-| `verifying` | Challenge in progress, verifying certificate |
-| `cert_issued` | TLS certificate issued, waiting for traffic CNAME |
-| `active` | TLS certificate active and domain is serving traffic |
-| `failed` | Provisioning failed (see `errorMessage` for details) |
+| Status        | Description                                          |
+| ------------- | ---------------------------------------------------- |
+| `pending`     | Domain registered, challenge not yet started         |
+| `verifying`   | Challenge in progress, verifying certificate         |
+| `cert_issued` | TLS certificate issued, waiting for traffic CNAME    |
+| `active`      | TLS certificate active and domain is serving traffic |
+| `failed`      | Provisioning failed (see `errorMessage` for details) |
 
 If the challenge does not complete within 7 days, the domain is automatically removed. To retry, add the domain again.

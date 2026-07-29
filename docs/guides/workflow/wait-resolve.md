@@ -98,19 +98,15 @@ Resolves a waiting workflow, causing it to resume execution.
 
 ```javascript
 export async function main(args) {
-  await tailor.workflow.resolve(
-    args.executionId,
-    "approval",
-    (waitPayload) => {
-      // waitPayload contains the data passed to wait()
-      // e.g., { orderId: "...", amount: 1000, requestedBy: "..." }
-      return {
-        approved: args.approved,
-        approvedBy: args.approverId,
-        approvedAt: new Date().toISOString(),
-      };
-    },
-  );
+  await tailor.workflow.resolve(args.executionId, "approval", (waitPayload) => {
+    // waitPayload contains the data passed to wait()
+    // e.g., { orderId: "...", amount: 1000, requestedBy: "..." }
+    return {
+      approved: args.approved,
+      approvedBy: args.approverId,
+      approvedAt: new Date().toISOString(),
+    };
+  });
 }
 ```
 
@@ -127,10 +123,9 @@ A common implementation pattern involves three components:
 ```javascript
 // Pipeline resolver or executor function
 export async function main(args) {
-  const executionId = await tailor.workflow.triggerWorkflow(
-    "order-approval-workflow",
-    { orderId: args.orderId },
-  );
+  const executionId = await tailor.workflow.triggerWorkflow("order-approval-workflow", {
+    orderId: args.orderId,
+  });
 
   // Save executionId to TailorDB for later retrieval
   await gql.mutation({
@@ -186,16 +181,12 @@ export async function main(args) {
   });
 
   // Resolve the waiting workflow
-  await tailor.workflow.resolve(
-    order.workflowExecutionId,
-    "approval",
-    (waitPayload) => {
-      return {
-        approved: args.approved,
-        approvedBy: args.approverId,
-      };
-    },
-  );
+  await tailor.workflow.resolve(order.workflowExecutionId, "approval", (waitPayload) => {
+    return {
+      approved: args.approved,
+      approvedBy: args.approverId,
+    };
+  });
 }
 ```
 
