@@ -7,6 +7,7 @@
     "typecheck": "vue-tsc --noEmit",
     "lint": "oxlint .",
     "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
     "dev": "vitepress dev",
     "build": "vitepress build",
     "preview": "vitepress preview",
