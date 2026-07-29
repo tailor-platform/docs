@@ -105,10 +105,10 @@ The following table lists all supported resource types and their TRN formats:
 
 ### Static Website
 
-| Resource Type  | TRN Format                                                                                        | Description                            |
-| -------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| Static Website | `trn:v1:workspace:<workspace_id>:staticwebsite:<website_name>`                                    | A static website hosting configuration |
-| Custom Domain  | `trn:v1:workspace:<workspace_id>:staticwebsite:<website_name>:custom_domain:<domain>`             | A custom domain for a static website   |
+| Resource Type  | TRN Format                                                                            | Description                            |
+| -------------- | ------------------------------------------------------------------------------------- | -------------------------------------- |
+| Static Website | `trn:v1:workspace:<workspace_id>:staticwebsite:<website_name>`                        | A static website hosting configuration |
+| Custom Domain  | `trn:v1:workspace:<workspace_id>:staticwebsite:<website_name>:custom_domain:<domain>` | A custom domain for a static website   |
 
 ## Examples
 

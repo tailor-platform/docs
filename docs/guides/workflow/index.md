@@ -195,10 +195,10 @@ The same `executionPolicyKey` option is available on `tailor.workflow.triggerJob
 
 **Matching modes:**
 
-| Match type | Declaration | Applies to | Pool granularity |
-| ------------------ | ---------------------------------------- | ------------------------------------------- | ---------------------------------------- |
-| Exact (default)    | `matchType: "exact"` (or omitted)        | Dispatches whose key equals the policy key  | One pool shared by the exact key         |
-| Prefix (wildcard)  | `matchType: "prefix"`                    | Dispatches whose key **starts with** the policy key | One independent pool **per resolved key** |
+| Match type        | Declaration                       | Applies to                                          | Pool granularity                          |
+| ----------------- | --------------------------------- | --------------------------------------------------- | ----------------------------------------- |
+| Exact (default)   | `matchType: "exact"` (or omitted) | Dispatches whose key equals the policy key          | One pool shared by the exact key          |
+| Prefix (wildcard) | `matchType: "prefix"`             | Dispatches whose key **starts with** the policy key | One independent pool **per resolved key** |
 
 For wildcard policies, the platform registers the prefix with a trailing `*` and gives every concrete resolved key its own pool of the declared size. In the example above, `tenant-api` with `maxConcurrentExecutions: 3` allows **3 concurrent dispatches per tenant key** — `tenant-api.acme`, `tenant-api.beta`, and `tenant-api.gamma` each run up to 3 in parallel independently, not 3 across all of them combined.
 

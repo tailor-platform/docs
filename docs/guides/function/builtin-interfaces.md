@@ -11,15 +11,16 @@ All interfaces are typed via [`@tailor-platform/function-types`](https://github.
 
 ## Overview
 
-| Service | Description |
-| --- | --- |
-| [IdP Client](#idp-client) | Create, update, delete IdP users and send password reset emails |
-| [Secret Manager](#secret-manager) | Retrieve secrets from vaults |
-| [Auth Connection](#auth-connection) | Get access tokens for external auth connections |
-| [Character Encoding](#character-encoding) | Convert between character encodings (iconv) |
-| [Workflow](#workflow) | Trigger workflows and job functions |
-| [TailorDB Client](#tailordb-client) | Execute SQL queries against TailorDB |
-| [TailorDB File](#tailordb-file) | Upload, download, and manage files in TailorDB |
+| Service                                   | Description                                                        |
+| ----------------------------------------- | ------------------------------------------------------------------ |
+| [IdP Client](#idp-client)                 | Create, update, delete IdP users and send password reset emails    |
+| [Secret Manager](#secret-manager)         | Retrieve secrets from vaults                                       |
+| [Auth Connection](#auth-connection)       | Get access tokens for external auth connections                    |
+| [Character Encoding](#character-encoding) | Convert between character encodings (iconv)                        |
+| [Workflow](#workflow)                     | Trigger workflows and job functions                                |
+| [TailorDB Client](#tailordb-client)       | Execute SQL queries against TailorDB                               |
+| [TailorDB File](#tailordb-file)           | Upload, download, and manage files in TailorDB                     |
+| [Logger](#logger)                         | Emit structured logs with severity levels and queryable attributes |
 
 ## IdP Client
 
@@ -56,15 +57,15 @@ await client.sendPasswordResetEmail({
 });
 ```
 
-| Method | Returns | Description |
-| --- | --- | --- |
-| `users(options?)` | `Promise<ListUsersResponse>` | List users with optional filtering and pagination |
-| `user(userId)` | `Promise<User>` | Get a user by ID |
-| `userByName(name)` | `Promise<User>` | Get a user by name |
-| `createUser(input)` | `Promise<User>` | Create a new user |
-| `updateUser(input)` | `Promise<User>` | Update an existing user |
-| `deleteUser(userId)` | `Promise<boolean>` | Delete a user by ID |
-| `sendPasswordResetEmail(input)` | `Promise<boolean>` | Send a password reset email |
+| Method                          | Returns                      | Description                                       |
+| ------------------------------- | ---------------------------- | ------------------------------------------------- |
+| `users(options?)`               | `Promise<ListUsersResponse>` | List users with optional filtering and pagination |
+| `user(userId)`                  | `Promise<User>`              | Get a user by ID                                  |
+| `userByName(name)`              | `Promise<User>`              | Get a user by name                                |
+| `createUser(input)`             | `Promise<User>`              | Create a new user                                 |
+| `updateUser(input)`             | `Promise<User>`              | Update an existing user                           |
+| `deleteUser(userId)`            | `Promise<boolean>`           | Delete a user by ID                               |
+| `sendPasswordResetEmail(input)` | `Promise<boolean>`           | Send a password reset email                       |
 
 ## Secret Manager
 
@@ -84,10 +85,10 @@ const secrets = await tailor.secretmanager.getSecrets("my-vault", [
 // secrets.API_KEY, secrets.API_SECRET
 ```
 
-| Function | Returns | Description |
-| --- | --- | --- |
-| `getSecret(vault, name)` | `Promise<string \| undefined>` | Get a single secret. Returns `undefined` if not found |
-| `getSecrets(vault, names)` | `Promise<Partial<Record<string, string>>>` | Get multiple secrets. Missing keys are omitted |
+| Function                   | Returns                                    | Description                                           |
+| -------------------------- | ------------------------------------------ | ----------------------------------------------------- |
+| `getSecret(vault, name)`   | `Promise<string \| undefined>`             | Get a single secret. Returns `undefined` if not found |
+| `getSecrets(vault, names)` | `Promise<Partial<Record<string, string>>>` | Get multiple secrets. Missing keys are omitted        |
 
 ## Auth Connection
 
@@ -100,8 +101,8 @@ const token = await tailor.authconnection.getConnectionToken("my-google-connecti
 // Use token to call external APIs
 ```
 
-| Function | Returns | Description |
-| --- | --- | --- |
+| Function                             | Returns        | Description                                      |
+| ------------------------------------ | -------------- | ------------------------------------------------ |
 | `getConnectionToken(connectionName)` | `Promise<any>` | Get the access token for a named auth connection |
 
 ## Character Encoding
@@ -124,12 +125,12 @@ const result = tailor.iconv.convert(buffer, "EUC-JP", "UTF-8");
 const encodings = tailor.iconv.encodings();
 ```
 
-| Function | Returns | Description |
-| --- | --- | --- |
+| Function                                 | Returns                | Description                                                      |
+| ---------------------------------------- | ---------------------- | ---------------------------------------------------------------- |
 | `convert(str, fromEncoding, toEncoding)` | `string \| Uint8Array` | Convert between encodings. Returns `string` when target is UTF-8 |
-| `decode(buffer, encoding)` | `string` | Decode a buffer to a UTF-8 string |
-| `encode(str, encoding)` | `string \| Uint8Array` | Encode a string to the specified encoding |
-| `encodings()` | `string[]` | List all supported encodings |
+| `decode(buffer, encoding)`               | `string`               | Decode a buffer to a UTF-8 string                                |
+| `encode(str, encoding)`                  | `string \| Uint8Array` | Encode a string to the specified encoding                        |
+| `encodings()`                            | `string[]`             | List all supported encodings                                     |
 
 The `Iconv` class is also available for node-iconv compatibility:
 
@@ -176,10 +177,10 @@ const scoped = await tailor.workflow.triggerJobFunction(
 );
 ```
 
-| Function | Returns | Description |
-| --- | --- | --- |
-| `triggerWorkflow(name, args?, options?)` | `Promise<string>` | Trigger a workflow. Returns the execution ID |
-| `triggerJobFunction(name, args?, options?)` | `Promise<any>` | Trigger a job function and return its result. `options.executionPolicyKey` routes the dispatch through a matching execution policy for per-key concurrency control |
+| Function                                    | Returns           | Description                                                                                                                                                        |
+| ------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `triggerWorkflow(name, args?, options?)`    | `Promise<string>` | Trigger a workflow. Returns the execution ID                                                                                                                       |
+| `triggerJobFunction(name, args?, options?)` | `Promise<any>`    | Trigger a job function and return its result. `options.executionPolicyKey` routes the dispatch through a matching execution policy for per-key concurrency control |
 
 For details on declaring execution policies and the key grammar, see [Execution Policies](/sdk/services/workflow#execution-policies) in the SDK Workflow reference.
 
@@ -206,10 +207,10 @@ try {
 }
 ```
 
-| Method | Returns | Description |
-| --- | --- | --- |
-| `connect()` | `Promise<void>` | Open the database connection |
-| `end()` | `Promise<void>` | Close the database connection |
+| Method                       | Returns                   | Description                                      |
+| ---------------------------- | ------------------------- | ------------------------------------------------ |
+| `connect()`                  | `Promise<void>`           | Open the database connection                     |
+| `end()`                      | `Promise<void>`           | Close the database connection                    |
 | `queryObject<T>(sql, args?)` | `Promise<QueryResult<T>>` | Execute a SQL query with parameterized arguments |
 
 ## TailorDB File
@@ -246,12 +247,7 @@ const { data: base64 } = await tailordb.file.downloadAsBase64(
 );
 
 // Stream download large files (>10MB)
-await tailordb.file.downloadStream(
-  "my-namespace",
-  "Document",
-  "attachment",
-  recordId,
-);
+await tailordb.file.downloadStream("my-namespace", "Document", "attachment", recordId);
 
 // Stream upload a file
 await tailordb.file.uploadStream(
@@ -271,13 +267,41 @@ await tailordb.file.delete("my-namespace", "Document", "attachment", recordId);
 
 **Note**: All methods take `(namespace, typeName, fieldName, recordId)` as the first four arguments.
 
-| Method | Returns | Description |
-| --- | --- | --- |
-| `upload(..., data, options?)` | `Promise<FileUploadResponse>` | Upload a file |
-| `download(...)` | `Promise<FileDownloadResponse>` | Download a file as `Uint8Array`. Throws if >10MB |
-| `downloadAsBase64(...)` | `Promise<FileDownloadAsBase64Response>` | Download as Base64 string. Throws if >10MB |
-| `delete(...)` | `Promise<void>` | Delete a file |
-| `getMetadata(...)` | `Promise<FileMetadata>` | Get file metadata without downloading |
-| `downloadStream(...)` | `Promise<FileDownloadStreamResponse>` | Download a file as a `ReadableStream` |
-| `uploadStream(..., readableStream, options?)` | `Promise<FileUploadResponse>` | Upload a file using a `ReadableStream` |
-| `openDownloadStream(...)` | `Promise<FileStreamIterator>` | **Deprecated.** Use `downloadStream()` instead |
+| Method                                        | Returns                                 | Description                                      |
+| --------------------------------------------- | --------------------------------------- | ------------------------------------------------ |
+| `upload(..., data, options?)`                 | `Promise<FileUploadResponse>`           | Upload a file                                    |
+| `download(...)`                               | `Promise<FileDownloadResponse>`         | Download a file as `Uint8Array`. Throws if >10MB |
+| `downloadAsBase64(...)`                       | `Promise<FileDownloadAsBase64Response>` | Download as Base64 string. Throws if >10MB       |
+| `delete(...)`                                 | `Promise<void>`                         | Delete a file                                    |
+| `getMetadata(...)`                            | `Promise<FileMetadata>`                 | Get file metadata without downloading            |
+| `downloadStream(...)`                         | `Promise<FileDownloadStreamResponse>`   | Download a file as a `ReadableStream`            |
+| `uploadStream(..., readableStream, options?)` | `Promise<FileUploadResponse>`           | Upload a file using a `ReadableStream`           |
+| `openDownloadStream(...)`                     | `Promise<FileStreamIterator>`           | **Deprecated.** Use `downloadStream()` instead   |
+
+## Logger
+
+**Interface**: `tailor.logger`
+
+Emit structured logs with a severity level and optional attributes. The message is written to standard output, and the full entry with its attributes is exported as an OpenTelemetry log through [TelemetryRouter](/guides/opentelemetry) to your configured backend.
+
+```typescript
+tailor.logger.info("order processed", {
+  orderId: "o-123",
+  amount: 4980,
+  items: ["sku-1", "sku-2"],
+});
+
+// Set attributes once, applied to every subsequent log in the same execution
+tailor.logger.setAttributes({ tenantId: "t-001", requestId: "req-abc" });
+tailor.logger.info("start"); // tenantId / requestId attached
+```
+
+| Method                        | Description                                                             |
+| ----------------------------- | ----------------------------------------------------------------------- |
+| `debug(message, attributes?)` | Emit a log at debug severity                                            |
+| `info(message, attributes?)`  | Emit a log at info severity                                             |
+| `warn(message, attributes?)`  | Emit a log at warning severity                                          |
+| `error(message, attributes?)` | Emit a log at error severity                                            |
+| `setAttributes(attributes)`   | Set attributes applied to every subsequent log in the current execution |
+
+Attribute limits and other details are documented in the JSDoc.

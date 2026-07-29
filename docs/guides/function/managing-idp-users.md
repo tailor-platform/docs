@@ -350,14 +350,10 @@ export default async (args) => {
   const user = await idpClient.user(args.userId);
 
   const results = await Promise.all(
-    user.mfaFactorIds.map((mfaFactorId) =>
-      idpClient.unenrollMfa({ userId: user.id, mfaFactorId }),
-    ),
+    user.mfaFactorIds.map((mfaFactorId) => idpClient.unenrollMfa({ userId: user.id, mfaFactorId })),
   );
 
-  const unenrolledFactorIds = user.mfaFactorIds.filter(
-    (_, index) => results[index],
-  );
+  const unenrolledFactorIds = user.mfaFactorIds.filter((_, index) => results[index]);
 
   return { unenrolledFactorIds };
 };

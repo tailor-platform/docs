@@ -21,18 +21,10 @@ The new permission system is recommended for all new applications. It addresses 
 db.type("Example", {
   // field definitions
 }).permission({
-  create: [
-    /* policies */
-  ],
-  read: [
-    /* policies */
-  ],
-  update: [
-    /* policies */
-  ],
-  delete: [
-    /* policies */
-  ],
+  create: [/* policies */],
+  read: [/* policies */],
+  update: [/* policies */],
+  delete: [/* policies */],
 });
 ```
 
@@ -229,12 +221,8 @@ db.type("Task", {
 db.gqlPermission("Example", {
   policies: [
     {
-      conditions: [
-        /* conditions */
-      ],
-      actions: [
-        /* actions */
-      ],
+      conditions: [/* conditions */],
+      actions: [/* actions */],
       permit: "allow", // or "deny"
       description: "Policy description",
     },

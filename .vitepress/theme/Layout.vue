@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import DefaultTheme from "vitepress/theme";
+import CopyAsMarkdown from "./components/CopyAsMarkdown.vue";
 </script>
 
 <template>
-  <DefaultTheme.Layout />
+  <DefaultTheme.Layout>
+    <template #doc-before>
+      <CopyAsMarkdown />
+    </template>
+  </DefaultTheme.Layout>
 </template>
 
 <style>
