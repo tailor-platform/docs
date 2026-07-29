@@ -5,6 +5,7 @@ import { generateNav } from "./config/nav.js";
 import { generateAllSidebars } from "./config/sidebar.js";
 import { configureMarkdown } from "./config/markdown.js";
 import { generateSitemap } from "./config/sitemap.js";
+import llmstxt from "vitepress-plugin-llms";
 
 const docsDir = path.join(process.cwd(), "docs");
 
@@ -37,6 +38,15 @@ export default withMermaid(
       optimizeDeps: {
         include: ["mermaid"],
       },
+      plugins: [
+        llmstxt({
+          domain: "https://docs.tailor.tech",
+          title: "Tailor Platform Documentation",
+          description:
+            "Tailor is a headless ERP platform. These docs cover the SDK, AppShell UI framework, platform services (TailorDB, Pipeline, StateFlow, Executor, Auth), and administration.",
+          injectLLMHint: false,
+        }),
+      ],
     },
 
     themeConfig: {
