@@ -82,9 +82,8 @@ Job-level triggers receive the same fields, with `args.event` narrowed to `start
 
 - `args.workflowJobExecutionId` - The ID of the job execution
 - `args.jobFunctionName` - The name of the job, as passed to `createWorkflowJob`
-- `args.stackedJobName` - The name identifying the job's position in the execution stack
 - `args.waitKey` - The wait point key (on `wait_started` and `wait_resolved`)
-- `args.waitPayload` - The JSON-serialized payload recorded with the wait point (on `wait_started`)
+- `args.waitPayload` - The JSON-serialized payload recorded with the wait point, when it recorded one (on `wait_started`)
 
 ```typescript {{title:'executors/order-workflow-finished.ts'}}
 import { createExecutor, workflowExecutionTrigger } from "@tailor-platform/sdk";

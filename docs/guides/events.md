@@ -140,7 +140,6 @@ Job-level events share the fields above plus the following.
 |------------|-------------|
 | `workflowJobExecutionId` | `String`: ID of the job execution. |
 | `jobFunctionName` | `String`: Name of the job, as passed to `createWorkflowJob`. |
-| `stackedJobName` | `String`: Name identifying the job's position in the execution stack. |
 
 ### Workflow Execution Started
 
@@ -214,7 +213,7 @@ Published when the job calls `tailor.workflow.wait()` and its execution is creat
 | Field Name | Description |
 |------------|-------------|
 | `waitKey` | `String`: The wait point key the job execution is suspended on. |
-| `waitPayload` | `String`: JSON-serialized payload recorded with the wait point. |
+| `waitPayload` | `String`: JSON-serialized payload recorded with the wait point. Absent when the wait point recorded none. |
 
 ### Job Execution Wait Resolved
 
