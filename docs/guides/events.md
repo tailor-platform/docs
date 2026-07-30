@@ -116,3 +116,111 @@ Below is a list of supported events and their payloads.
 | `workspaceId`   | `String`: The workspace ID where the event occurred. |
 | `namespaceName` | `String`: Name of the application.                   |
 | `userId`        | `String`: The ID of the deleted IdP user.            |
+
+## Workflow
+
+Workflow publishes events on every meaningful state transition of a workflow execution, at two granularity levels. Workflow-level events describe the execution as a whole, and job-level events describe a single job execution within it.
+
+Workflows are not scoped to an application namespace, so these events carry no `namespaceName` field.
+
+Publishing is controlled per resource by `publishEvents`. When an executor subscribes to a workflow's events, the SDK enables publishing automatically on the resources that produce them. See [Execution Events](/guides/workflow/monitoring-executions#execution-events) for details.
+
+All workflow-level events share the following fields.
+
+| Field Name            | Description                                          |
+| --------------------- | ---------------------------------------------------- |
+| `workspaceId`         | `String`: The workspace ID where the event occurred. |
+| `workflowId`          | `String`: ID of the workflow resource.               |
+| `workflowName`        | `String`: Name of the workflow.                      |
+| `workflowExecutionId` | `String`: ID of the workflow execution.              |
+
+Job-level events share the fields above plus the following.
+
+| Field Name               | Description                                                  |
+| ------------------------ | ------------------------------------------------------------ |
+| `workflowJobExecutionId` | `String`: ID of the job execution.                           |
+| `jobFunctionName`        | `String`: Name of the job, as passed to `createWorkflowJob`. |
+
+### Workflow Execution Started
+
+`workflow.workflow_execution.started`
+
+Published when the execution starts running, including when it starts running again after a retry or a resume.
+
+### Workflow Execution Completed
+
+`workflow.workflow_execution.completed`
+
+Published when the execution reaches a terminal state.
+
+| Field Name | Description                                                     |
+| ---------- | --------------------------------------------------------------- |
+| `success`  | `Boolean`: Whether the execution succeeded.                     |
+| `error`    | `String`: The error message. Present when `success` is `false`. |
+
+### Workflow Execution Retried
+
+`workflow.workflow_execution.retried`
+
+Published when the execution is retried automatically by its retry policy.
+
+| Field Name   | Description                                                        |
+| ------------ | ------------------------------------------------------------------ |
+| `retryCount` | `Integer`: Number of retries already attempted for this execution. |
+| `retryAfter` | `DateTime`: Timestamp the retry is scheduled for.                  |
+
+### Workflow Execution Resumed
+
+`workflow.workflow_execution.resumed`
+
+Published when a failed or retry-pending execution is resumed manually.
+
+### Workflow Execution Wait Started
+
+`workflow.workflow_execution.wait_started`
+
+Published when a job suspends the execution on a wait point. Refer to [Wait / Resolve](/guides/workflow/wait-resolve) for details on wait points.
+
+### Workflow Execution Wait Resolved
+
+`workflow.workflow_execution.wait_resolved`
+
+Published when a waiting execution is released by resolving its wait point.
+
+### Job Execution Started
+
+`workflow.workflow_execution.job_execution.started`
+
+Published when the job is submitted and its execution starts running.
+
+### Job Execution Completed
+
+`workflow.workflow_execution.job_execution.completed`
+
+Published when the job execution reaches a terminal state. A job execution released from a wait point publishes Job Execution Wait Resolved instead.
+
+| Field Name | Description                                                     |
+| ---------- | --------------------------------------------------------------- |
+| `success`  | `Boolean`: Whether the job execution succeeded.                 |
+| `error`    | `String`: The error message. Present when `success` is `false`. |
+
+### Job Execution Wait Started
+
+`workflow.workflow_execution.job_execution.wait_started`
+
+Published when the job calls `tailor.workflow.wait()` and its execution is created in the waiting state.
+
+| Field Name    | Description                                                                                               |
+| ------------- | --------------------------------------------------------------------------------------------------------- |
+| `waitKey`     | `String`: The wait point key the job execution is suspended on.                                           |
+| `waitPayload` | `String`: JSON-serialized payload recorded with the wait point. Absent when the wait point recorded none. |
+
+### Job Execution Wait Resolved
+
+`workflow.workflow_execution.job_execution.wait_resolved`
+
+Published when a waiting job execution is released by resolving its wait point.
+
+| Field Name | Description                                     |
+| ---------- | ----------------------------------------------- |
+| `waitKey`  | `String`: The wait point key that was resolved. |
