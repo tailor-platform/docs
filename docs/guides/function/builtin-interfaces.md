@@ -163,24 +163,24 @@ const executionId = await tailor.workflow.triggerWorkflow(
   },
 );
 
-// Trigger a job function
-const result = await tailor.workflow.triggerJobFunction("calculateTax", {
+// Execute a job function
+const result = await tailor.workflow.execJobFunction("calculateTax", {
   amount: 1000,
 });
 
 // Route the dispatch through a workspace-registered execution policy for
 // per-key concurrency control (see the SDK Workflow guide for policy setup).
-const scoped = await tailor.workflow.triggerJobFunction(
+const scoped = await tailor.workflow.execJobFunction(
   "syncTenant",
   { tenantId: "acme" },
   { executionPolicyKey: `tenant-api.acme` },
 );
 ```
 
-| Function                                    | Returns           | Description                                                                                                                                                        |
-| ------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `triggerWorkflow(name, args?, options?)`    | `Promise<string>` | Trigger a workflow. Returns the execution ID                                                                                                                       |
-| `triggerJobFunction(name, args?, options?)` | `Promise<any>`    | Trigger a job function and return its result. `options.executionPolicyKey` routes the dispatch through a matching execution policy for per-key concurrency control |
+| Function                                 | Returns           | Description                                                                                                                                                        |
+| ---------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `triggerWorkflow(name, args?, options?)` | `Promise<string>` | Trigger a workflow. Returns the execution ID                                                                                                                       |
+| `execJobFunction(name, args?, options?)` | `Promise<any>`    | Execute a job function and return its result. `options.executionPolicyKey` routes the dispatch through a matching execution policy for per-key concurrency control |
 
 For details on declaring execution policies and the key grammar, see [Execution Policies](/sdk/services/workflow#execution-policies) in the SDK Workflow reference.
 

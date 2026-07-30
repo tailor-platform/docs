@@ -61,7 +61,7 @@ Suspends the current workflow execution and waits for an external signal.
 
 ```javascript
 export async function main(args) {
-  const order = tailor.workflow.triggerJobFunction("createOrder", args);
+  const order = tailor.workflow.execJobFunction("createOrder", args);
 
   // Pause and wait for approval
   const approval = await tailor.workflow.wait("approval", {
@@ -71,7 +71,7 @@ export async function main(args) {
   });
 
   if (approval.approved) {
-    tailor.workflow.triggerJobFunction("fulfillOrder", {
+    tailor.workflow.execJobFunction("fulfillOrder", {
       orderId: order.id,
     });
   }
@@ -147,7 +147,7 @@ export async function main(args) {
 ```javascript
 // Workflow job function
 export async function main(args) {
-  const order = tailor.workflow.triggerJobFunction("prepareOrder", args);
+  const order = tailor.workflow.execJobFunction("prepareOrder", args);
 
   // Pause and wait for human approval
   const decision = await tailor.workflow.wait("approval", {
@@ -158,7 +158,7 @@ export async function main(args) {
 
   // Resume after approval
   if (decision.approved) {
-    tailor.workflow.triggerJobFunction("processOrder", {
+    tailor.workflow.execJobFunction("processOrder", {
       orderId: order.id,
     });
   }
