@@ -207,7 +207,9 @@ export const order = db
     totalPrice: db
       .int()
       .description("Total price of a certain product")
-      .validate(({ value }) => (value >= 100 ? "totalPrice value must be less than 100" : undefined)),
+      .validate(({ value }) =>
+        value >= 100 ? "totalPrice value must be less than 100" : undefined,
+      ),
   })
   .hooks({
     create: ({ input }) => ({ totalPrice: input.price * input.quantity }),

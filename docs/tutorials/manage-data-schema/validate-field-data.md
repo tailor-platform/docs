@@ -28,7 +28,8 @@ export const project = db.table("Project", {
     .description("Project name")
     .validate(
       ({ value }) => (value.length >= 3 ? undefined : "Project name must be at least 3 characters"),
-      ({ value }) => (value.length <= 50 ? undefined : "Project name must be 50 characters or less"),
+      ({ value }) =>
+        value.length <= 50 ? undefined : "Project name must be 50 characters or less",
     ),
   description: db.string().optional().description("Project description"),
   status: db

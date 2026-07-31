@@ -180,8 +180,8 @@ const scoped = await tailor.workflow.execJobFunction(
 ```
 
 | Function                                 | Returns           | Description                                                                                                                                                        |
-| ----------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `startWorkflow(name, args?, options?)`   | `Promise<string>` | Start a workflow. Returns the execution ID                                                                                                                        |
+| ---------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `startWorkflow(name, args?, options?)`   | `Promise<string>` | Start a workflow. Returns the execution ID                                                                                                                         |
 | `execJobFunction(name, args?, options?)` | `Promise<any>`    | Execute a job function and return its result. `options.executionPolicyKey` routes the dispatch through a matching execution policy for per-key concurrency control |
 
 For details on declaring execution policies and the key grammar, see [Execution Policies](/sdk/services/workflow#execution-policies) in the SDK Workflow reference.
@@ -270,7 +270,7 @@ await tailordb.file.delete("my-namespace", "Document", "attachment", recordId);
 **Note**: All methods take `(namespace, typeName, fieldName, recordId)` as the first four arguments.
 
 | Method                                        | Returns                                 | Description                                      |
-| --------------------------------------------- | ---------------------------------------- | ------------------------------------------------ |
+| --------------------------------------------- | --------------------------------------- | ------------------------------------------------ |
 | `upload(..., data, options?)`                 | `Promise<FileUploadResponse>`           | Upload a file                                    |
 | `download(...)`                               | `Promise<FileDownloadResponse>`         | Download a file as `Uint8Array`. Throws if >10MB |
 | `downloadAsBase64(...)`                       | `Promise<FileDownloadAsBase64Response>` | Download as Base64 string. Throws if >10MB       |

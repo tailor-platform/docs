@@ -146,10 +146,9 @@ A common implementation pattern involves three components:
 ```javascript
 // Pipeline resolver or executor function
 export async function main(args) {
-  const executionId = await tailor.workflow.startWorkflow(
-    "order-approval-workflow",
-    { orderId: args.orderId },
-  );
+  const executionId = await tailor.workflow.startWorkflow("order-approval-workflow", {
+    orderId: args.orderId,
+  });
 
   // Save executionId to TailorDB for later retrieval
   await gql.mutation({

@@ -132,9 +132,9 @@ The SDK `createResolver` function defines a complete resolver with its input, ou
 
 The `body` function receives a `context` object with:
 
-| Property        | Description                                     |
-| --------------- | ----------------------------------------------- |
-| `context.input`  | The validated input arguments                                                |
+| Property         | Description                                                                     |
+| ---------------- | ------------------------------------------------------------------------------- |
+| `context.input`  | The validated input arguments                                                   |
 | `context.caller` | The user or machine user who called the resolver, or `null` for anonymous calls |
 
 **Example**

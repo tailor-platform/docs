@@ -61,17 +61,14 @@ The `Action` will be evaluated when the `Expr` returns true.
 
 ```typescript
 // reportNumber value must be less than 100 or over 103
-reportNumber: db
-  .int()
-  .validate(({ value }) =>
-    value < 100 || value > 103 ? undefined : "reportNumber value must be less than 100 or over 103",
-  );
+reportNumber: db.int().validate(({ value }) =>
+  value < 100 || value > 103 ? undefined : "reportNumber value must be less than 100 or over 103",
+);
 ```
 
 ```typescript
 // Description length should be less than 40 characters
-description: db
-  .string()
+description: db.string()
   .description("Description of the product.")
   .validate(({ value }) =>
     value.length < 40 ? undefined : "Description length should be less than 40 characters.",
