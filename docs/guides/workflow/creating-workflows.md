@@ -168,21 +168,21 @@ export function main(args) {
   console.log("Starting workflow with orderId:", args.orderId);
 
   // Step 1: Fetch order data
-  const order = tailor.workflow.startJobFunction("fetchOrder", {
+  const order = tailor.workflow.execJobFunction("fetchOrder", {
     orderId: args.orderId,
   });
 
   // Step 2: Validate order
-  const validated = tailor.workflow.startJobFunction("validateOrder", order);
+  const validated = tailor.workflow.execJobFunction("validateOrder", order);
 
   // Step 3: Process payment
-  const payment = tailor.workflow.startJobFunction("processPayment", {
+  const payment = tailor.workflow.execJobFunction("processPayment", {
     orderId: validated.id,
     amount: validated.total,
   });
 
   // Step 4: Send confirmation
-  tailor.workflow.startJobFunction("sendConfirmation", {
+  tailor.workflow.execJobFunction("sendConfirmation", {
     orderId: validated.id,
     email: validated.customerEmail,
     paymentId: payment.id,

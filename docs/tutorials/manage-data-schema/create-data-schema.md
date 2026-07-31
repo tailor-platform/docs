@@ -30,7 +30,10 @@ export const task = db.table("Task", {
     .enum(["todo", "in_progress", "completed", "blocked"])
     .description("Current task status"),
   priority: db.enum(["low", "medium", "high", "urgent"]).description("Task priority level"),
-  projectId: db.uuid().relation({ type: "n-1", toward: { type: project } }).description("Associated project"),
+  projectId: db
+    .uuid()
+    .relation({ type: "n-1", toward: { type: project } })
+    .description("Associated project"),
   assigneeId: db.string().optional().description("ID of assigned team member"),
   dueDate: db.string().optional().description("Task due date"),
   estimatedHours: db.float().optional().description("Estimated hours to complete"),

@@ -79,8 +79,8 @@ Workflows support nested function calls, similar to regular programming:
 ```javascript
 export function main(args) {
   // Call functions sequentially
-  const data = tailor.workflow.startJobFunction("fetchData", {});
-  const processed = tailor.workflow.startJobFunction("processData", data);
+  const data = tailor.workflow.execJobFunction("fetchData", {});
+  const processed = tailor.workflow.execJobFunction("processData", data);
   return processed;
 }
 ```
@@ -127,7 +127,7 @@ See [Concurrency Policy](/sdk/services/workflow#concurrency-policy) in the SDK W
 
 ### Job Function Execution Policies
 
-Declare workspace-scoped execution policies with a per-key `maxConcurrentExecutions` cap, then route job function dispatches through them by passing `executionPolicyKey` on `job.start()` / `tailor.workflow.startJobFunction()`.
+Declare workspace-scoped execution policies with a per-key `maxConcurrentExecutions` cap, then route job function dispatches through them by passing `executionPolicyKey` on `job.start()` / `tailor.workflow.execJobFunction()`.
 
 - Enforced by the **runner** at dispatch time — a separate mechanism from the scheduler-level workflow cap above. The two stack: a workflow that is allowed to start can still have its job function dispatches suspended by an execution policy.
 - Dispatches that would exceed the cap are suspended and resume automatically as slots free up.
@@ -191,14 +191,14 @@ export const syncTenant = createWorkflowJob({
 });
 ```
 
-The same `executionPolicyKey` option is available on `tailor.workflow.startJobFunction(name, args, options)` when dispatching by name from a Function-service script.
+The same `executionPolicyKey` option is available on `tailor.workflow.execJobFunction(name, args, options)` when dispatching by name from a Function-service script.
 
 **Matching modes:**
 
-| Match type | Declaration | Applies to | Pool granularity |
-| ------------------ | ---------------------------------------- | ------------------------------------------- | ---------------------------------------- |
-| Exact (default)    | `matchType: "exact"` (or omitted)        | Dispatches whose key equals the policy key  | One pool shared by the exact key         |
-| Prefix (wildcard)  | `matchType: "prefix"`                    | Dispatches whose key **starts with** the policy key | One independent pool **per resolved key** |
+| Match type        | Declaration                       | Applies to                                          | Pool granularity                          |
+| ----------------- | --------------------------------- | --------------------------------------------------- | ----------------------------------------- |
+| Exact (default)   | `matchType: "exact"` (or omitted) | Dispatches whose key equals the policy key          | One pool shared by the exact key          |
+| Prefix (wildcard) | `matchType: "prefix"`             | Dispatches whose key **starts with** the policy key | One independent pool **per resolved key** |
 
 For wildcard policies, the platform registers the prefix with a trailing `*` and gives every concrete resolved key its own pool of the declared size. In the example above, `tenant-api` with `maxConcurrentExecutions: 3` allows **3 concurrent dispatches per tenant key** — `tenant-api.acme`, `tenant-api.beta`, and `tenant-api.gamma` each run up to 3 in parallel independently, not 3 across all of them combined.
 

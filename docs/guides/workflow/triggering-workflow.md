@@ -72,9 +72,7 @@ import { order } from "./types";
 
 const processOrderWorkflow = createWorkflow({
   name: "process-order",
-  steps: [
-    /* ... */
-  ],
+  steps: [/* ... */],
 });
 
 createExecutor({
@@ -100,9 +98,7 @@ import { createWorkflow, createExecutor, webhookTrigger } from "@tailor-platform
 
 const processWebhookWorkflow = createWorkflow({
   name: "process-webhook",
-  steps: [
-    /* ... */
-  ],
+  steps: [/* ... */],
 });
 
 createExecutor({
@@ -126,9 +122,7 @@ import { createWorkflow, createExecutor, scheduleTrigger } from "@tailor-platfor
 
 const dailySyncWorkflow = createWorkflow({
   name: "daily-sync",
-  steps: [
-    /* ... */
-  ],
+  steps: [/* ... */],
 });
 
 createExecutor({

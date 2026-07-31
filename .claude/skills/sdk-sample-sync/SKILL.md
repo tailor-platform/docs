@@ -57,7 +57,7 @@ node -e "console.log(require('./package/package.json').version)"
 ```
 
 The bundled `package/docs/` is the same content that becomes `docs/sdk/` here, so it
-*is* canonical. When the prose and a code block disagree, the bundled service docs
+_is_ canonical. When the prose and a code block disagree, the bundled service docs
 (e.g. `docs/services/executor.md`) win.
 
 If you only need to confirm an exported symbol or a method exists, inspect the entry

@@ -4,7 +4,7 @@ doc_type: guide
 
 # Event-based Trigger
 
-In this trigger, you can specify the type of event that initiates it (e.g., TailorDB data update, IdP user changes, or authentication events) and outline the specific conditions or criteria for its execution.
+In this trigger, you can specify the type of event that initiates it (e.g., TailorDB data update, IdP user changes, authentication events, or workflow execution state transitions) and outline the specific conditions or criteria for its execution.
 
 Refer [Supported Events](/guides/events) to learn about the different types of events supported in the Tailor Platform. Follow the [tutorial](/tutorials/setup-executor/event-based-trigger) for setup instructions.
 
@@ -64,6 +64,52 @@ Event-based triggers provide access to event-specific data through the `args` ob
 - `args.resolverName` - The name of the resolver
 - `args.result` - The resolver execution result (on success)
 - `args.error` - The error message (on failure)
+
+### Workflow Execution Events
+
+Workflow triggers expose the short event name on `args.event` for type narrowing, and the full event type on `args.rawEvent`. Workflows are not scoped to an application namespace, so these args carry no `args.namespaceName`.
+
+- `args.event` - The short event name (`started`, `completed`, `retried`, `resumed`, `wait_started`, or `wait_resolved`)
+- `args.rawEvent` - The full event type (e.g., `workflow.workflow_execution.completed`)
+- `args.workflowId` - The ID of the workflow resource
+- `args.workflowName` - The name of the workflow
+- `args.workflowExecutionId` - The ID of the workflow execution
+- `args.success` - Whether the execution succeeded (on `completed`)
+- `args.error` - The error message (on `completed` when `args.success` is `false`)
+- `args.retryCount` / `args.retryAfter` - The number of retries already attempted and the timestamp the retry is scheduled for (on `retried`)
+
+Job-level triggers receive the same fields, with `args.event` narrowed to `started`, `completed`, `wait_started`, or `wait_resolved`, plus:
+
+- `args.workflowJobExecutionId` - The ID of the job execution
+- `args.jobFunctionName` - The name of the job, as passed to `createWorkflowJob`
+- `args.waitKey` - The wait point key (on `wait_started` and `wait_resolved`)
+- `args.waitPayload` - The JSON-serialized payload recorded with the wait point, when it recorded one (on `wait_started`)
+
+```typescript {{title:'executors/order-workflow-finished.ts'}}
+import { createExecutor, workflowExecutionTrigger } from "@tailor-platform/sdk";
+import orderWorkflow from "../workflows/order";
+
+export default createExecutor({
+  name: "order-workflow-finished",
+  description: "Notify when the order workflow finishes",
+  trigger: workflowExecutionTrigger({
+    workflow: orderWorkflow,
+    events: ["completed", "retried"],
+  }),
+  operation: {
+    kind: "function",
+    body: async (args) => {
+      if (args.event === "completed" && !args.success) {
+        console.error(args.error);
+      }
+    },
+  },
+});
+```
+
+Single-event helpers are also available: `workflowExecutionStartedTrigger()`, `workflowExecutionCompletedTrigger()`, `workflowExecutionRetriedTrigger()`, `workflowExecutionResumedTrigger()`, `workflowExecutionWaitStartedTrigger()`, and `workflowExecutionWaitResolvedTrigger()`, along with their `workflowJobExecution*` counterparts and the multi-event `workflowJobExecutionTrigger()`.
+
+These triggers require the target resource to publish execution events, which `deploy` enables automatically. A `workflowExecution*` trigger enables it on the workflow it names, and a `workflowJobExecution*` trigger enables it on every job that workflow runs. Set `publishEvents` on the workflow or the job to override that. See [Execution Events](/guides/workflow/monitoring-executions#execution-events).
 
 ## Operation Types
 

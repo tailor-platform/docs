@@ -155,10 +155,13 @@ walk(config.dst)
   .filter((f) => f.endsWith(".md"))
   .forEach((f) => {
     let content = fs.readFileSync(f, "utf8");
-    content = content.replace(/\(https:\/\/docs\.tailor\.tech(\/[^)]*)\)/g, (_: string, urlPath: string) => {
-      const hasIndex = fs.existsSync(path.join(DOCS_ROOT, urlPath, "index.md"));
-      return hasIndex ? `(${urlPath}/)` : `(${urlPath})`;
-    });
+    content = content.replace(
+      /\(https:\/\/docs\.tailor\.tech(\/[^)]*)\)/g,
+      (_: string, urlPath: string) => {
+        const hasIndex = fs.existsSync(path.join(DOCS_ROOT, urlPath, "index.md"));
+        return hasIndex ? `(${urlPath}/)` : `(${urlPath})`;
+      },
+    );
     content = content.replace(/\(\.\//g, "(");
     content = content.replace(/\/index\.md\)/g, "/)");
     content = content.replace(/\.md\)/g, ")");

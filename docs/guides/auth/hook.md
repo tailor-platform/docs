@@ -78,12 +78,12 @@ const auth = defineAuth("my-auth", {
 });
 ```
 
-| Property                   | Description                                                                                                     |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| **hooks**                  | Object containing hook configurations.                                                                          |
-| **hooks.beforeLogin**      | Configuration for the before-login hook.                                                                        |
-| - handler                  | Reference to the Function that handles the hook **(required)**.                                                  |
-| - invoker                  | Name of the machine user used to invoke the handler **(required)**. Must be defined in `machineUsers`.           |
+| Property              | Description                                                                                            |
+| --------------------- | ------------------------------------------------------------------------------------------------------ |
+| **hooks**             | Object containing hook configurations.                                                                 |
+| **hooks.beforeLogin** | Configuration for the before-login hook.                                                               |
+| - handler             | Reference to the Function that handles the hook **(required)**.                                        |
+| - invoker             | Name of the machine user used to invoke the handler **(required)**. Must be defined in `machineUsers`. |
 
 The `invoker` machine user is used by the Auth service to call the handler Function. Ensure this machine user has sufficient permissions to perform the operations needed inside the handler (e.g., creating user records in TailorDB).
 
@@ -91,11 +91,11 @@ The `invoker` machine user is used by the Auth service to call the handler Funct
 
 The hook handler receives the following arguments:
 
-| Argument          | Type   | Description                                                        |
-| ----------------- | ------ | ------------------------------------------------------------------ |
+| Argument          | Type   | Description                                                                                                                                                           |
+| ----------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **claims**        | object | The claims returned by the Identity Provider (e.g., email, name). For Built-in IdP federated logins, also carries [`federated_identity`](#federated-identity-claims). |
-| **idpConfigName** | string | The name of the IdP configuration that authenticated the user.     |
-| **env**           | object | Environment variables defined in `defineConfig({ env })` (the same values available via `context.env` in resolvers). |
+| **idpConfigName** | string | The name of the IdP configuration that authenticated the user.                                                                                                        |
+| **env**           | object | Environment variables defined in `defineConfig({ env })` (the same values available via `context.env` in resolvers).                                                  |
 
 ## Federated Identity Claims
 
@@ -103,10 +103,10 @@ When a user signs in through a [Built-in IdP](/guides/auth/integration/built-in-
 
 `claims.federated_identity` is `undefined` for any non-federated login (for example, password logins or external IdP flows), so guard before reading it.
 
-| Field        | Type                       | Description                                                                                                                                                                            |
-| ------------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **provider** | `"google" \| "microsoft"`  | The upstream OAuth provider that federated the login.                                                                                                                                |
-| **claims**   | object                     | Profile claims from the provider's ID token. Commonly present claims (`name`, `given_name`, `family_name`, `picture`, `locale`) are available; any other claim the provider issues is forwarded as-is. |
+| Field        | Type                      | Description                                                                                                                                                                                            |
+| ------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **provider** | `"google" \| "microsoft"` | The upstream OAuth provider that federated the login.                                                                                                                                                  |
+| **claims**   | object                    | Profile claims from the provider's ID token. Commonly present claims (`name`, `given_name`, `family_name`, `picture`, `locale`) are available; any other claim the provider issues is forwarded as-is. |
 
 Claim availability varies by provider. For example, Microsoft does not issue `picture`.
 
@@ -168,7 +168,7 @@ const auth = defineAuth("my-auth", {
           `INSERT INTO User (email, name, role)
            VALUES ($1, $2, 'USER')
            ON CONFLICT (email) DO NOTHING`,
-          [claimName, claimName]
+          [claimName, claimName],
         );
         await client.end();
       },
@@ -180,12 +180,12 @@ const auth = defineAuth("my-auth", {
 
 ## Error Handling
 
-| Scenario                      | Behavior                                                                |
-| ----------------------------- | ----------------------------------------------------------------------- |
-| Handler returns successfully  | Login continues with normal identity resolution.                        |
-| Handler throws an error       | Login is aborted with a **403 Forbidden** response.                     |
-| No hook configured            | Hook is skipped; login proceeds normally.                               |
-| Infrastructure failure        | Login is aborted with a **503 Service Unavailable** response.           |
+| Scenario                     | Behavior                                                      |
+| ---------------------------- | ------------------------------------------------------------- |
+| Handler returns successfully | Login continues with normal identity resolution.              |
+| Handler throws an error      | Login is aborted with a **403 Forbidden** response.           |
+| No hook configured           | Hook is skipped; login proceeds normally.                     |
+| Infrastructure failure       | Login is aborted with a **503 Service Unavailable** response. |
 
 ## Next Steps
 

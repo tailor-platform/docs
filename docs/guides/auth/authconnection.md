@@ -59,15 +59,15 @@ Store the client ID and secret in your `.env` file or CI secrets — never commi
 
 **Connection config fields:**
 
-| Field          | Type     | Required | Description                                  |
-| -------------- | -------- | -------- | --------------------------------------------- |
-| `type`         | `string` | Yes      | Connection type. Currently only `"oauth2"`.  |
-| `providerUrl`  | `string` | Yes      | OAuth2 provider URL.                          |
-| `issuerUrl`    | `string` | Yes      | Token issuer URL for JWT validation.          |
-| `clientId`     | `string` | Yes      | OAuth2 client ID from the provider.           |
-| `clientSecret` | `string` | Yes      | OAuth2 client secret from the provider.       |
-| `authUrl`      | `string` | No       | Override for the authorization endpoint.      |
-| `tokenUrl`     | `string` | No       | Override for the token endpoint.              |
+| Field          | Type     | Required | Description                                 |
+| -------------- | -------- | -------- | ------------------------------------------- |
+| `type`         | `string` | Yes      | Connection type. Currently only `"oauth2"`. |
+| `providerUrl`  | `string` | Yes      | OAuth2 provider URL.                        |
+| `issuerUrl`    | `string` | Yes      | Token issuer URL for JWT validation.        |
+| `clientId`     | `string` | Yes      | OAuth2 client ID from the provider.         |
+| `clientSecret` | `string` | Yes      | OAuth2 client secret from the provider.     |
+| `authUrl`      | `string` | No       | Override for the authorization endpoint.    |
+| `tokenUrl`     | `string` | No       | Override for the token endpoint.            |
 
 Deploy to register the connection with the platform:
 

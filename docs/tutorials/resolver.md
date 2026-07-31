@@ -49,8 +49,15 @@ export const task = db.table("Task", {
   description: db.string().optional().description("Task description"),
   status: db.enum(["todo", "in_progress", "completed"]).description("Task status"),
   priority: db.enum(["low", "medium", "high"]).description("Task priority"),
-  projectId: db.uuid().relation({ type: "n-1", toward: { type: project } }).description("Associated project"),
-  assigneeId: db.uuid().relation({ type: "n-1", toward: { type: teamMember } }).optional().description("Assigned team member"),
+  projectId: db
+    .uuid()
+    .relation({ type: "n-1", toward: { type: project } })
+    .description("Associated project"),
+  assigneeId: db
+    .uuid()
+    .relation({ type: "n-1", toward: { type: teamMember } })
+    .optional()
+    .description("Assigned team member"),
   dueDate: db.string().optional().description("Due date"),
   ...db.fields.timestamps(),
 });

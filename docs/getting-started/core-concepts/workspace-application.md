@@ -24,9 +24,9 @@ Or create one through the [Console](https://console.tailor.tech).
 
 Workspaces are deployed to specific regions:
 
-| Region         | Location             |
-| -------------- | -------------------- |
-| `us-west`      | United States (West) |
+| Region           | Location             |
+| ---------------- | -------------------- |
+| `us-west`        | United States (West) |
 | `asia-northeast` | Asia Pacific (Tokyo) |
 
 ## Application

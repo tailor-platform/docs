@@ -74,13 +74,13 @@ ${entries
     <lastmod>${entry.lastmod}</lastmod>
     <changefreq>${entry.changefreq}</changefreq>
     <priority>${entry.priority}</priority>
-  </url>`
+  </url>`,
   )
   .join("\n")}
 </urlset>`;
 
   // Write sitemap to public directory
-  const publicDir = path.join(process.cwd(), ".vitepress", "dist"); 
+  const publicDir = path.join(process.cwd(), ".vitepress", "dist");
   if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir, { recursive: true });
   }

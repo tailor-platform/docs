@@ -7,6 +7,8 @@ description: Searchable combobox with single/multi selection, built-in filtering
 
 The `Combobox` component provides a searchable combobox with built-in filtering. Pass `items` and get a ready-to-use combobox out of the box. For async data fetching use `Combobox.Async`. For user-created items add an `onCreateItem` prop. For custom compositions use `Combobox.Parts`.
 
+[Live preview in the UI Catalogue →](https://ui.tailor.tech/components/combobox)
+
 ## Import
 
 ```tsx
@@ -226,6 +228,15 @@ const [selected, setSelected] = useState<User | null>(null);
 
 Combine `Combobox.useAsync` with `Combobox.Parts` for full control over layout and rendering:
 
+`Combobox.useAsync` accepts the same options as `Combobox.Async` (including `onFetchError`) and returns:
+
+| Property  | Type         | Description                                             |
+| --------- | ------------ | ------------------------------------------------------- |
+| `items`   | `T[]`        | Currently loaded items                                  |
+| `loading` | `boolean`    | Whether a fetch is in progress                          |
+| `error`   | `unknown`    | The error thrown by the last fetch, if any              |
+| `retry`   | `() => void` | Re-runs the last fetch (use to build a custom retry UI) |
+
 ```tsx
 type Country = { code: string; name: string };
 
@@ -235,6 +246,7 @@ const countries = Combobox.useAsync({
     if (!res.ok) return [];
     return res.json() as Promise<Country[]>;
   },
+  onFetchError: (error) => reportError(error),
 });
 
 <Combobox.Parts.Root {...countries} filter={null} itemToStringLabel={(c) => c.name}>
@@ -251,7 +263,13 @@ const countries = Combobox.useAsync({
         </Combobox.Parts.Item>
       ))}
       <Combobox.Parts.Empty>
-        {countries.loading ? "Loading..." : "No results."}
+        {countries.error ? (
+          <button onClick={countries.retry}>Couldn't load. Retry</button>
+        ) : countries.loading ? (
+          "Loading..."
+        ) : (
+          "No results."
+        )}
       </Combobox.Parts.Empty>
     </Combobox.Parts.List>
   </Combobox.Parts.Content>

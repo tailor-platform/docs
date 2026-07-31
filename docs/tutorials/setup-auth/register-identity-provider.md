@@ -229,21 +229,15 @@ export default defineConfig({
     idpConfigs: [
       {
         name: "oidc-provider",
-        oidc: {
-          /* ... */
-        },
+        oidc: {/* ... */},
       },
       {
         name: "saml-provider",
-        saml: {
-          /* ... */
-        },
+        saml: {/* ... */},
       },
       {
         name: "idtoken-provider",
-        idToken: {
-          /* ... */
-        },
+        idToken: {/* ... */},
       },
     ],
     userProfileConfig: {

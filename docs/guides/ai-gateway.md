@@ -43,20 +43,20 @@ See the [SDK reference](/sdk/services/aigateway) for all options, including CORS
 
 Specify the model with the `model` field in the request body. The following models are available:
 
-| Model | Type | Location |
-| --- | --- | --- |
-| `gpt-5` | Chat | Regional |
-| `gpt-5-mini` | Chat | Regional |
-| `gpt-5-nano` | Chat | Regional |
-| `gpt-4.1` | Chat | Regional |
-| `gpt-4o-mini` | Chat | Regional |
-| `gemini-2.5-pro` | Chat | Regional |
-| `gemini-2.5-flash` | Chat | Regional |
-| `gemini-2.5-flash-lite` | Chat | Global |
-| `gemini-3.5-flash` | Chat | Global |
+| Model                    | Type      | Location |
+| ------------------------ | --------- | -------- |
+| `gpt-5`                  | Chat      | Regional |
+| `gpt-5-mini`             | Chat      | Regional |
+| `gpt-5-nano`             | Chat      | Regional |
+| `gpt-4.1`                | Chat      | Regional |
+| `gpt-4o-mini`            | Chat      | Regional |
+| `gemini-2.5-pro`         | Chat      | Regional |
+| `gemini-2.5-flash`       | Chat      | Regional |
+| `gemini-2.5-flash-lite`  | Chat      | Global   |
+| `gemini-3.5-flash`       | Chat      | Global   |
 | `text-embedding-3-large` | Embedding | Regional |
 | `text-embedding-3-small` | Embedding | Regional |
-| `gemini-embedding-001` | Embedding | Global |
+| `gemini-embedding-001`   | Embedding | Global   |
 
 A model's **Type** determines which endpoints it can be used with: **Chat** models are available through `/v1/chat/completions` and `/v1/responses`, and **Embedding** models through `/v1/embeddings`. If the `model` value does not match a supported model exactly, the gateway returns `404 No matching route found`.
 
@@ -117,12 +117,12 @@ const completion = await client.chat.completions.create({
 
 ### Available paths
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| `POST` | `/v1/chat/completions` | Chat completions |
-| `POST` | `/v1/responses` | Responses API |
-| `POST` | `/v1/embeddings` | Embeddings |
-| `GET` | `/v1/models` | List available models |
+| Method | Path                   | Purpose               |
+| ------ | ---------------------- | --------------------- |
+| `POST` | `/v1/chat/completions` | Chat completions      |
+| `POST` | `/v1/responses`        | Responses API         |
+| `POST` | `/v1/embeddings`       | Embeddings            |
+| `GET`  | `/v1/models`           | List available models |
 
 The Responses API (`/v1/responses`) returns its result as an `output` array rather than the `choices[]` array used by chat completions — parse the response accordingly.
 
@@ -197,7 +197,13 @@ Grounding appears on `choices[].message.grounding_metadata` — the search queri
         "grounding_metadata": {
           "webSearchQueries": ["most recent FIFA World Cup winner"],
           "groundingChunks": [
-            { "web": { "uri": "https://example.com/post", "title": "Example", "domain": "example.com" } }
+            {
+              "web": {
+                "uri": "https://example.com/post",
+                "title": "Example",
+                "domain": "example.com"
+              }
+            }
           ]
         }
       }

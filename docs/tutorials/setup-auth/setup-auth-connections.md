@@ -46,15 +46,15 @@ export const auth = defineAuth("my-auth", {
 
 **Connection config fields:**
 
-| Field | Required | Description |
-|---|---|---|
-| `type` | Yes | Connection type. Currently only `"oauth2"`. |
-| `providerUrl` | Yes | OAuth2 provider base URL. |
-| `issuerUrl` | Yes | OAuth2 issuer URL for JWT validation. |
-| `clientId` | Yes | Your OAuth2 app's client ID. |
-| `clientSecret` | Yes | Your OAuth2 app's client secret. |
-| `authUrl` | No | Override the authorization endpoint. |
-| `tokenUrl` | No | Override the token endpoint. |
+| Field          | Required | Description                                 |
+| -------------- | -------- | ------------------------------------------- |
+| `type`         | Yes      | Connection type. Currently only `"oauth2"`. |
+| `providerUrl`  | Yes      | OAuth2 provider base URL.                   |
+| `issuerUrl`    | Yes      | OAuth2 issuer URL for JWT validation.       |
+| `clientId`     | Yes      | Your OAuth2 app's client ID.                |
+| `clientSecret` | Yes      | Your OAuth2 app's client secret.            |
+| `authUrl`      | No       | Override the authorization endpoint.        |
+| `tokenUrl`     | No       | Override the token endpoint.                |
 
 Store `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in your `.env` file or CI secrets. Never commit them.
 
