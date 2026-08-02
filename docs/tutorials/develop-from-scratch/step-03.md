@@ -6,12 +6,13 @@ Add a `closeProject` mutation that cancels incomplete tasks and closes a project
 
 ## Configuration Files
 
-Changes from Step 2: added `admin` machine user, `resolver` namespace, and `generators` export.
+Changes from Step 2: added `admin` machine user, `resolver` namespace, and `plugins` export.
 
 > Since the `admin` machine user uses `role: "ADMIN"`, update `src/db/user.ts` to include it: `db.enum(["MANAGER", "STAFF", "ADMIN"])`.
 
 ```typescript {{title: 'tailor.config.ts'}}
-import { defineAuth, defineConfig, defineGenerators } from "@tailor-platform/sdk";
+import { defineAuth, defineConfig, definePlugins } from "@tailor-platform/sdk";
+import { kyselyTypePlugin } from "@tailor-platform/sdk/plugin/kysely-type";
 import { user } from "./src/db/user";
 
 export default defineConfig({
@@ -40,10 +41,7 @@ export default defineConfig({
   resolver: { "main-resolver": { files: [`./src/resolver/*.ts`] } },
 });
 
-export const generators = defineGenerators([
-  "@tailor-platform/kysely-type",
-  { distPath: `./src/generated/tailordb.ts` },
-]);
+export const plugins = definePlugins(kyselyTypePlugin({ distPath: `./src/generated/tailordb.ts` }));
 ```
 
 > For optional output fields, use `t.string({ optional: true })`, not `t.string().optional()`. The `.optional()` chain does not exist.
