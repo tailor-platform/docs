@@ -16,7 +16,7 @@ They are similar to making a GET request in REST APIs. With GraphQL, you can spe
 
 ### Query Example
 
-Let's assume we have an API for an e-commerce platform that has a `Product` type with fields like `id`, `name`, and `price`.
+Let's assume we have an API for an e-commerce platform that has a `Product` table with fields like `id`, `name`, and `price`.
 Assume that the `name` field is of the `String` data type and the `price` field is of the `Integer` data type.
 Here's an example of a GraphQL query to request a list of products and their details:
 
@@ -61,8 +61,8 @@ In this query, we are asking for a list of products and their `id`, `name`, and 
 }
 ```
 
-You might notice that the name of the query: `products` is plural of the type name.
-In Tailor Platform, `<type name>s` (in plural) will give you a list of the records in the `<type name>`.
+You might notice that the name of the query: `products` is plural of the table name.
+In Tailor Platform, `<table name>s` (in plural) will give you a list of the records in the `<table name>`.
 
 `edges` contains an array of results.
 
@@ -76,7 +76,7 @@ In GraphQL, you can request data from related objects or entities in a single qu
 
 ### Nested Object Example
 
-Continuing with our e-commerce platform example, let's assume that the `Product` type has a related `Manufacturer` type with fields like `id`, `name`, `country`, and `directShipping`. You can request data from both the `Product` and the related `Manufacturer` in a single query.
+Continuing with our e-commerce platform example, let's assume that the `Product` table has a related `Manufacturer` table with fields like `id`, `name`, `country`, and `directShipping`. You can request data from both the `Product` and the related `Manufacturer` in a single query.
 
 Here's an example of a GraphQL query requesting a list of products, their details, and the associated manufacturer information:
 
@@ -155,7 +155,7 @@ Here are examples of GraphQL mutations for each of these operations:
 #### Create a new Product
 
 ```graphql {{ title: 'graphql'}}
-# Create "Product C" and set the manufacturer "ABC Corp." with the id in the Manufacturer type
+# Create "Product C" and set the manufacturer "ABC Corp." with the id in the Manufacturer table
 mutation {
   createProduct(
     input: { name: "Product C", price: 40, manufacturerId: "6a5e6f81-15fd-493a-b5d5-86a80a8f81db" }
@@ -327,7 +327,7 @@ query {
 }
 ```
 
-In this query, we use the `aggregateProduct` query to perform an aggregation on the `price` field of the `Product` type. The `average` field is used to specify the aggregation operation, which in this case is calculating the average of all product prices.
+In this query, we use the `aggregateProduct` query to perform an aggregation on the `price` field of the `Product` table. The `average` field is used to specify the aggregation operation, which in this case is calculating the average of all product prices.
 
 Aggregation queries can also be combined with filtering to further customize the data you retrieve and perform calculations on specific subsets of your data.
 
@@ -346,13 +346,13 @@ query {
 }
 ```
 
-In this query, we use the `aggreagteOrder` query to perform an aggregation on the `Order` type. The `groupBy` syntax is used to group the orders by the `productId` field. For each group (each unique product), we calculate the sum of the `total` field, which represents the revenue for that specific product. We alias the result as `totalRevenue`.
+In this query, we use the `aggreagteOrder` query to perform an aggregation on the `Order` table. The `groupBy` syntax is used to group the orders by the `productId` field. For each group (each unique product), we calculate the sum of the `total` field, which represents the revenue for that specific product. We alias the result as `totalRevenue`.
 
 The response will include a list of grouped results, where each group is identified by a unique `key` (the `productId` in this case), and the corresponding aggregated values, such as the total revenue for that specific product.
 
 Using `groupBy` with aggregation queries in GraphQL allows you to perform calculations on your data while grouping it by a specific field, which can be helpful for generating summary statistics, comparisons, or insights based on different categories or attributes.
 
-To use the aggregation query, you'll need to enable advanced APIs. For example, to enable aggregation on the `Order` type
+To use the aggregation query, you'll need to enable advanced APIs. For example, to enable aggregation on the `Order` table
 
 ```typescript
 db.table("Order", {

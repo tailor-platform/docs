@@ -112,7 +112,7 @@ export default createResolver({
 ### Caveats
 
 - `Subscription` operations are not supported, only `Mutation` and `Query` may be used.
-- The name of the types **MUST NOT** collide with the existing types' (e.g. `User`, etc.) as well as auto-generated operations (e.g. `createUser`, etc.).
+- The name of the resolver **MUST NOT** collide with the existing tables' (e.g. `User`, etc.) as well as auto-generated operations (e.g. `createUser`, etc.).
 
 ## Resolver
 

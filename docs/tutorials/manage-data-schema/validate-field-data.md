@@ -306,5 +306,5 @@ Learn more about validation and schema design:
 
 - [Field Validation](../../sdk/services/tailordb#validation) - Complete validation reference
 - [Field Types](../../sdk/services/tailordb#field-types) - All available field types
-- [Creating Data Schema](create-data-schema) - Learn how to create new types
+- [Creating Data Schema](create-data-schema) - Learn how to create new tables
 - [Best Practices](../../sdk/services/tailordb#best-practices) - Schema design guidelines

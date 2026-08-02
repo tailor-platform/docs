@@ -22,7 +22,7 @@ TailorDB File Type enables developers to attach files to records in their data m
 
 ## Schema Definition
 
-Files are defined in the **Files** section (not Fields) of your type definition. Each file type field in a record has a reserved URL endpoint that serves as both the upload and download location for that specific field. This URL is automatically generated when the record is created and remains constant throughout the record's lifecycle.
+Files are defined in the **Files** section (not Fields) of your table definition. Each file type field in a record has a reserved URL endpoint that serves as both the upload and download location for that specific field. This URL is automatically generated when the record is created and remains constant throughout the record's lifecycle.
 
 ```typescript {{ title: "Schema Definition" }}
 db.table("Starship", {

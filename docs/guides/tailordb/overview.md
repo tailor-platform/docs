@@ -21,18 +21,18 @@ Below is a typical folder structure for a Tailor Platform project using the SDK:
 my-app/
 ├── tailor.config.ts      # Configuration file
 ├── tailordb/
-│   ├── index.ts          # Exports all types
-│   ├── product.ts        # Product type definition
-│   └── category.ts       # Category type definition
+│   ├── index.ts          # Exports all tables
+│   ├── product.ts        # Product table definition
+│   └── category.ts       # Category table definition
 ├── auth/
 │   └── index.ts          # Auth configuration
 └── pipeline/
     └── index.ts          # Pipeline resolvers
 ```
 
-### Defining a Type
+### Defining a Table
 
-Here's how to define a `Product` type using the SDK:
+Here's how to define a `Product` table using the SDK:
 
 ```typescript
 import { db } from "@tailor-platform/sdk";
@@ -56,7 +56,7 @@ The SDK provides:
 import { db } from "@tailor-platform/sdk";
 
 export const product = db
-  .type("Product", "Product data schema", {
+  .table("Product", "Product data schema", {
     title: db.string().description("Title of the product").index(),
     description: db.string().description("Description of the product"),
   })
@@ -116,9 +116,9 @@ In TailorDB, the GraphQL APIs are [automatically generated](/guides/tailordb/aut
 
 ### Basic Structure
 
-A TailorDB type definition consists of:
+A TailorDB table definition consists of:
 
-- **Type name** (Required): The name of the data model
+- **Table name** (Required): The name of the data model
 - **Description** (Optional): Description shown in GraphQL SDL and playground
 - **Fields** (Required): Field definitions with types and modifiers
 
@@ -158,7 +158,7 @@ See [Permission](permission) for more information.
 
 ## Advanced Features
 
-### Type Features
+### Table Features
 
 Enable additional GraphQL operations with the `.features()` modifier:
 
@@ -195,7 +195,7 @@ See [Indexes](indexes) for more information.
 ## Next Steps
 
 - [Fields](fields) - Detailed field type configuration
-- [Relationships](relationships) - Define relations between types
+- [Relationships](relationships) - Define relations between tables
 - [Hooks](hooks) - Add custom logic on create/update
 - [Validations](validations) - Field-level data validation
 - [Permission](permission) - Access control configuration

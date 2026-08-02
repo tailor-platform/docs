@@ -11,7 +11,7 @@ We can enable the `bulkUpsert` setting for your type, which will automatically g
 import { db } from "@tailor-platform/sdk";
 
 export const document = db
-  .type("Document", "Document model", {
+  .table("Document", "Document model", {
     // ...fields
   })
   .features({
@@ -60,13 +60,13 @@ The maximum number of items that can be included in a single bulk upsert operati
 
 ## BulkUpsert with PluralForm settings
 
-When `PluralForm` is configured in the settings, as mentioned in the example below, TailorDB auto-generates `bulkUpsertUserDataList` instead of `bulkUpsertUserData` for bulk upserting data of the `UserData` type. Refer [PluralForm](/guides/tailordb/advanced-settings/uncountable-nouns) to learn about its setting.
+When `PluralForm` is configured in the settings, as mentioned in the example below, TailorDB auto-generates `bulkUpsertUserDataList` instead of `bulkUpsertUserData` for bulk upserting data of the `UserData` table. Refer [PluralForm](/guides/tailordb/advanced-settings/uncountable-nouns) to learn about its setting.
 
 ```typescript
 import { db } from "@tailor-platform/sdk";
 
 export const userData = db
-  .type("UserData", "UserData model", {
+  .table("UserData", "UserData model", {
     // ...fields
   })
   .features({

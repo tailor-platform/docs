@@ -205,9 +205,9 @@ inventoryType: db.enum([
 If the field data type is `TypeNested`, use this to define the nested fields within the structure.
 The data type of the field is the same as that of the parent field.
 
-### SourceId (used for linking other Type)
+### SourceId (used for linking other Table)
 
-If you want to link the data from different type, you can use the SourceId field to create the link.
+If you want to link the data from a different table, you can use the SourceId field to create the link.
 The data type of `SourceId` field is `UUID`.
 
 #### Example

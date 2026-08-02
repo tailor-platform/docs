@@ -62,7 +62,7 @@ tailor workspace
 
 #### 2. Update the configuration file
 
-For example, to modify the `User` type with a new field, update your TailorDB type definition:
+For example, to modify the `User` table with a new field, update your TailorDB table definition:
 
 ```typescript
 import { db } from "@tailor-platform/sdk";

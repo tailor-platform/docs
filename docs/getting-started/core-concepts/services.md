@@ -10,7 +10,7 @@ A flexible database service that provides:
 
 - **Type-safe schema definition** using the SDK
 - **Auto-generated GraphQL API** for CRUD operations
-- **Relationships** between data types
+- **Relationships** between data tables
 - **Hooks** for custom logic
 - **Permission-based access control**
 

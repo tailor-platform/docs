@@ -13,7 +13,7 @@ These well-structured examples can be modified to suit various templates.
 
 <div class="cards-2">
   <Card title="📊 Managing Data Schema" href="manage-data-schema/overview">
-    Learn how to define, modify, and validate your data types with TailorDB. Create relationships and enforce data integrity.
+    Learn how to define, modify, and validate your data tables with TailorDB. Create relationships and enforce data integrity.
   </Card>
 
   <Card title="🔌 Activating Services" href="app-endpoint">

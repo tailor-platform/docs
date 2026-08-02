@@ -1,8 +1,8 @@
 # Adding a New Field to Data Model
 
-Tailor Platform makes it easy to modify data schemas. With TailorDB, you can modify existing data types and the GraphQL endpoint will be automatically generated.
+Tailor Platform makes it easy to modify data schemas. With TailorDB, you can modify existing data tables and the GraphQL endpoint will be automatically generated.
 
-This tutorial demonstrates how to add a new field to an existing data type using the SDK.
+This tutorial demonstrates how to add a new field to an existing data table using the SDK.
 
 - See [Core Concepts](/getting-started/core-concepts/) to get an overview of Workspace, Organization, Application and Service.
 - To follow along with this tutorial, first complete the [SDK Quickstart](../../sdk/quickstart) and the [Data Schema Basics](data-schema-basics) tutorial.
@@ -13,13 +13,13 @@ TailorDB is a service that enables you to manage data schemas and automatically 
 
 ## Tutorial Steps
 
-To add a new `teamSize` field to the `Project` type, you will:
+To add a new `teamSize` field to the `Project` table, you will:
 
-1. Add the `teamSize` field to the `Project` type
+1. Add the `teamSize` field to the `Project` table
 2. Deploy the change
 3. Verify the schema change through GraphQL
 
-### 1. Add the `teamSize` Field to the Project Type
+### 1. Add the `teamSize` Field to the Project Table
 
 Open your `db/project.ts` file and add the new field:
 
@@ -61,7 +61,7 @@ npm run deploy -- --workspace-id <your-workspace-id>
 The SDK will:
 
 - Detect the schema changes
-- Update the TailorDB type
+- Update the TailorDB table
 - Regenerate the GraphQL API with the new field
 
 ### 3. Verify Schema Change Through GraphQL
@@ -136,7 +136,7 @@ Example response:
 
 Now that you've learned how to add a field, you can proceed to:
 
-- [Creating Data Schema](create-data-schema) - Learn how to create new types
+- [Creating Data Schema](create-data-schema) - Learn how to create new tables
 - [Field Types](../../sdk/services/tailordb#field-types) - Explore all available field types
 - [Field Validation](../../sdk/services/tailordb#validation) - Add validation rules to fields
 

@@ -18,7 +18,7 @@ This approach preserves historical data and enables change monitoring and analys
 
 ### 1. Create a history table
 
-Let's create a history table for the `StockSummary` type to log its data changes.
+Let's create a history table for the `StockSummary` table to log its data changes.
 
 ```typescript
 db.table("StockSummaryHistory", {

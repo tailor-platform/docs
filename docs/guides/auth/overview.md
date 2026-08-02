@@ -470,7 +470,7 @@ Here's an example of a User type configured for Auth integration:
 import { db } from "@tailor-platform/sdk";
 
 export const user = db
-  .type("User", {
+  .table("User", {
     name: db.string({
       description: "Name of the user",
       index: true,

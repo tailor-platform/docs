@@ -63,7 +63,7 @@ Properties
 | - usernameField | The field that contains the username.             |
 | - attributes    | Map of attributes to include in the user profile. |
 
-With this `attributes` configuration, the Auth service fetches the `roles` field from the `user` type and assigns its value to the roles attribute for permission checks.
+With this `attributes` configuration, the Auth service fetches the `roles` field from the `user` table and assigns its value to the roles attribute for permission checks.
 
 This configuration tells Tailor Platform:
 

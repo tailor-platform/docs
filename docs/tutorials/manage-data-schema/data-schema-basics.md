@@ -6,17 +6,17 @@ This tutorial demonstrates how a data schema is mapped to GraphQL APIs using the
 
 ## Data Schema
 
-A data model of your application is defined by the schema. Each type is typically defined in its own file for readability. See [TailorDB Documentation](../../sdk/services/tailordb) to learn more about schema definition.
+A data model of your application is defined by the schema. Each table is typically defined in its own file for readability. See [TailorDB Documentation](../../sdk/services/tailordb) to learn more about schema definition.
 
 ## Tutorial Steps
 
-1. Define a data type
+1. Define a data table
 2. View the schema in GraphQL playground
 3. See how the configuration maps to GraphQL APIs
 
-### 1. Define a Data Type
+### 1. Define a Data Table
 
-Create a `Project` type in your application. In your project's `db/` directory, create a file called `project.ts`:
+Create a `Project` table in your application. In your project's `db/` directory, create a file called `project.ts`:
 
 ```typescript
 import { db } from "@tailor-platform/sdk";
@@ -36,7 +36,7 @@ export const project = db.table("Project", {
 export type project = typeof project;
 ```
 
-This TypeScript file defines a `Project` type with various fields:
+This TypeScript file defines a `Project` table with various fields:
 
 - **name**: Required string field for the project name
 - **description**: Optional string field for project details
@@ -97,6 +97,6 @@ Learn more about working with data schemas:
 
 - [TailorDB Service](../../sdk/services/tailordb) - Complete TailorDB reference
 - [Field Types](../../sdk/services/tailordb#field-types) - Available field types and options
-- [Relationships](../../sdk/services/tailordb#relationships) - Define relations between types
+- [Relationships](../../sdk/services/tailordb#relationships) - Define relations between tables
 - [Modifying Data Schema](modify-data-schema) - How to update existing schemas
-- [Creating Data Schema](create-data-schema) - Add new types to your application
+- [Creating Data Schema](create-data-schema) - Add new tables to your application
