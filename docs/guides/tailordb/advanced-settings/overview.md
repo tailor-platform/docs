@@ -41,7 +41,7 @@ For example, we can define the directive of `@key(fields: "id")` as the followin
 import { db } from "@tailor-platform/sdk";
 
 export const myType = db
-  .type("MyType", "My type with directives", {
+  .table("MyType", "My type with directives", {
     // ...fields
   })
   .directives([
@@ -83,7 +83,7 @@ import { db } from "@tailor-platform/sdk";
 
 // Example of extending State type
 export const state = db
-  .type("State", "State type with extends", {
+  .table("State", "State type with extends", {
     // ...fields
   })
   .extends(true)

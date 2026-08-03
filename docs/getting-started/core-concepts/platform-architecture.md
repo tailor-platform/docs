@@ -18,7 +18,7 @@ A [Workspace](/administration/workspace) is the top-level namespace in the Tailo
 With the SDK, you can create a workspace using the CLI:
 
 ```bash
-npx tailor-sdk workspace create --name my-workspace --region us-west
+npx tailor workspace create --name my-workspace --region us-west
 ```
 
 ### Application

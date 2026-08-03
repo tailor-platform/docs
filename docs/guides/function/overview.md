@@ -133,21 +133,21 @@ query {
 
 Function operations are subject to a recursive call depth limit of 10 levels when calling other platform services. See [Platform Limits](/reference/platform/platform-limits#recursive-call-detection) for more details.
 
-## Using the "user" variable
+## Using the principal (`caller` / `invoker`)
 
-When using the Function service with Pipeline resolvers or Executors, you can access the current user's information using the `user` variable. This allows you to incorporate user-specific data into your functions.
+When using the Function service with Pipeline resolvers or Executors, you can access the current principal — a `TailorPrincipal` — from the body function. Resolvers expose it as `caller`; `function`/`jobFunction` executor operations expose it as `invoker`. Both are `null` for anonymous calls.
 
-The `user` variable has the following properties:
+`TailorPrincipal` has the following properties:
 
-- `id`: The ID of the current user
-- `type`: The type of the user
-- `workspace_id`: The ID of the workspace the user belongs to
-- `attributes`: The attributes of the user
-- `tenant_id`: The ID of the tenant the user belongs to
+- `id`: The ID of the principal
+- `type`: `"user"` or `"machine_user"`
+- `workspaceId`: The ID of the workspace the principal belongs to
+- `attributes`: A map of the principal's attributes
+- `attributeList`: A list of the principal's attribute IDs
 
 ### Resolver Example
 
-In SDK, you can access the current user's information via `context.user` in the body function:
+In SDK, you can access the current caller's information via `context.caller` in the body function:
 
 ```typescript {{ title: 'function-sample-hello.ts' }}
 import { createResolver, t } from "@tailor-platform/sdk";
@@ -161,7 +161,7 @@ export default createResolver({
   },
   body: (context) => {
     return {
-      message: context.user.id,
+      message: context.caller?.id,
     };
   },
   output: t.object({
@@ -183,7 +183,7 @@ export default createExecutor({
     kind: "function",
     body: async (context) => {
       return {
-        message: "hi " + context.user.id,
+        message: "hi " + context.invoker?.id,
       };
     },
   },

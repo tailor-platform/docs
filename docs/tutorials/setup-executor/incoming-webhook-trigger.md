@@ -151,7 +151,7 @@ https://api.erp.dev/v1/executor/workspaces/{WORKSPACE_ID}/executors/webhook-upda
 Alternatively, use the Tailor CLI:
 
 ```bash
-npx tailor-sdk executor webhook list
+npx tailor executor webhook list
 ```
 
 **Step 2: Create a test project**

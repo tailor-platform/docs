@@ -10,7 +10,7 @@ To create an event-based trigger, you'll need to:
 
 1. Configure the Executor service
 2. Create the executor with a record updated trigger
-3. Enable `publishEvents` feature on the Project type
+3. Enable `publishEvents` feature on the Project table
 4. Deploy the changes
 5. Verify the trigger
 
@@ -92,7 +92,7 @@ export default createExecutor({
 **Key Components:**
 
 1. **Trigger**: `recordUpdatedTrigger()` fires when a Project record is updated
-   - `type: project`: Specifies which type to monitor
+   - `type: project`: Specifies which table to monitor
    - `condition`: Only triggers when status changes TO "COMPLETED" (not already completed)
 
 2. **Operation**: `webhook` sends HTTP POST request to Slack
@@ -103,7 +103,7 @@ export default createExecutor({
 
 ### 3. Enable `publishEvents` Feature
 
-To ensure the executor triggers when Project records are updated, enable `publishEvents` in your Project type definition.
+To ensure the executor triggers when Project records are updated, enable `publishEvents` in your Project table definition.
 
 Update your `db/project.ts` file:
 
@@ -111,7 +111,7 @@ Update your `db/project.ts` file:
 import { db } from "@tailor-platform/sdk";
 
 export const project = db
-  .type("Project", {
+  .table("Project", {
     name: db.string().description("Project name"),
     description: db.string().optional().description("Project description"),
     status: db
@@ -150,7 +150,7 @@ Deploy your application:
 npm run deploy -- --workspace-id <your-workspace-id>
 ```
 
-The SDK will deploy both the updated Project type with `publishEvents` enabled and the new executor.
+The SDK will deploy both the updated Project table with `publishEvents` enabled and the new executor.
 
 ### 5. Verify the Trigger
 
@@ -219,7 +219,7 @@ Clicking `View Attempts` displays details of job execution attempts. The Tailor 
 **Troubleshooting:**
 
 - **No notification received**: Verify your Slack webhook URL is correct
-- **Executor not triggering**: Ensure `publishEvents: true` is set in `.features()` on the Project type
+- **Executor not triggering**: Ensure `publishEvents: true` is set in `.features()` on the Project table
 - **Error in logs**: Check the executor logs in the Console for detailed error messages
 
 ## Multi-Event Triggers

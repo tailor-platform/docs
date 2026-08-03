@@ -21,7 +21,7 @@ With just this, the GraphQL API is automatically generated.
 ```typescript {{title: "tailordb/product.ts"}}
 import { db } from "@tailor-platform/sdk";
 
-export const product = db.type("Product", "Product data schema", {
+export const product = db.table("Product", "Product data schema", {
   title: db.string().description("Title of the product").index(),
   description: db.string().description("Description of the product"),
   ...db.fields.timestamps(),
@@ -205,9 +205,9 @@ inventoryType: db.enum([
 If the field data type is `TypeNested`, use this to define the nested fields within the structure.
 The data type of the field is the same as that of the parent field.
 
-### SourceId (used for linking other Type)
+### SourceId (used for linking other Table)
 
-If you want to link the data from different type, you can use the SourceId field to create the link.
+If you want to link the data from a different table, you can use the SourceId field to create the link.
 The data type of `SourceId` field is `UUID`.
 
 #### Example
@@ -338,7 +338,7 @@ serial: db.string()
 ```typescript {{title: "tailordb/episode.ts"}}
 import { db } from "@tailor-platform/sdk";
 
-export const episode = db.type("Episode", "Episode data schema", {
+export const episode = db.table("Episode", "Episode data schema", {
   title: db.string().description("Title of the episode"),
   serial: db
     .string()

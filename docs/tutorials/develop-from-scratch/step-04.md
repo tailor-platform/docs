@@ -9,7 +9,8 @@ Add an executor that sends a Slack notification whenever a Task is created.
 Only change from Step 3: added `executor` to `tailor.config.ts`.
 
 ```typescript {{title: 'tailor.config.ts'}}
-import { defineAuth, defineConfig, defineGenerators } from "@tailor-platform/sdk";
+import { defineAuth, defineConfig, definePlugins } from "@tailor-platform/sdk";
+import { kyselyTypePlugin } from "@tailor-platform/sdk/plugin/kysely-type";
 import { user } from "./src/db/user";
 
 export default defineConfig({
@@ -39,10 +40,7 @@ export default defineConfig({
   executor: { files: ["./src/executor/*.ts"] },
 });
 
-export const generators = defineGenerators([
-  "@tailor-platform/kysely-type",
-  { distPath: `./src/generated/tailordb.ts` },
-]);
+export const plugins = definePlugins(kyselyTypePlugin({ distPath: `./src/generated/tailordb.ts` }));
 ```
 
 `createExecutor` takes an object config with `name`, `trigger`, and `operation`. The trigger `recordCreatedTrigger` takes `{ type: task }`. Available trigger context: `newRecord` (created), `oldRecord`/`newRecord` (updated), `oldRecord` (deleted).

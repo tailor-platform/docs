@@ -12,10 +12,10 @@ Using the SDK CLI:
 
 ```bash
 # Create a new workspace
-npx tailor-sdk workspace create --name my-workspace --region us-west
+npx tailor workspace create --name my-workspace --region us-west
 
 # List your workspaces
-npx tailor-sdk workspace list
+npx tailor workspace list
 ```
 
 Or create one through the [Console](https://console.tailor.tech).

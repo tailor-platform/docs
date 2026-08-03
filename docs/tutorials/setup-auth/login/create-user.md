@@ -44,7 +44,7 @@ Get an access token to use it in the GraphQL playground to run queries.
 Run the following command to get an access token:
 
 ```bash
-tailor-sdk machineuser token admin-machine-user
+tailor machineuser token admin-machine-user
 ```
 
 Set the token in the Headers section of the playground as follows:

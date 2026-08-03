@@ -121,7 +121,7 @@ npm run deploy -- --workspace-id <your-workspace-id>
 Run the following command to access your application:
 
 ```bash
-tailor-sdk login --oauth2-client spa-client
+tailor login --oauth2-client spa-client
 ```
 
 You will be redirected to your IdP (e.g., Auth0) to authenticate. Log in with your credentials.
@@ -147,7 +147,7 @@ In this section, you'll learn how to integrate OAuth 2.0 authentication into a s
 Run the following command to get the client_id and client_secret.
 
 ```bash
-tailor-sdk oauth2client list
+tailor oauth2client list
 ```
 
 You will get the following response with the client credentials which is used in the Next.js app for OAuth2 client configuration.

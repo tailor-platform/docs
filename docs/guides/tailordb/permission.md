@@ -18,7 +18,7 @@ The new permission system is recommended for all new applications. It addresses 
 ### Basic Structure
 
 ```typescript
-db.type("Example", {
+db.table("Example", {
   // field definitions
 }).permission({
   create: [/* policies */],
@@ -37,7 +37,7 @@ Each permission type has different semantics:
 Read Permission act as automatic filters. Only records that match at least one policy can be retrieved.
 
 ```typescript
-db.type("Example", {
+db.table("Example", {
   userId: db.uuid(),
 }).permission({
   read: [[{ record: "userId" }, "=", { user: "id" }]],
@@ -49,7 +49,7 @@ db.type("Example", {
 These Permissions act as validation rules. If a record doesn't match any policy, the operation is prohibited and returns a permission denied error.
 
 ```typescript
-db.type("Example", {
+db.table("Example", {
   // fields
 }).permission({
   create: [[{ user: "role" }, "=", "ADMIN"]],
@@ -169,7 +169,7 @@ const TaskStatus = db.enum("TaskStatus", [
   { value: "DONE", description: "Task has been completed" },
 ]);
 
-db.type("Task", {
+db.table("Task", {
   title: db.string({ required: true, description: "Task title" }),
   status: TaskStatus({
     description: "Task status",

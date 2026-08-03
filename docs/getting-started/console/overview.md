@@ -54,20 +54,20 @@ You can confirm that the input data aligns with the validation rules defined in 
 
 #### 1. Set Up Your Workspace
 
-Configure your workspace to match your deployed application. You can view and manage workspaces using the `tailor-sdk` CLI.
+Configure your workspace to match your deployed application. You can view and manage workspaces using the `tailor` CLI.
 
 ```bash
-tailor-sdk workspace
+tailor workspace
 ```
 
 #### 2. Update the configuration file
 
-For example, to modify the `User` type with a new field, update your TailorDB type definition:
+For example, to modify the `User` table with a new field, update your TailorDB table definition:
 
 ```typescript
 import { db } from "@tailor-platform/sdk";
 
-export const user = db.type("User", "User of the system", {
+export const user = db.table("User", "User of the system", {
   name: db.string(),
   email: db.string().unique(),
   // Add new field

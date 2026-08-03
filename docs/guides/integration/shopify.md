@@ -55,7 +55,7 @@ Treat your API key as a sensitive data and never share it publicly or commit it 
 
 Follow the below steps to create an event based trigger.
 
-1. Enable `PublishRecordEvents` settings in the `Products` type
+1. Enable `PublishRecordEvents` settings in the `Products` table
 
 To enable event publishing for Product records, add the `publishRecordEvents` feature to your Product type:
 
@@ -63,7 +63,7 @@ To enable event publishing for Product records, add the `publishRecordEvents` fe
 import { db } from "@tailor-platform/sdk";
 
 export const product = db
-  .type("Product", "Product data schema", {
+  .table("Product", "Product data schema", {
     name: db.string().description("Product name"),
     description: db.string().description("Product description"),
     // ... other fields
@@ -78,8 +78,8 @@ export const product = db
 Run the following commands to create a vault named `shopify-vault` and to store the secret key.
 
 ```bash
-tailor-sdk secret vault create shopify-vault
-tailor-sdk secret create --vault-name shopify-vault --name shopify-key --value {$your_API_key}
+tailor secret vault create shopify-vault
+tailor secret create --vault-name shopify-vault --name shopify-key --value {$your_API_key}
 ```
 
 3. Add the trigger
@@ -193,7 +193,7 @@ npx tailor deploy
 After deployment, get your webhook URL:
 
 ```bash
-tailor-sdk executor list
+tailor executor list
 ```
 
 You will see the webhook URL in the output which you'll use to configure Shopify.
@@ -203,7 +203,7 @@ You will see the webhook URL in the output which you'll use to configure Shopify
 Run the command below to get the endpoint for configuring Shopify.
 
 ```bash
-tailor-sdk executor webhook list
+tailor executor webhook list
 ```
 
 You will receive the following URL in response.
@@ -233,7 +233,7 @@ You can open the GraphQL playground to verify the product created in Shopify is 
 
 ```bash
 # Open the GraphQL playground in the browser
-tailor-sdk open
+tailor open
 ```
 
 Run the following query to view all the products.

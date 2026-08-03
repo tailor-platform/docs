@@ -8,6 +8,8 @@ In order to access TailorDB from Function service, you need to instantiate the `
 `tailordb` exists in the Function service environment by default, so you can use it without any additional installation.
 Please specify the `namespace` of the TailorDB you want to connect to when creating the `Client` object.
 
+Importing from `@tailor-platform/sdk` no longer activates the ambient `tailordb.*` global automatically. Add `import "@tailor-platform/sdk/runtime/globals"` as a side-effect import in your function file (or use the typed wrapper from `@tailor-platform/sdk/runtime` instead) — see [Runtime](/sdk/runtime) for details.
+
 Here is the `Client` interface:
 
 ```ts
@@ -177,7 +179,7 @@ To execute the function, you need to set up the Product table in TailorDB.
 ```typescript {{ title: 'product.ts' }}
 import { db, auth } from "@tailor-platform/sdk";
 
-export const product = db.type("Product", {
+export const product = db.table("Product", {
   title: db.string().description("Title of the product"),
   ...db.fields.timestamps(),
 });
@@ -750,10 +752,6 @@ const { metadata } = await tailordb.file.uploadStream(
 );
 ```
 
-::: warning Deprecated: openDownloadStream
-`openDownloadStream()` is deprecated. Use `downloadStream()` instead, which returns a standard Web `ReadableStream` rather than a custom async iterator.
-:::
-
 ### Delete Files
 
 Delete a file attached to a record. This removes the file but does not delete the record itself.
@@ -845,13 +843,6 @@ tailordb.file.uploadStream(
   readableStream: ReadableStream<Uint8Array | ArrayBuffer>,
   options?: { contentType?: string; fileSize?: number }
 ): Promise<{ metadata: UploadMetadata }>
-
-tailordb.file.openDownloadStream( // deprecated — use downloadStream()
-  namespace: string,
-  typeName: string,
-  fieldName: string,
-  recordId: string
-): Promise<AsyncIterator<ChunkResult>>
 
 tailordb.file.delete(
   namespace: string,

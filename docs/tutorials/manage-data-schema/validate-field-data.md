@@ -22,13 +22,14 @@ Open your `db/project.ts` file and add a validation rule to the `name` field. We
 ```typescript
 import { db } from "@tailor-platform/sdk";
 
-export const project = db.type("Project", {
+export const project = db.table("Project", {
   name: db
     .string()
     .description("Project name")
     .validate(
-      ({ value }) => value.length >= 3,
-      [({ value }) => value.length <= 50, "Project name must be 50 characters or less"],
+      ({ value }) => (value.length >= 3 ? undefined : "Project name must be at least 3 characters"),
+      ({ value }) =>
+        value.length <= 50 ? undefined : "Project name must be 50 characters or less",
     ),
   description: db.string().optional().description("Project description"),
   status: db
@@ -39,18 +40,20 @@ export const project = db.type("Project", {
   completionPercentage: db
     .int()
     .optional()
-    .validate(
-      ({ value }) => value === undefined || (value >= 0 && value <= 100),
-      "Completion percentage must be between 0 and 100",
+    .validate(({ value }) =>
+      value === undefined || (value >= 0 && value <= 100)
+        ? undefined
+        : "Completion percentage must be between 0 and 100",
     )
     .description("Project completion percentage"),
   priority: db.enum(["low", "medium", "high", "critical"]).description("Project priority level"),
   teamSize: db
     .int()
     .optional()
-    .validate(
-      ({ value }) => value === undefined || (value > 0 && value <= 100),
-      "Team size must be between 1 and 100",
+    .validate(({ value }) =>
+      value === undefined || (value > 0 && value <= 100)
+        ? undefined
+        : "Team size must be between 1 and 100",
     )
     .description("Number of team members"),
   ...db.fields.timestamps(),
@@ -66,9 +69,9 @@ export type project = typeof project;
 
 The `validate()` method accepts:
 
-- A validation function that receives `{ value }` and returns `true` if valid
-- An optional error message (string or tuple with function and message)
-- Multiple validations can be chained
+- One or more validation functions, each receiving `{ value }` (the field value after hooks)
+- Each function returns an error message string to fail, or `void`/`undefined` to pass
+- Multiple validations can be chained by passing multiple functions
 
 For more information, see [Input Validation](../../sdk/services/resolver#input-validation) documentation.
 
@@ -303,5 +306,5 @@ Learn more about validation and schema design:
 
 - [Field Validation](../../sdk/services/tailordb#validation) - Complete validation reference
 - [Field Types](../../sdk/services/tailordb#field-types) - All available field types
-- [Creating Data Schema](create-data-schema) - Learn how to create new types
+- [Creating Data Schema](create-data-schema) - Learn how to create new tables
 - [Best Practices](../../sdk/services/tailordb#best-practices) - Schema design guidelines

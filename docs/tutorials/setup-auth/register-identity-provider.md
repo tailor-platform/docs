@@ -22,7 +22,7 @@ First, ensure you have a User type defined in your database schema (e.g., `db/us
 ```typescript
 import { db } from "@tailor-platform/sdk";
 
-export const user = db.type("User", {
+export const user = db.table("User", {
   email: db.string().unique(), // usernameField must be unique
   name: db.string(),
   roles: db.array(db.string()).optional(),
@@ -83,10 +83,10 @@ Before deploying, you need to store your client secret in the secret manager. Ru
 
 ```bash
 # Create a vault
-tailor-sdk secret vault create my-vault
+tailor secret vault create my-vault
 
 # Store the client secret
-tailor-sdk secret create \
+tailor secret create \
   --vault-name my-vault \
   --name oidc-client-secret \
   --value YOUR_CLIENT_SECRET

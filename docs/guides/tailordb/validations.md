@@ -15,16 +15,12 @@ Use the `.validate()` method to add validation rules to a field. The method acce
 
 ```typescript
 db.string().validate(
-  ({ value }) => value.includes("@"), // validation function
-  [({ value }) => value.length > 5, "Must be longer than 5 characters"], // with error message
+  ({ value }) => (value.includes("@") ? undefined : "Must contain @"),
+  ({ value }) => (value.length > 5 ? undefined : "Must be longer than 5 characters"),
 );
 ```
 
-The validation function receives an object with:
-
-- `value`: The current field value
-- `data`: The entire record data
-- `user`: The user context performing the operation
+The validation function receives `{ value }` — the field value after hooks have run — and returns an error message string to fail, or `void`/`undefined` to pass. Field-level validators can't access other fields; use a type-level validator (`db.table().validate()`) for cross-field checks.
 
 **Notes:**
 
@@ -65,28 +61,34 @@ The `Action` will be evaluated when the `Expr` returns true.
 
 ```typescript
 // reportNumber value must be less than 100 or over 103
-reportNumber: db.int().validate([
-  ({ value }) => value < 100 || value > 103,
-  "reportNumber value must be less than 100 or over 103",
-]);
+reportNumber: db.int().validate(({ value }) =>
+  value < 100 || value > 103 ? undefined : "reportNumber value must be less than 100 or over 103",
+);
 ```
 
 ```typescript
 // Description length should be less than 40 characters
 description: db.string()
   .description("Description of the product.")
-  .validate([
-    ({ value }) => value.length < 40,
-    "Description length should be less than 40 characters.",
-  ]);
+  .validate(({ value }) =>
+    value.length < 40 ? undefined : "Description length should be less than 40 characters.",
+  );
 ```
+
+Field-level validators only see `{ value }`, so a check like "the invoker must be logged in" — which depends on the invoker, not the field's own value — needs a type-level validator instead:
 
 ```typescript
 // User must be logged in to create an item
-itemStatus: db.string().validate([
-  ({ user }) => Object.keys(user).length > 0,
-  "You must be logged in to create an item",
-]);
+export const item = db
+  .table("Item", {
+    itemStatus: db.string(),
+    // ...other fields
+  })
+  .validate(({ invoker }, issues) => {
+    if (!invoker) {
+      issues("itemStatus", "You must be logged in to create an item");
+    }
+  });
 ```
 
 ```javascript
@@ -184,10 +186,16 @@ itemStatus: {
 ### Example demonstrating how to use user attributes
 
 ```typescript
-itemCode: db.string().validate([
-  ({ user }) => user.attributes.includes("{ADMIN_ID}"),
-  "To create an item, you must be the Admin",
-]);
+export const item = db
+  .table("Item", {
+    itemCode: db.string(),
+    // ...other fields
+  })
+  .validate(({ invoker }, issues) => {
+    if (!invoker?.attributeList.includes("{ADMIN_ID}")) {
+      issues("itemCode", "To create an item, you must be the Admin");
+    }
+  });
 ```
 
 ```javascript

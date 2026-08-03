@@ -18,4 +18,4 @@ Learn how to build apps with the Tailor Platform SDK.
 - [Resolver](services/resolver) - Custom GraphQL resolver service
 - [Executor](services/executor) - Event-driven automation service
 - [Workflow](services/workflow) - Job orchestration service
-- [Generator](generator/) - Code generation tools for builtin and custom generators
+- [Plugin](plugin/) - Extend TailorDB types with plugin-generated types, executors, and output files

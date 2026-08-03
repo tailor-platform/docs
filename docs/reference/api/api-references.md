@@ -70,14 +70,14 @@ All platform services are exposed through the `OperatorService`, a unified gRPC 
 
 ## Authentication
 
-All API calls require authentication using Bearer tokens. Use tailor-sdk to authenticate:
+All API calls require authentication using Bearer tokens. Use tailor to authenticate:
 
 ```bash
 # Login to Tailor Platform
-tailor-sdk login
+tailor login
 
 # Create a personal access token for API authentication
-tailor-sdk user pat create <token-name>
+tailor user pat create <token-name>
 ```
 
 See the [Auth Guide](/guides/auth/overview) for detailed authentication setup.

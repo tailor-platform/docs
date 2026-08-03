@@ -6,22 +6,22 @@ doc_type: guide
 
 ## Check Execution Status
 
-Use the `tailor-sdk workflow executions` command to check the status of a workflow execution:
+Use the `tailor workflow executions` command to check the status of a workflow execution:
 
 ```bash
-tailor-sdk workflow executions <execution-id>
+tailor workflow executions <execution-id>
 ```
 
 **With logs:**
 
 ```bash
-tailor-sdk workflow executions <execution-id> --logs
+tailor workflow executions <execution-id> --logs
 ```
 
 **Usage:**
 
 ```bash
-tailor-sdk workflow executions [options] [executionId]
+tailor workflow executions [options] [executionId]
 ```
 
 **Arguments:**
@@ -73,25 +73,25 @@ Result: {
 List all workflow executions in your workspace:
 
 ```bash
-tailor-sdk workflow executions
+tailor workflow executions
 ```
 
 **Filter by workflow name:**
 
 ```bash
-tailor-sdk workflow executions --workflow-name my-workflow
+tailor workflow executions --workflow-name my-workflow
 ```
 
 **Filter by status:**
 
 ```bash
-tailor-sdk workflow executions --status RUNNING
+tailor workflow executions --status RUNNING
 ```
 
 **Combine filters:**
 
 ```bash
-tailor-sdk workflow executions --workflow-name my-workflow --status FAILED
+tailor workflow executions --workflow-name my-workflow --status FAILED
 ```
 
 ## Execution Status
@@ -110,7 +110,7 @@ A workflow execution can have the following statuses:
 You can follow an execution in real-time using the `--wait` flag:
 
 ```bash
-tailor-sdk workflow executions <execution-id> --wait
+tailor workflow executions <execution-id> --wait
 ```
 
 This will poll for updates until the execution completes.
@@ -118,13 +118,13 @@ This will poll for updates until the execution completes.
 **Customize polling interval:**
 
 ```bash
-tailor-sdk workflow executions <execution-id> --wait --interval 5s
+tailor workflow executions <execution-id> --wait --interval 5s
 ```
 
 **Wait and show logs:**
 
 ```bash
-tailor-sdk workflow executions <execution-id> --wait --logs
+tailor workflow executions <execution-id> --wait --logs
 ```
 
 The `start` command returns an execution ID that you can use with `workflow executions` to monitor progress.
@@ -185,13 +185,13 @@ The console provides:
 If a workflow execution fails, you can resume it from the point of failure using the `resume` command:
 
 ```bash
-tailor-sdk workflow resume <execution-id>
+tailor workflow resume <execution-id>
 ```
 
 **Usage:**
 
 ```bash
-tailor-sdk workflow resume [options] <executionId>
+tailor workflow resume [options] <executionId>
 ```
 
 **Arguments:**
@@ -208,13 +208,13 @@ tailor-sdk workflow resume [options] <executionId>
 **Resume and wait for completion:**
 
 ```bash
-tailor-sdk workflow resume <execution-id> --wait
+tailor workflow resume <execution-id> --wait
 ```
 
 **Resume and show logs:**
 
 ```bash
-tailor-sdk workflow resume <execution-id> --wait --logs
+tailor workflow resume <execution-id> --wait --logs
 ```
 
 **What happens during resume:**
@@ -244,13 +244,13 @@ saveToDb     → Executed again
 
 ### Resuming from Code
 
-You can also resume a failed or pending-retry execution from your own code (a workflow job function, an executor, or a pipeline resolver) using `tailor.workflow.resumeWorkflow()`. This lets you build self-healing flows that recover from transient failures automatically, without an operator running `tailor-sdk workflow resume` or using the Tailor Console.
+You can also resume a failed or pending-retry execution from your own code (a workflow job function, an executor, or a pipeline resolver) using `tailor.workflow.resumeWorkflowExecution()`. This lets you build self-healing flows that recover from transient failures automatically, without an operator running `tailor workflow resume` or using the Tailor Console.
 
 **Example:**
 
 ```javascript
 export async function main(args) {
-  const resumedId = await tailor.workflow.resumeWorkflow(args.executionId);
+  const resumedId = await tailor.workflow.resumeWorkflowExecution(args.executionId);
   console.log("Resumed execution:", resumedId);
   return { resumedExecutionId: resumedId };
 }
@@ -264,7 +264,7 @@ export async function main(args) {
 
 - Execution ID of the resumed execution (string)
 
-`resumeWorkflow()` behaves like the `resume` command described above. The workflow restarts from the main function and reuses the cached results of successful job functions, so only failed or not-yet-executed jobs run again. It rejects with an error whose message is prefixed with `resumeWorkflow failed:` when the execution cannot be resumed. Let that error propagate to fail the calling execution, and add a `try`/`catch` only when you need to control the error or its message.
+`resumeWorkflowExecution()` behaves like the `resume` command described above. The workflow restarts from the main function and reuses the cached results of successful job functions, so only failed or not-yet-executed jobs run again. It rejects with an error describing why the execution cannot be resumed when it isn't in a resumable state. Let that error propagate to fail the calling execution, and add a `try`/`catch` only when you need to control the error or its message.
 
 ### When to Use Resume
 
@@ -333,5 +333,5 @@ export const myWorkflow = createWorkflow({
 After defining your workflow, deploy it using:
 
 ```bash
-tailor-sdk deploy
+tailor deploy
 ```

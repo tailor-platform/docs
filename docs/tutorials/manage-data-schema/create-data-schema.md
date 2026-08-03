@@ -1,6 +1,6 @@
 # Adding a New Data Model
 
-With Tailor Platform's TailorDB, you can easily add new types (data models) to your application. The GraphQL API will be automatically generated for the new type.
+With Tailor Platform's TailorDB, you can easily add new tables (data models) to your application. The GraphQL API will be automatically generated for the new table.
 
 This tutorial demonstrates how to create a new data schema using the SDK.
 
@@ -9,7 +9,7 @@ This tutorial demonstrates how to create a new data schema using the SDK.
 
 ## Tutorial Steps
 
-To create a `Task` type in TailorDB, you'll need to:
+To create a `Task` table in TailorDB, you'll need to:
 
 1. Define the `Task` schema
 2. Deploy the change
@@ -17,13 +17,13 @@ To create a `Task` type in TailorDB, you'll need to:
 
 ### 1. Define the Task Schema
 
-Create a new file `db/task.ts` in your project and define the Task type:
+Create a new file `db/task.ts` in your project and define the Task table:
 
 ```typescript
 import { db } from "@tailor-platform/sdk";
 import { project } from "./project";
 
-export const task = db.type("Task", {
+export const task = db.table("Task", {
   title: db.string().description("Task title"),
   description: db.string().optional().description("Task description"),
   status: db
@@ -48,7 +48,7 @@ export type task = typeof task;
 - **description**: Optional detailed description
 - **status**: Enumeration with predefined status values
 - **priority**: Enumeration for priority levels
-- **projectId**: Many-to-one relation to the Project type
+- **projectId**: Many-to-one relation to the Project table
 - **assigneeId**: Optional reference to a team member
 - **dueDate**: Optional date field
 - **estimatedHours**: Optional float for time estimation
@@ -58,7 +58,7 @@ Fields like `id` are automatically generated without being explicitly defined. S
 
 ### 2. Deploy the Change
 
-Deploy the new Task type to your workspace:
+Deploy the new Task table to your workspace:
 
 ```bash
 npm run deploy -- --workspace-id <your-workspace-id>
@@ -66,13 +66,13 @@ npm run deploy -- --workspace-id <your-workspace-id>
 
 The SDK will:
 
-- Detect the new type definition
+- Detect the new table definition
 - Create the Task table in TailorDB
-- Generate the GraphQL API for the Task type
+- Generate the GraphQL API for the Task table
 
 ### 3. Verify Schema Change Through GraphQL
 
-The SDK automatically generates the following GraphQL APIs for the `Task` type:
+The SDK automatically generates the following GraphQL APIs for the `Task` table:
 
 - **Queries**: `task`, `tasks` - Fetch task data
 - **Mutations**: `createTask`, `updateTask`, `deleteTask` - Modify task data
@@ -183,9 +183,9 @@ query {
 
 ## Next Steps
 
-Now that you've created a new type, explore more advanced features:
+Now that you've created a new table, explore more advanced features:
 
-- [Relationships](../../sdk/services/tailordb#relationships) - Define relations between types
+- [Relationships](../../sdk/services/tailordb#relationships) - Define relations between tables
 - [Field Types](../../sdk/services/tailordb#field-types) - Learn about all available field types
 - [Indexes](../../sdk/services/tailordb#indexes) - Optimize query performance
 - [Hooks](../../sdk/services/tailordb#hooks) - Add automatic field population

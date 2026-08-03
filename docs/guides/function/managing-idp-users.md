@@ -14,6 +14,8 @@ The `tailor.idp` namespace provides a `Client` class that you can use to interac
 This feature requires a configured Built-in IdP service. For information on setting up Built-in IdP, see [Built-in IdP](/guides/auth/integration/built-in-idp).
 :::
 
+Importing from `@tailor-platform/sdk` no longer activates the ambient `tailor.*` global automatically. Add `import "@tailor-platform/sdk/runtime/globals"` as a side-effect import in your function file (or use the typed wrapper from `@tailor-platform/sdk/runtime` instead) — see [Runtime](/sdk/runtime) for details.
+
 ## Client Interface
 
 The `tailor.idp.Client` class provides the following interface:

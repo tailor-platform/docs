@@ -72,7 +72,7 @@ Store the client ID and secret in your `.env` file or CI secrets — never commi
 Deploy to register the connection with the platform:
 
 ```bash
-tailor-sdk deploy
+tailor deploy
 ```
 
 This creates (or updates) the connection record. A newly created connection exists but is not yet authorized — it has no tokens yet.
@@ -94,7 +94,7 @@ This creates (or updates) the connection record. A newly created connection exis
 #### 2. Authorize the Connection
 
 ```bash
-tailor-sdk authconnection authorize --name google-connection \
+tailor authconnection authorize --name google-connection \
   --scopes "openid,profile,email" \
   --port 8080
 ```
@@ -114,16 +114,16 @@ This command:
 4. Exchanges the authorization code for tokens using the client secret from your config
 5. Stores tokens securely on the server
 
-Alternatively, run `tailor-sdk authconnection open` to authorize the connection from the Console instead of the local CLI flow — useful on a machine without browser access:
+Alternatively, run `tailor authconnection open` to authorize the connection from the Console instead of the local CLI flow — useful on a machine without browser access:
 
 ```bash
-tailor-sdk authconnection open
+tailor authconnection open
 ```
 
 Verify the connection is authorized:
 
 ```bash
-tailor-sdk authconnection list
+tailor authconnection list
 ```
 
 ### Option B: Manage Entirely via the Console
@@ -131,7 +131,7 @@ tailor-sdk authconnection list
 No `tailor.config.ts` changes are needed — create, authorize, and manage the connection directly in the Tailor Platform Console:
 
 ```bash
-tailor-sdk authconnection open
+tailor authconnection open
 ```
 
 This opens the workspace's connections settings page, where you can:
@@ -146,8 +146,8 @@ This is a good fit for connections you don't want tracked in git — for example
 
 A connection name is owned by exactly one side at a time — the same connection cannot be managed by both the Console and your SDK config simultaneously:
 
-- A connection created via the Console (Option B) carries no SDK ownership label. `tailor-sdk deploy` leaves it completely untouched as long as it isn't also declared in `connections`.
-- If you later add a connection with the **same name** to `defineAuth()`'s `connections` and run `deploy`, the SDK finds it already exists without an ownership label and pauses to ask whether it should take it over ("Allow tailor-sdk to manage these resources?"). Confirming adopts it into config management — from that point on, every `deploy` overwrites its fields to match your config, and removing it from `connections` deletes the connection. (`--yes` confirms automatically, which is useful for CI but means this adoption happens without a prompt.)
+- A connection created via the Console (Option B) carries no SDK ownership label. `tailor deploy` leaves it completely untouched as long as it isn't also declared in `connections`.
+- If you later add a connection with the **same name** to `defineAuth()`'s `connections` and run `deploy`, the SDK finds it already exists without an ownership label and pauses to ask whether it should take it over ("Allow tailor to manage these resources?"). Confirming adopts it into config management — from that point on, every `deploy` overwrites its fields to match your config, and removing it from `connections` deletes the connection. (`--yes` confirms automatically, which is useful for CI but means this adoption happens without a prompt.)
 - Until you confirm that handover, `deploy` refuses to proceed, so a Console-managed connection is never silently overwritten by config just because a connection with the same name appears in `tailor.config.ts`.
 
 In short: use the Console (Option B) for connections you intend to manage by hand, and SDK config (Option A) for connections you want defined, reviewed, and deployed alongside the rest of your app. Don't mix the two for the same connection name.
@@ -176,10 +176,10 @@ connections: {
 
 ```bash
 # 1. Deploy the connection
-tailor-sdk deploy
+tailor deploy
 
 # 2. Authorize and get tokens
-tailor-sdk authconnection authorize --name google-oauth \
+tailor authconnection authorize --name google-oauth \
   --scopes "https://www.googleapis.com/auth/admin.directory.user.readonly"
 ```
 
@@ -212,10 +212,10 @@ connections: {
 
 ```bash
 # 1. Deploy the connection
-tailor-sdk deploy
+tailor deploy
 
 # 2. Authorize and get tokens
-tailor-sdk authconnection authorize --name ms365-oauth \
+tailor authconnection authorize --name ms365-oauth \
   --scopes "https://graph.microsoft.com/.default"
 ```
 
@@ -249,7 +249,7 @@ connections: {
 ```
 
 ```bash
-tailor-sdk deploy
+tailor deploy
 ```
 
 **Common QuickBooks OAuth2 URLs:**
@@ -301,7 +301,7 @@ export default async () => {
 // authconnection.getConnectionToken("unknown-connection"); // ❌ TypeScript error
 ```
 
-Type narrowing is provided by the generated `tailor.d.ts` (the `ConnectionNameRegistry` interface). Run `tailor-sdk generate` (or `deploy`) after defining new connections to refresh it. Before the first generate, or when `connections` is not defined in `defineAuth()`, `getConnectionToken()` accepts any string.
+Type narrowing is provided by the generated `tailor.d.ts` (the `ConnectionNameRegistry` interface). Run `tailor generate` (or `deploy`) after defining new connections to refresh it. Before the first generate, or when `connections` is not defined in `defineAuth()`, `getConnectionToken()` accepts any string.
 
 ### Advanced Usage with Error Handling
 
@@ -355,19 +355,19 @@ These commands work on any connection regardless of which option created it:
 
 ```bash
 # Open the connections page in the Console
-tailor-sdk authconnection open
+tailor authconnection open
 
 # Authorize (opens browser for OAuth2 flow)
-tailor-sdk authconnection authorize --name <connection-name>
+tailor authconnection authorize --name <connection-name>
 
 # List all connections
-tailor-sdk authconnection list
+tailor authconnection list
 
 # Revoke a connection's tokens (keeps the connection; re-authorize later)
-tailor-sdk authconnection revoke --name <connection-name>
+tailor authconnection revoke --name <connection-name>
 
 # Delete a connection entirely
-tailor-sdk authconnection delete --name <connection-name>
+tailor authconnection delete --name <connection-name>
 ```
 
 To delete a connection managed via SDK config (Option A), remove it from `connections` and redeploy instead of using `authconnection delete` directly — manage each connection through one method only, as described above.
@@ -408,7 +408,7 @@ connections: {
 ```
 
 ```bash
-tailor-sdk deploy -w <production-workspace-id> --env-file .env.production
+tailor deploy -w <production-workspace-id> --env-file .env.production
 ```
 
 ## Troubleshooting
@@ -436,7 +436,7 @@ tailor-sdk deploy -w <production-workspace-id> --env-file .env.production
 
 **Re-authorization Required After Deploy**
 
-- If `tailor-sdk deploy` warns that a connection needs re-authorization, run `tailor-sdk authconnection authorize --name <connection-name>` again
+- If `tailor deploy` warns that a connection needs re-authorization, run `tailor authconnection authorize --name <connection-name>` again
 - This happens when identity-changing fields (`providerUrl`, `issuerUrl`, `clientId`, `type`) are modified
 
 **Function Runtime Errors**

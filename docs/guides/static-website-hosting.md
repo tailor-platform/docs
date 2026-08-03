@@ -31,7 +31,7 @@ Deploy pre-built static files using TailorCLI. The service is designed for singl
 
 ```bash {{ title: "Deploy Pre-built Files" }}
 # Deploy your build output directory
-tailor-sdk staticwebsite deploy \
+tailor staticwebsite deploy \
   --name my-spa \
   --dir ./dist \
   --workspace_id <workspace-id>
@@ -74,7 +74,7 @@ There are two ways to add custom domains to a static website.
 
 #### SDK Configuration
 
-Add the `customDomains` field to your `defineStaticWebSite()` definition. Domains are provisioned automatically when you run `tailor-sdk deploy`.
+Add the `customDomains` field to your `defineStaticWebSite()` definition. Domains are provisioned automatically when you run `tailor deploy`.
 
 ```typescript {{ title: "Static Website with Custom Domains" }}
 import { defineStaticWebSite } from "@tailor-platform/sdk";
@@ -90,7 +90,7 @@ export const mySpa = defineStaticWebSite("my-spa", {
 Use the API command to add a custom domain directly.
 
 ```bash {{ title: "Add a Custom Domain" }}
-tailor-sdk api AddCustomDomain --body '{
+tailor api AddCustomDomain --body '{
   "workspace_id": "<workspace-id>",
   "static_website_name": "my-spa",
   "domain": "app.example.com"
@@ -101,15 +101,15 @@ You can list and inspect custom domains with dedicated subcommands:
 
 ```bash {{ title: "List and Get Custom Domains" }}
 # List all custom domains for a static website
-tailor-sdk staticwebsite domain list my-spa
+tailor staticwebsite domain list my-spa
 
 # Get details of a specific custom domain
-tailor-sdk staticwebsite domain get app.example.com
+tailor staticwebsite domain get app.example.com
 ```
 
 ### DNS Configuration
 
-After adding a custom domain, configure CNAME records with your DNS provider. The required targets are returned in the response and can also be retrieved with `tailor-sdk staticwebsite domain get`.
+After adding a custom domain, configure CNAME records with your DNS provider. The required targets are returned in the response and can also be retrieved with `tailor staticwebsite domain get`.
 
 | Record Type | Host                              | Target                            | Purpose                                  |
 | ----------- | --------------------------------- | --------------------------------- | ---------------------------------------- |

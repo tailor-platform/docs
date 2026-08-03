@@ -21,23 +21,23 @@ Below is a typical folder structure for a Tailor Platform project using the SDK:
 my-app/
 ├── tailor.config.ts      # Configuration file
 ├── tailordb/
-│   ├── index.ts          # Exports all types
-│   ├── product.ts        # Product type definition
-│   └── category.ts       # Category type definition
+│   ├── index.ts          # Exports all tables
+│   ├── product.ts        # Product table definition
+│   └── category.ts       # Category table definition
 ├── auth/
 │   └── index.ts          # Auth configuration
 └── pipeline/
     └── index.ts          # Pipeline resolvers
 ```
 
-### Defining a Type
+### Defining a Table
 
-Here's how to define a `Product` type using the SDK:
+Here's how to define a `Product` table using the SDK:
 
 ```typescript
 import { db } from "@tailor-platform/sdk";
 
-export const product = db.type("Product", "Product data schema", {
+export const product = db.table("Product", "Product data schema", {
   title: db.string().description("Title of the product").index(),
   description: db.string().description("Description of the product"),
   price: db.float(),
@@ -56,7 +56,7 @@ The SDK provides:
 import { db } from "@tailor-platform/sdk";
 
 export const product = db
-  .type("Product", "Product data schema", {
+  .table("Product", "Product data schema", {
     title: db.string().description("Title of the product").index(),
     description: db.string().description("Description of the product"),
   })
@@ -116,14 +116,14 @@ In TailorDB, the GraphQL APIs are [automatically generated](/guides/tailordb/aut
 
 ### Basic Structure
 
-A TailorDB type definition consists of:
+A TailorDB table definition consists of:
 
-- **Type name** (Required): The name of the data model
+- **Table name** (Required): The name of the data model
 - **Description** (Optional): Description shown in GraphQL SDL and playground
 - **Fields** (Required): Field definitions with types and modifiers
 
 ```typescript
-export const task = db.type("Task", "Task management entity", {
+export const task = db.table("Task", "Task management entity", {
   title: db.string().description("Task title"),
   completed: db.bool(),
   dueDate: db.datetime({ optional: true }),
@@ -139,7 +139,7 @@ See [Fields](fields) for detailed field configuration options.
 TailorDB follows a **secure-by-default** principle. All operations are denied unless explicitly granted.
 
 ```typescript
-db.type("Task", {
+db.table("Task", {
   title: db.string(),
   ownerId: db.uuid(),
   ...db.fields.timestamps(),
@@ -158,12 +158,12 @@ See [Permission](permission) for more information.
 
 ## Advanced Features
 
-### Type Features
+### Table Features
 
 Enable additional GraphQL operations with the `.features()` modifier:
 
 ```typescript
-db.type("Product", {
+db.table("Product", {
   name: db.string(),
   price: db.float(),
   ...db.fields.timestamps(),
@@ -180,7 +180,7 @@ See [Advanced Settings](advanced-settings/overview) for more information.
 Create multi-field indexes for query optimization:
 
 ```typescript
-db.type("Order", {
+db.table("Order", {
   customerId: db.uuid(),
   orderDate: db.datetime(),
   ...db.fields.timestamps(),
@@ -195,7 +195,7 @@ See [Indexes](indexes) for more information.
 ## Next Steps
 
 - [Fields](fields) - Detailed field type configuration
-- [Relationships](relationships) - Define relations between types
+- [Relationships](relationships) - Define relations between tables
 - [Hooks](hooks) - Add custom logic on create/update
 - [Validations](validations) - Field-level data validation
 - [Permission](permission) - Access control configuration

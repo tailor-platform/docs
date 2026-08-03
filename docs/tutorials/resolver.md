@@ -21,7 +21,7 @@ First, create the necessary types in TailorDB. Create two files in your `db/` di
 ```typescript
 import { db } from "@tailor-platform/sdk";
 
-export const project = db.type("Project", {
+export const project = db.table("Project", {
   name: db.string().description("Project name"),
   description: db.string().optional().description("Project description"),
   status: db.enum(["active", "completed", "archived"]).description("Project status"),
@@ -36,7 +36,7 @@ export type project = typeof project;
 import { db } from "@tailor-platform/sdk";
 import { project } from "./project";
 
-export const teamMember = db.type("TeamMember", {
+export const teamMember = db.table("TeamMember", {
   name: db.string().description("Team member name"),
   email: db.string().description("Team member email"),
   role: db.string().optional().description("Team member role"),
@@ -44,7 +44,7 @@ export const teamMember = db.type("TeamMember", {
 });
 export type teamMember = typeof teamMember;
 
-export const task = db.type("Task", {
+export const task = db.table("Task", {
   title: db.string().description("Task title"),
   description: db.string().optional().description("Task description"),
   status: db.enum(["todo", "in_progress", "completed"]).description("Task status"),

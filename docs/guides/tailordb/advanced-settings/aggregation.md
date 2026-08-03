@@ -16,7 +16,7 @@ Available operations are `count`, `max`, `min`, `sum`, `avg`, `totalSize`, and `
 import { db } from "@tailor-platform/sdk";
 
 export const payroll = db
-  .type("Payroll", "payroll model", {
+  .table("Payroll", "payroll model", {
     name: db.string().description("name"),
     paidAt: db.datetime().description("paidAt").required(),
     paidAmount: db.int().description("paidAmount").required(),
@@ -30,7 +30,7 @@ export const payroll = db
 ```
 
 TailorDB auto-generates `aggregatePayrolls`, allowing you to quickly retrieve summarized results for Payroll.\
-Based on the `payroll` type, here's the sample query to aggregate the payroll data:
+Based on the `payroll` table, here's the sample query to aggregate the payroll data:
 
 ```graphql {{ title: 'query' }}
 query {

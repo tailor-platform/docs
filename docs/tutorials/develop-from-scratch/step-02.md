@@ -69,7 +69,7 @@ import { db } from "@tailor-platform/sdk";
 import { gqlPermissionLoggedIn, permissionLoggedIn } from "../common/permission";
 
 export const user = db
-  .type("User", {
+  .table("User", {
     name: db.string().description("Name of the user"),
     email: db.string().unique().description("Email address of the user"),
     role: db.enum(["MANAGER", "STAFF"]),
@@ -84,7 +84,7 @@ import { db } from "@tailor-platform/sdk";
 import { gqlPermissionLoggedIn, permissionLoggedIn } from "../common/permission";
 
 export const project = db
-  .type("Project", {
+  .table("Project", {
     name: db.string().description("Name of the Project"),
     description: db.string({ optional: true }).description("Description of the project"),
     status: db.enum([
@@ -110,7 +110,7 @@ import { user } from "./user";
 import { gqlPermissionLoggedIn, permissionLoggedIn } from "../common/permission";
 
 export const task = db
-  .type("Task", {
+  .table("Task", {
     name: db.string().description("Name of the Task"),
     description: db.string({ optional: true }).description("Description of the task"),
     projectId: db

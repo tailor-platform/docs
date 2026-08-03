@@ -15,8 +15,8 @@ You can perform calculations using other fields within the same record. For exam
 
 2. Adding user context:
 
-Hooks allow the addition of current user context to the record. For instance, a field like `createdById` can be populated with the `user.id`.\
-Additionally, you can utilize user attributes, an array of UUIDs configured in the `AttributesFields` in the Auth service. A typical use case for `user.attributes` involves validation. Refer to this [example](/guides/tailordb/validations#exampledemonstratinghowtouseuserattributes).
+Hooks allow the addition of the current invoker's context to the record. For instance, a field like `createdById` can be populated with the `invoker.id`.\
+Additionally, you can utilize invoker attributes, an array of UUIDs configured in the `AttributesFields` in the Auth service. A typical use case for `invoker.attributes` involves validation. Refer to this [example](/guides/tailordb/validations#exampledemonstratinghowtouseuserattributes).
 
 Furthermore, the field updates itself whenever a new record is created or an existing one is updated.\
 This ensures data consistency without manual recalculations, similar to calculated fields in a database, and helps you avoid writing complex logic in [Pipeline](/guides/resolver).
@@ -55,18 +55,21 @@ hooks = {  // if shopifyID is null, set status to 'awaiting_payment', else set s
 ```typescript {{ title: "order.ts"}}
 import { db } from "@tailor-platform/sdk";
 
-export const order = db.type("Order", {
-  price: db.int().description("Unit price of a certain product"),
-  quantity: db.int().description("Order quantity of a certain product"),
-  totalPrice: db
-    .int()
-    .description("Total price of a certain product")
-    .hooks({
-      create: ({ data }) => data.price * data.quantity,
-      update: ({ data }) => data.price * data.quantity,
+export const order = db
+  .table("Order", {
+    price: db.int().description("Unit price of a certain product"),
+    quantity: db.int().description("Order quantity of a certain product"),
+    totalPrice: db.int().description("Total price of a certain product"),
+  })
+  .hooks({
+    create: ({ input }) => ({ totalPrice: input.price * input.quantity }),
+    update: ({ input, oldRecord }) => ({
+      totalPrice: (input.price ?? oldRecord.price) * (input.quantity ?? oldRecord.quantity),
     }),
-});
+  });
 ```
+
+Field-level hooks can't read other fields, so computing `totalPrice` from `price` and `quantity` requires a type-level hook (`db.table().hooks(...)`) instead.
 
 ```sh {{ title: "order.tf"}}
   price = {
@@ -94,12 +97,12 @@ With such hooks in place, the totalPrice field will be computed and stored whene
 ```typescript {{ title: "supplier.ts"}}
 import { db } from "@tailor-platform/sdk";
 
-export const supplier = db.type("Supplier", {
+export const supplier = db.table("Supplier", {
   createdById: db
     .uuid()
     .description("User ID of the logged in user")
     .hooks({
-      create: ({ user }) => user.id,
+      create: ({ invoker }) => invoker?.id ?? "",
     }),
 });
 ```
@@ -119,15 +122,17 @@ export const supplier = db.type("Supplier", {
 ```typescript {{ title: "order.ts"}}
 import { db } from "@tailor-platform/sdk";
 
-export const order = db.type("Order", {
+export const order = db.table("Order", {
   quantity: db
     .int()
     .description("Order quantity of a certain product")
     .hooks({
-      create: ({ value }) => value ?? 2,
+      create: ({ input }) => input ?? 2,
     }),
 });
 ```
+
+For a plain, unconditional default like this one, prefer `.default(2)` on the field instead — it also makes the field optional in the create input. Use a hook when the default depends on other fields or the invoker (see [Conditional default values](#conditional-default-values) below).
 
 ```sh {{ title: "order.tf"}}
   quantity: {
@@ -150,17 +155,18 @@ Hooks run after input evaluation, having the consequence that any passed value m
 ```typescript {{ title: "order.ts"}}
 import { db } from "@tailor-platform/sdk";
 
-export const order = db.type("Order", {
-  price: db.int().description("Unit price of a certain product"),
-  quantity: db.int().description("Order quantity of a certain product"),
-  totalPrice: db
-    .int()
-    .description("Total price of a certain product")
-    .hooks({
-      create: ({ data }) => data.price * data.quantity,
-      update: ({ data }) => data.price * data.quantity,
+export const order = db
+  .table("Order", {
+    price: db.int().description("Unit price of a certain product"),
+    quantity: db.int().description("Order quantity of a certain product"),
+    totalPrice: db.int().description("Total price of a certain product"),
+  })
+  .hooks({
+    create: ({ input }) => ({ totalPrice: input.price * input.quantity }),
+    update: ({ input, oldRecord }) => ({
+      totalPrice: (input.price ?? oldRecord.price) * (input.quantity ?? oldRecord.quantity),
     }),
-});
+  });
 ```
 
 ```sh {{ title: "order.tf"}}
@@ -194,18 +200,23 @@ If the total exceeds 100, validation fails and the record is not created.
 ```typescript {{ title: "order.ts"}}
 import { db } from "@tailor-platform/sdk";
 
-export const order = db.type("Order", {
-  price: db.int().description("Unit price of a certain product"),
-  quantity: db.int().description("Order quantity of a certain product"),
-  totalPrice: db
-    .int()
-    .description("Total price of a certain product")
-    .hooks({
-      create: ({ data }) => data.price * data.quantity,
-      update: ({ data }) => data.price * data.quantity,
-    })
-    .validate([({ value }) => value >= 100, "totalPrice value must be less than 100"]),
-});
+export const order = db
+  .table("Order", {
+    price: db.int().description("Unit price of a certain product"),
+    quantity: db.int().description("Order quantity of a certain product"),
+    totalPrice: db
+      .int()
+      .description("Total price of a certain product")
+      .validate(({ value }) =>
+        value >= 100 ? "totalPrice value must be less than 100" : undefined,
+      ),
+  })
+  .hooks({
+    create: ({ input }) => ({ totalPrice: input.price * input.quantity }),
+    update: ({ input, oldRecord }) => ({
+      totalPrice: (input.price ?? oldRecord.price) * (input.quantity ?? oldRecord.quantity),
+    }),
+  });
 ```
 
 ```sh {{ title: "order.tf"}}
@@ -242,20 +253,16 @@ The datetime each record was created and updated can be stored as follows
 ```typescript {{ title: "order.ts"}}
 import { db } from "@tailor-platform/sdk";
 
-export const order = db.type("Order", {
-  createdAt: db
-    .datetime()
-    .description("The time when this record is created")
-    .hooks({
-      create: () => new Date(),
-    }),
-  updatedAt: db
-    .datetime()
-    .description("The time when this record is updated")
-    .hooks({
-      update: () => new Date(),
-    }),
-});
+export const order = db
+  .table("Order", {
+    createdAt: db.datetime().description("The time when this record is created"),
+    updatedAt: db.datetime().description("The time when this record is updated"),
+  })
+  .hooks({
+    // `now` is the same Date instance across every hook in the same operation.
+    create: ({ now }) => ({ createdAt: now, updatedAt: now }),
+    update: ({ now }) => ({ updatedAt: now }),
+  });
 ```
 
 Or use the built-in timestamps helper:
@@ -263,10 +270,12 @@ Or use the built-in timestamps helper:
 ```typescript {{ title: "order.ts"}}
 import { db } from "@tailor-platform/sdk";
 
-export const order = db.type("Order", {
+export const order = db.table("Order", {
   ...db.fields.timestamps(),
 });
 ```
+
+`db.fields.timestamps()` adds non-null `createdAt` and `updatedAt` fields with this same behavior built in — both are populated on create, and `updatedAt` is refreshed on every update. Provided values are preserved (useful for seeding historical timestamps).
 
 ```sh {{ title: "order.tf"}}
   createdAt = {
@@ -285,11 +294,11 @@ export const order = db.type("Order", {
   }
 ```
 
-In this example, the `createdAt` field is evaluated only on create events, and the `updatedAt` field is evaluated only on update events.
+In this example, the `createdAt` field is set only on create, while `updatedAt` is set on both create and update.
 
-When the record is created, the current datetime value is stored in the `createdAt` field, but not in the `updatedAt` field.
+When the record is created, the current datetime value is stored in both the `createdAt` and `updatedAt` fields.
 
-When the record is updated, the value in the `createdAt` field will remain unchanged, while the `updatedAt` field will be updated with the current datetime.
+When the record is updated, the value in the `createdAt` field remains unchanged, while the `updatedAt` field is updated with the current datetime.
 
 ### Conditional default values
 
@@ -300,21 +309,22 @@ In this example, the default value of the field `price` is determined by the val
 ```typescript {{ title: "order.ts"}}
 import { db } from "@tailor-platform/sdk";
 
-export const order = db.type("Order", {
-  type: db
-    .enum([
-      { value: "ITEMA", description: "Item A" },
-      { value: "ITEMB", description: "Item B" },
-    ])
-    .description("Item category"),
-  price: db
-    .int()
-    .description("Unit price of a certain product")
-    .hooks({
-      create: ({ data }) => (data.type === "ITEMA" ? 100 : null),
-    }),
-});
+export const order = db
+  .table("Order", {
+    type: db
+      .enum([
+        { value: "ITEMA", description: "Item A" },
+        { value: "ITEMB", description: "Item B" },
+      ])
+      .description("Item category"),
+    price: db.int().description("Unit price of a certain product"),
+  })
+  .hooks({
+    create: ({ input }) => ({ price: input.type === "ITEMA" ? 100 : null }),
+  });
 ```
+
+This needs a type-level hook because it reads the `type` field to decide `price` — field-level hooks can't see other fields.
 
 ```sh {{ title: "order.tf"}}
   type = {
