@@ -60,7 +60,7 @@ Below is a list of supported events and their payloads.
 | `metadata.sha256sum`        | `String`: SHA256 checksum of the uploaded file.            |
 | `metadata.size`             | `Integer`: Size of the uploaded file in bytes.             |
 
-## Pipeline
+## Resolver
 
 ### Resolver Executed
 
@@ -70,7 +70,7 @@ Below is a list of supported events and their payloads.
 | ------------------ | -------------------------------------------------------------------------- |
 | `workspaceId`      | `String`: The workspace ID where the event occurred.                       |
 | `namespaceName`    | `String`: Name of the application.                                         |
-| `resolverName`     | `String`: Name of the pipeline resolver.                                   |
+| `resolverName`     | `String`: Name of the resolver.                                            |
 | `succeeded.result` | `Object`: The result object contains `pipelines` and `resolver` data.      |
 | `failed.error`     | `String`: The error message provides details about the cause of the error. |
 

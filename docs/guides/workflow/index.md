@@ -29,7 +29,7 @@ Both Workflow and Function services execute JavaScript code, but serve different
 | **State management**  | None                           | Automatic state preservation                  |
 | **Resume capability** | No                             | Yes, from point of failure                    |
 | **Use case**          | Data transformation, API calls | Complex background jobs, multi-step processes |
-| **Called from**       | Pipeline resolvers, Executors  | Executors, Functions                          |
+| **Called from**       | Resolvers, Executors           | Executors, Functions                          |
 
 **When to use Workflow:**
 
@@ -41,7 +41,7 @@ Both Workflow and Function services execute JavaScript code, but serve different
 
 - You need quick, synchronous data processing
 - The operation is a single, atomic task
-- You're transforming data within Pipeline resolvers
+- You're transforming data within resolvers
 
 ## How Workflow Execution Works
 

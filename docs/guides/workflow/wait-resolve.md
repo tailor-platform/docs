@@ -24,10 +24,10 @@ The Wait / Resolve flow consists of three phases:
 
 ```mermaid
 sequenceDiagram
-    participant Trigger as Trigger (Pipeline / Executor)
+    participant Trigger as Trigger (Resolver / Executor)
     participant Workflow as Workflow
     participant DB as TailorDB
-    participant Resolver as Resolver (Pipeline Function)
+    participant Resolver as Resolver (Resolver Function)
 
     Trigger->>Workflow: startWorkflow()
     Trigger->>DB: Save executionId
@@ -139,12 +139,12 @@ A common implementation pattern involves three components:
 
 1. **A workflow** that starts processing and pauses on a wait point's `.wait()`
 2. **A TailorDB record** that stores the execution ID for later retrieval
-3. **A pipeline resolver function** that calls the wait point's `.resolve()` when the human decision is made
+3. **A resolver function** that calls the wait point's `.resolve()` when the human decision is made
 
 ### Step 1: Start the workflow and save the execution ID
 
 ```javascript
-// Pipeline resolver or executor function
+// Resolver or executor function
 export async function main(args) {
   const executionId = await tailor.workflow.startWorkflow("order-approval-workflow", {
     orderId: args.orderId,
@@ -186,7 +186,7 @@ export const prepareOrder = createWorkflowJob({
 });
 ```
 
-### Step 3: Resolve from a pipeline resolver function
+### Step 3: Resolve from a resolver function
 
 ```typescript {{ title: 'resolvers/resolveApproval.ts' }}
 import { createResolver, t } from "@tailor-platform/sdk";

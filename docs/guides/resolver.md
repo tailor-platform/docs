@@ -6,7 +6,7 @@ doc_type: guide
 
 The Tailor Platform provides GraphQL APIs to access and manipulate your data.
 While the auto-generated GraphQL APIs cover many use cases, more complex ones require custom business logic.
-Pipeline provides custom resolvers that can chain queries and perform data transformations.
+The Resolver service lets you define custom resolvers that chain queries and perform data transformations.
 
 ## Quick Start with SDK
 
@@ -70,9 +70,8 @@ createResolver({
 
 ## Overview
 
-When a request resolves to a pipeline, it goes through its steps sequentially.
-As it proceeds through those, the results of each step are passed as arguments to the next.
-Each step can use the results of its caller using `args`, or use the results of any prior step using `context`.
+A resolver exposes a custom GraphQL query or mutation. When a request resolves to it, the SDK validates the input, runs the `body` function, and validates the output.
+Inside `body` you chain operations with plain TypeScript — read from TailorDB, call external services, and pass intermediate results along with ordinary variables and `await`.
 
 ## Definition
 
@@ -188,7 +187,7 @@ Custom Scalar Types
 
 **Timeout and Limits**
 
-Resolvers have a timeout set to 60 seconds. Additionally, the platform enforces a recursive call depth limit of 10 levels to prevent infinite loops when pipeline resolvers call other platform services. See [Platform Limits](/reference/platform/platform-limits#recursive-call-detection) for more details.
+Resolvers have a timeout set to 60 seconds. Additionally, the platform enforces a recursive call depth limit of 10 levels to prevent infinite loops when resolvers call other platform services. See [Platform Limits](/reference/platform/platform-limits#recursive-call-detection) for more details.
 
 ### Execution Order (Resolver level)
 
@@ -217,9 +216,9 @@ export default createResolver({
 });
 ```
 
-## Pipeline steps
+## Multi-step logic
 
-In the SDK, the concept of "pipeline steps" is replaced by direct TypeScript code in the `body` function. You can perform multiple database operations, call external services, and chain logic naturally using async/await.
+In the SDK, the concept of declarative "pipeline steps" is replaced by direct TypeScript code in the `body` function. You can perform multiple database operations, call external services, and chain logic naturally using async/await.
 
 **Example**
 

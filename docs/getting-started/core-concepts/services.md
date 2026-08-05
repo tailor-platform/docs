@@ -27,7 +27,7 @@ Authentication and authorization service that provides:
 
 [Learn more about Auth →](/guides/auth/overview)
 
-### Pipeline
+### Resolver
 
 Custom GraphQL resolver service for business logic:
 
@@ -36,7 +36,7 @@ Custom GraphQL resolver service for business logic:
 - **Type-safe input/output** definitions
 - **Access to TailorDB** via query builder
 
-[Learn more about Pipeline →](/guides/resolver)
+[Learn more about Resolver →](/guides/resolver)
 
 ### Executor
 

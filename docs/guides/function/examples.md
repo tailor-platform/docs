@@ -4,7 +4,7 @@ doc_type: guide
 
 # Examples
 
-These examples show how to use the Function service to run JavaScript as serverless functions on the Tailor Platform, deploy them, and trigger them via Pipeline resolvers.
+These examples show how to use the Function service to run JavaScript as serverless functions on the Tailor Platform, deploy them, and trigger them via resolvers.
 
 Here are the code [examples](https://github.com/tailor-platform/templates/tree/main/examples).
 

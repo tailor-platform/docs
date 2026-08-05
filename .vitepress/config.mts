@@ -43,7 +43,7 @@ export default withMermaid(
           domain: "https://docs.tailor.tech",
           title: "Tailor Platform Documentation",
           description:
-            "Tailor is a headless ERP platform. These docs cover the SDK, AppShell UI framework, platform services (TailorDB, Pipeline, StateFlow, Executor, Auth), and administration.",
+            "Tailor is a headless ERP platform. These docs cover the SDK, AppShell UI framework, platform services (TailorDB, Resolver, StateFlow, Executor, Auth), and administration.",
           injectLLMHint: false,
         }),
       ],

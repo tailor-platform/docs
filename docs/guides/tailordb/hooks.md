@@ -19,7 +19,7 @@ Hooks allow the addition of the current invoker's context to the record. For ins
 Additionally, you can utilize invoker attributes, an array of UUIDs configured in the `AttributesFields` in the Auth service. A typical use case for `invoker.attributes` involves validation. Refer to this [example](/guides/tailordb/validations#exampledemonstratinghowtouseuserattributes).
 
 Furthermore, the field updates itself whenever a new record is created or an existing one is updated.\
-This ensures data consistency without manual recalculations, similar to calculated fields in a database, and helps you avoid writing complex logic in [Pipeline](/guides/resolver).
+This ensures data consistency without manual recalculations, similar to calculated fields in a database, and helps you avoid writing complex logic in [Resolver](/guides/resolver).
 
 ## Hooks Properties
 

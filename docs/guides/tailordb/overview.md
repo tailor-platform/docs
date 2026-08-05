@@ -26,8 +26,8 @@ my-app/
 │   └── category.ts       # Category table definition
 ├── auth/
 │   └── index.ts          # Auth configuration
-└── pipeline/
-    └── index.ts          # Pipeline resolvers
+└── resolver/
+    └── index.ts          # Resolvers
 ```
 
 ### Defining a Table

@@ -30,7 +30,7 @@ Click on `View Details` to learn more about the pipeline resolver execution.
 
 ![Console – Pipeline resolver execution logs details](../assets/console-pipeline-resolver-execution-logs-detail.png)
 
-For more detailed information about `Pipeline`, refer to [Pipeline resolvers](/guides/resolver).
+For more detailed information, refer to [Resolver](/guides/resolver).
 
 ## Platform user roles
 
