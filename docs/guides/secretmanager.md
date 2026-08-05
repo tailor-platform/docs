@@ -131,9 +131,9 @@ export default async () => {
 - `tailor.secretmanager.getSecrets(vaultName, secretNames)`: Retrieves multiple secrets from a vault
 - `tailor.secretmanager.getSecret(vaultName, secretName)`: Retrieves a single secret from a vault
 
-### Pipeline and Executor Integration
+### Resolver and Executor Integration
 
-Secrets can be referenced in Pipeline resolvers and Executor configurations to securely access external services without hardcoding credentials.
+Secrets can be referenced in resolvers and Executor configurations to securely access external services without hardcoding credentials.
 
 ## Security considerations
 

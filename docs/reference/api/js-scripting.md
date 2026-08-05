@@ -1,6 +1,6 @@
 ---
 tabs:
-  pipeline-example:
+  resolver-example:
     - label: Terraform
       content: |
         ```javascript
@@ -235,25 +235,25 @@ tabs:
 
 # JavaScript
 
-Using JavaScript, implement robust validation logic, manipulate data structures, and perform efficient data transformations in Pipeline resolvers, Triggers and TailorDB.
+Using JavaScript, implement robust validation logic, manipulate data structures, and perform efficient data transformations in resolvers, Triggers and TailorDB.
 
 Here are some examples of where you can utilize JavaScript:
 
-- `PreHook`, `PostHook` blocks in [Pipeline resolvers](/guides/resolver)
+- `PreHook`, `PostHook` blocks in [resolvers](/guides/resolver)
 - `Condition`, `URL`, `Body`, `Variables` blocks in [Triggers and Targets](/guides/executor/overview)
 - `Validate` and `Hooks` blocks in [TailorDB](/guides/tailordb/overview)
 - `create`, `update` hooks in [TailorDB Hooks](/guides/tailordb/hooks)
 - `script` validation in [TailorDB Validations](/guides/tailordb/validations)
 
-## Pipeline
+## Resolver
 
-You can use `PostHook` field in the Pipeline to return the object that can be used in the later steps.
+You can use `PostHook` field in the resolver to return the object that can be used in the later steps.
 
-Throwing an `Error` in a pipeline step halts the execution. The API returns the error in the format `<name>: <message>` (e.g., `Error: No heroes found`).
+Throwing an `Error` in a resolver step halts the execution. The API returns the error in the format `<name>: <message>` (e.g., `Error: No heroes found`).
 
 **Example**:
 
-:::tabs pipeline-example
+:::tabs resolver-example
 :::
 
 ## Triggers and Targets

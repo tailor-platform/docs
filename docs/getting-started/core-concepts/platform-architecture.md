@@ -27,7 +27,7 @@ An **Application** represents your ERP application APIs, such as CRM, SCM, or an
 
 Each application can:
 
-- Register services (TailorDB, Pipeline, Auth) for use
+- Register services (TailorDB, Resolver, Auth) for use
 - Configure CORS settings
 - Provide a single GraphQL endpoint for all configured services
 
@@ -37,10 +37,14 @@ With the SDK, applications are defined in `tailor.config.ts`:
 import { defineConfig } from "@tailor-platform/sdk";
 
 export default defineConfig({
-  application: {
-    name: "my-app",
-    subgraphs: ["tailordb", "pipeline", "auth"],
+  name: "my-app",
+  db: {
+    "my-db": { files: ["db/**/*.ts"] },
   },
+  resolver: {
+    "my-resolver": { files: ["resolver/**/*.ts"] },
+  },
+  auth: { name: "my-auth" },
   // ... other configuration
 });
 ```

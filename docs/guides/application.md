@@ -22,13 +22,16 @@ To deploy an application, you'll need to enable at least one service.
 **Example**
 
 ```typescript
-import { defineTailorConfig } from "@tailor-platform/sdk";
+import { defineConfig } from "@tailor-platform/sdk";
 
-export default defineTailorConfig({
-  workspace: "my-workspace",
-  app: {
-    name: "my-app",
-    subgraphs: [tailordb, auth, pipeline],
+export default defineConfig({
+  name: "my-app",
+  db: {
+    "my-db": { files: ["db/**/*.ts"] },
   },
+  resolver: {
+    "my-resolver": { files: ["resolver/**/*.ts"] },
+  },
+  auth: { name: "my-auth" },
 });
 ```

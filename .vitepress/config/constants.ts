@@ -2,7 +2,7 @@
 export const navItemOrder: Record<string, string[]> = {
   guides: [
     "tailordb",
-    "pipeline",
+    "resolver",
     "stateflow",
     "executor",
     "function",

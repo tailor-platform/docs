@@ -41,20 +41,26 @@ Configure your application in `tailor.config.ts`:
 import { defineConfig } from "@tailor-platform/sdk";
 
 export default defineConfig({
-  application: {
-    name: "my-app",
-    subgraphs: ["tailordb", "pipeline", "auth"],
+  name: "my-app",
+  db: {
+    "my-db": { files: ["db/**/*.ts"] },
   },
+  resolver: {
+    "my-resolver": { files: ["resolver/**/*.ts"] },
+  },
+  auth: { name: "my-auth" },
 });
 ```
 
 ### Subgraphs
 
-Subgraphs define which services your application uses:
+Each service you configure becomes a subgraph of your application's single GraphQL endpoint:
 
-- `tailordb` - Database service
-- `pipeline` - Custom resolvers and business logic
+- `db` - TailorDB database service
+- `resolver` - Custom resolvers and business logic
 - `auth` - Authentication and authorization
+
+See [Configuration](/sdk/configuration) for the full list of services.
 
 ### Deploying Applications
 

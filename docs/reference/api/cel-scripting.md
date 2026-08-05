@@ -4,7 +4,7 @@
 
 Here are some places you can utilize CEL:
 
-- `authorization`, `preScript`, `postScript`, `preValidation`, `postValidation` blocks on [Pipeline resolvers](/guides/resolver)
+- `authorization`, `preScript`, `postScript`, `preValidation`, `postValidation` blocks on [resolvers](/guides/resolver)
 - `create_expr`, `update_expr` hooks in [TailorDB Hooks](/guides/tailordb/hooks)&#x20;
 - `expr` validation in [TailorDB Validations](/guides/tailordb/validations) &#x20;
 

@@ -10,7 +10,7 @@ Platform limits are enforced across different services in the Tailor Platform to
 
 | Service              | Limit Type                                   | Limit Value    | Description                                                                                                                                               | Impact                                                                                                 |
 | -------------------- | -------------------------------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| Recursive Call Limit | Call Depth                                   | 10 levels      | Max depth for nested platform-to-platform requests (pipelines, functions, etc.)                                                                           | Request rejected with BadRequest error if depth exceeds 10 levels                                      |
+| Recursive Call Limit | Call Depth                                   | 10 levels      | Max depth for nested platform-to-platform requests (resolvers, functions, etc.)                                                                           | Request rejected with BadRequest error if depth exceeds 10 levels                                      |
 | Workflow             | Workspace Concurrent Executions              | 50 executions  | Max concurrent workflow executions per workspace                                                                                                          | Pending executions remain in `PENDING` status until running executions drop below the cap              |
 | Workflow             | Per-Workflow Concurrent Executions           | 20 executions  | Max concurrent executions of a single workflow                                                                                                            | Pending executions remain in `PENDING` status until running executions drop below the cap              |
 | Workflow             | Workspace Concurrent Job Functions           | 100 dispatches | Max concurrent job function dispatches per workspace (regardless of `executionPolicyKey`)                                                                 | Dispatch is suspended and workflow moves to `PENDING_RESUME` until dispatches drop below the cap       |
@@ -29,7 +29,7 @@ The Tailor Platform implements recursive call detection to prevent infinite loop
 
 Recursive call detection applies to:
 
-- **Pipeline resolvers** calling other pipeline resolvers
+- **Resolvers** calling other resolvers
 - **Function service** operations that trigger other platform services
 - **Executor service** operations that invoke GraphQL mutations or other services
 - **Event-driven workflows** where one service triggers events that cause other services to execute
@@ -38,7 +38,7 @@ Recursive call detection applies to:
 
 This limit prevents issues in scenarios such as:
 
-- Pipeline A calls Pipeline B, which calls Pipeline C, and so on beyond 10 levels
+- Resolver A calls Resolver B, which calls Resolver C, and so on beyond 10 levels
 - Function operations that recursively trigger other functions through events
 - Executor workflows that create cascading service calls
 - Event loops where service operations trigger events that cause the same operations to execute again

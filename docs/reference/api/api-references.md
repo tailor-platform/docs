@@ -115,7 +115,7 @@ All APIs return standard gRPC status codes. Common error responses include:
 For implementation details and usage examples, refer to:
 
 - [TailorDB Guide](/guides/tailordb/overview)
-- [Pipeline Guide](/guides/resolver)
+- [Resolver Guide](/guides/resolver)
 - [Auth Guide](/guides/auth/overview)
 - [Executor Guide](/guides/executor/overview)
 - [Function Guide](/guides/function/overview)

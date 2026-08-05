@@ -10,7 +10,7 @@ The documentation is organized into several main sections:
 
 - **Getting Started** - Introduction to Tailor Platform and core concepts
 - **SDK** - Platform SDK documentation and CLI reference
-- **Guides** - In-depth guides for TailorDB, Auth, Pipeline, Functions, and more
+- **Guides** - In-depth guides for TailorDB, Auth, Resolver, Functions, and more
 - **References** - API references and legacy tool documentation
 
 ## Installation

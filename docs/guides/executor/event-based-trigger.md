@@ -57,7 +57,7 @@ Event-based triggers provide access to event-specific data through the `args` ob
 - `args.eventType` - The type of event that occurred (e.g., `auth.access_token.issued`)
 - `args.namespaceName` - The namespace where the event occurred
 
-### Pipeline Events
+### Resolver Events
 
 - `args.eventType` - The type of event that occurred (e.g., `pipeline.resolver.executed`)
 - `args.namespaceName` - The namespace where the event occurred

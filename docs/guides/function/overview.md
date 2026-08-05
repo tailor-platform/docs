@@ -7,7 +7,7 @@ doc_type: guide
 ## Overview
 
 Function service lets you run your JavaScript code as serverless functions in Tailor Platform.
-You can write your code and deploy it to Tailor Platform, and then trigger it from Pipeline resolvers or Executors.
+You can write your code and deploy it to Tailor Platform, and then trigger it from resolvers or Executors.
 This provides a flexible way to extend your application's functionality with custom business logic.
 
 With Function service, you can:
@@ -30,7 +30,7 @@ For more advanced use cases, you can refer to these sections:
 The deployment process involves three main steps:
 
 1. Write your function
-2. Set up the function in your Pipeline or Executor
+2. Set up the function in your Resolver or Executor
 3. Execute the function from your application
 
 You can see the actual code examples [here](https://github.com/tailor-platform/templates/tree/main/docs/sample-inventory-management).
@@ -39,7 +39,7 @@ You can see the actual code examples [here](https://github.com/tailor-platform/t
 
 With SDK, functions are defined inline within the resolver or executor files using TypeScript.
 
-### 2. Set up the function in your Pipeline resolver or Executor
+### 2. Set up the function in your resolver or Executor
 
 #### Directory Structure
 
@@ -135,7 +135,7 @@ Function operations are subject to a recursive call depth limit of 10 levels whe
 
 ## Using the principal (`caller` / `invoker`)
 
-When using the Function service with Pipeline resolvers or Executors, you can access the current principal — a `TailorPrincipal` — from the body function. Resolvers expose it as `caller`; `function`/`jobFunction` executor operations expose it as `invoker`. Both are `null` for anonymous calls.
+When using the Function service with resolvers or Executors, you can access the current principal — a `TailorPrincipal` — from the body function. Resolvers expose it as `caller`; `function`/`jobFunction` executor operations expose it as `invoker`. Both are `null` for anonymous calls.
 
 `TailorPrincipal` has the following properties:
 

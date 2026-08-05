@@ -35,7 +35,7 @@ The following IP addresses are used for outgoing connections from the US-West re
 You may need to whitelist these IP addresses in the following scenarios:
 
 - **Webhook endpoints**: If your application receives webhooks from Tailor Platform executors or event triggers, whitelist the IPs for the region where your workspace is hosted.
-- **External API integrations**: When Tailor Platform functions or pipelines make requests to your external services that have IP-based access controls.
+- **External API integrations**: When Tailor Platform functions or resolvers make requests to your external services that have IP-based access controls.
 - **Database connections**: If you're using external databases that require IP whitelisting for incoming connections from Tailor services.
 
 ## Best Practices

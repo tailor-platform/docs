@@ -20,8 +20,8 @@ These well-structured examples can be modified to suit various templates.
     Configure and expose your application endpoints. Set up service configuration to make your APIs accessible.
   </Card>
 
-  <Card title="🔗 Chaining Queries" href="pipelines">
-    Build complex business logic by chaining multiple operations together using Pipeline resolvers.
+  <Card title="🔗 Chaining Queries" href="resolver">
+    Build complex business logic by chaining multiple operations together using resolvers.
   </Card>
 
   <Card title="🔐 Setting up Auth" href="setup-auth/overview">
