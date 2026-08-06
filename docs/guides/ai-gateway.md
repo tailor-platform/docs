@@ -73,7 +73,12 @@ The following models remain fully available until their retirement date, after w
 | `gemini-2.5-flash`      | Chat | Regional | 2027-01-14 | `gemini-3.5-flash`      |
 | `gemini-2.5-flash-lite` | Chat | Global   | 2027-01-14 | `gemini-3.1-flash-lite` |
 
-When migrating to Gemini 3.x models, note that they use [thought signatures](https://ai.google.dev/gemini-api/docs/thought-signatures): to preserve reasoning quality in multi-turn conversations, return each response's thought signatures in your follow-up requests unchanged. Validate your workflows against the replacement model before switching.
+Two things to check before migrating:
+
+- **Region**: all suggested replacements are **Global**, while `gemini-2.5-pro` and `gemini-2.5-flash` are **Regional**. If your workload requires in-region inference for data-residency reasons, note that after retirement no Regional Gemini chat models remain — evaluate whether Global routing is acceptable, or use a Regional model from the table above.
+- **Thought signatures**: Gemini 3.x models use [thought signatures](https://ai.google.dev/gemini-api/docs/thought-signatures) — to preserve reasoning quality in multi-turn conversations, return each response's thought signatures in your follow-up requests unchanged.
+
+Validate your workflows against the replacement model before switching.
 
 ### Model location and region restriction
 
