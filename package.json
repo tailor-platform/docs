@@ -8,7 +8,7 @@
     "lint": "oxlint .",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
-    "dev": "vitepress dev --port 5176",
+    "dev": "vitepress dev",
     "build": "vitepress build",
     "preview": "vitepress preview",
     "sync:sdk": "npm --prefix scripts/docs-sync start -- sdk",
