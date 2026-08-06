@@ -17,6 +17,7 @@ import "./styles/tables.css"; // Table styling
 import "./styles/cards.css";
 import "./styles/tabs.css";
 import "./styles/search.css";
+import "./styles/home.css";
 
 import { onMounted } from "vue";
 import { shouldRedirect } from "../config/redirects";

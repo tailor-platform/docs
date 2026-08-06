@@ -1,0 +1,115 @@
+/**
+ * Homepage (Kubernetes docs-inspired): plain text-forward hero (no button
+ * row), a single prominent "get started" callout (neutral gray, not
+ * brand-colored), and the rest of the page organized as categorized
+ * sections (Concepts, Setup, Build with Tailor, Guides, Tutorials,
+ * Reference) — a documentation portal / table-of-contents feel rather
+ * than a marketing splash. The section cards use the shared <Card>
+ * component's default styling (same as design-1 and the rest of the
+ * docs site), no per-card accent treatment.
+ */
+
+/* ===== Hero: text-only, no button row ===== */
+.VPHome .VPHero {
+  padding-bottom: 24px;
+}
+
+.VPHome .VPHero .name {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.VPHome .VPHero .text {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.VPHome .VPHero .tagline {
+  max-width: 46rem;
+}
+
+/* No features frontmatter is used in this design — hide the (empty) grid
+   region so it doesn't reserve layout space. */
+.VPHome .VPFeatures {
+  display: none;
+}
+
+/* ===== "Get started" callout ===== */
+/* Same border/background as every other card — stands out through
+   size/weight, not color or a colored accent stripe. Custom full-width
+   sizing (not a .cards-3 grid item): it should span the same total
+   width as the 3-card row below it, not a single card's column. */
+.callout {
+  margin: 24px 0;
+  padding: 24px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg-soft);
+}
+
+.callout p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--vp-c-text-2);
+}
+
+.callout p:first-child {
+  color: var(--vp-c-text-1);
+}
+
+.callout a {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 14px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: var(--vp-c-brand-1);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.callout a:hover {
+  background: var(--vp-c-brand-2);
+}
+
+/* ===== Categorized sections ===== */
+/* No extra max-width/padding — this markdown content already sits inside
+   VitePress's own `.vp-doc.container` (VPHomeContent.vue), which already
+   applies the page's standard content width and responsive padding. */
+.home-section {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+/* cards.css gives .cards-3 its own 24px vertical margin, which stacked
+   on top of .home-section's own padding made the gap between sections
+   uneven and too large. The section padding alone is enough. */
+.home-section .cards-3 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.home-section h2 {
+  font-size: var(--vp-font-size-xl);
+  font-weight: 600;
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+/* VitePress positions the "#" anchor link at a fixed top:24px for h2,
+   calibrated for the default 1.5rem padding-top we just removed above.
+   Without this, the anchor sits below the heading text instead of
+   next to it. */
+.home-section h2 .header-anchor {
+  top: 0;
+}
+
+.home-section > p {
+  margin-top: -0.75rem;
+  margin-bottom: 1.25rem;
+  color: var(--vp-c-text-2);
+}
