@@ -19,7 +19,8 @@ import "./styles/tabs.css";
 import "./styles/search.css";
 import "./styles/home.css";
 
-import { onMounted } from "vue";
+import { onMounted, watch } from "vue";
+import { useData } from "vitepress";
 import { shouldRedirect } from "../config/redirects";
 
 const theme: Theme = {
@@ -33,14 +34,24 @@ const theme: Theme = {
     app.component("PreviewTag", PreviewTag);
   },
   setup() {
-    onMounted(() => {
-      // Check for redirects on 404 pages
-      const redirectPath = shouldRedirect(window.location.pathname);
-      if (redirectPath) {
-        window.location.href = redirectPath;
-        return;
-      }
+    const { page } = useData();
 
+    // Legacy-URL redirects must only fire when the requested page genuinely does
+    // not exist. Running them unconditionally hijacked live pages whose URL was
+    // extensionless (e.g. /guides/auth/overview -> /getting-started/).
+    if (typeof window !== "undefined") {
+      watch(
+        () => page.value.isNotFound,
+        (isNotFound) => {
+          if (!isNotFound) return;
+          const redirectPath = shouldRedirect(window.location.pathname);
+          if (redirectPath) window.location.href = redirectPath;
+        },
+        { immediate: true },
+      );
+    }
+
+    onMounted(() => {
       document.addEventListener("click", (e) => {
         const btn = (e.target as HTMLElement).closest(".vp-tab-btn");
         if (!btn) return;
