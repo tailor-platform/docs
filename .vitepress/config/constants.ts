@@ -83,6 +83,7 @@ export const customTitles: Record<string, string> = {
   index: "Overview",
   "ai-gateway": "AI Gateway",
   aigateway: "AI Gateway",
+  quickbooks: "QuickBooks",
 };
 
 // Define custom ordering for sidebar items within sections
