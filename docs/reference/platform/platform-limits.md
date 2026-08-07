@@ -16,6 +16,7 @@ Platform limits are enforced across different services in the Tailor Platform to
 | Workflow             | Workspace Concurrent Job Functions           | 100 dispatches | Max concurrent job function dispatches per workspace (regardless of `executionPolicyKey`)                                                                 | Dispatch is suspended and workflow moves to `PENDING_RESUME` until dispatches drop below the cap       |
 | Workflow             | Per-Key Concurrent Job Functions (fallback)  | 50 dispatches  | Platform fallback per `executionPolicyKey`, applied only when a matching execution policy has no user-defined `concurrencyPolicy.maxConcurrentExecutions` | Dispatch is suspended and workflow moves to `PENDING_RESUME` until dispatches drop below the cap       |
 | Executor             | Workspace Concurrent Job Function Operations | 100 executions | Max concurrently running job function operations per workspace                                                                                            | Excess executions remain pending and start automatically, oldest first, as running executions complete |
+| Executor             | Incoming Webhook Request Rate                | 100 req/sec    | Max incoming webhook requests per second per workspace                                                                                                    | Excess requests are rejected with `429 Too Many Requests` and never reach the executor                 |
 | Function             | Memory                                       | 32 MB          | Max memory available to a Function execution                                                                                                              | Execution terminated with `Memory limit exceeded` error if usage exceeds 32 MB                         |
 | JobFunction          | Memory                                       | 256 MB         | Max memory available to a JobFunction execution                                                                                                           | Execution terminated with `Memory limit exceeded` error if usage exceeds 256 MB                        |
 | Function             | TailorDB Select Result Size                  | 128 MB         | Max size of data returned from a TailorDB select query                                                                                                    | Query fails if the result set exceeds 128 MB                                                           |
@@ -97,6 +98,33 @@ When the limit is reached, new executions are not rejected and never fail becaus
 - Queued executions start in creation order, so ordering within a workspace is preserved.
 - During a large burst, the delay before an execution starts is roughly `(queued executions ÷ 100) × average execution duration`. For example, a burst of 10,000 executions that each run for 30 seconds drains in about 50 minutes.
 - Executions triggered by different workspaces are isolated from each other: another workspace's burst does not affect your executions.
+
+## Incoming Webhook Rate Limit
+
+Requests to Executor [incoming webhook](/guides/executor/incoming-webhook-trigger) endpoints are rate limited to **100 requests per second per workspace**. The limit protects the platform from traffic bursts sent by external webhook providers and keeps one workspace's inbound traffic from affecting others.
+
+### How It Works
+
+The limit is applied at the API gateway, before the request reaches the Executor service. It is counted per workspace across all incoming webhook endpoints in that workspace, not per executor and not per source IP address. Requests are counted in fixed one-second windows.
+
+Unlike the concurrency limits above, rate-limited requests are **rejected, not queued**. When the limit is exceeded, the gateway responds with `429 Too Many Requests` and the executor is never invoked — there is no automatic retry on the platform side.
+
+Every response to an incoming webhook endpoint carries standard rate limit headers you can use to monitor headroom:
+
+| Header                | Description                              |
+| --------------------- | ---------------------------------------- |
+| `RateLimit-Limit`     | The limit applied to the current window  |
+| `RateLimit-Remaining` | Requests remaining in the current window |
+| `RateLimit-Reset`     | Seconds until the current window resets  |
+
+### Behavior
+
+- The limit is per workspace, so multiple executors in the same workspace share the same 100 req/sec budget.
+- Because windows are fixed rather than sliding, sustained traffic at exactly 100 req/sec can still see a small percentage of `429` responses at window boundaries. Target a rate comfortably below the limit rather than right at it.
+
+### Handling `429` Responses
+
+Most webhook providers retry automatically on `429`. Where you control the sender, retry with exponential backoff and jitter rather than immediately. If your integration legitimately needs to sustain more than 100 req/sec, batch multiple events into a single request or contact support to discuss the workload.
 
 ## Memory Limits
 

@@ -234,7 +234,7 @@ In the Console, select the `Jobs` tab under your executor to see the execution h
 1. **Webhook Secret**: The URL includes a secret token for authentication
 2. **Validation**: Always validate incoming payloads in your executor function
 3. **Error Handling**: Return appropriate error messages for invalid requests
-4. **Rate Limiting**: The platform automatically handles rate limiting
+4. **Rate Limiting**: Incoming webhook endpoints accept up to 100 requests per second per workspace. Requests above that are rejected with `429 Too Many Requests` — see [Incoming Webhook Rate Limit](../../reference/platform/platform-limits#incoming-webhook-rate-limit)
 
 ## Next Steps
 
