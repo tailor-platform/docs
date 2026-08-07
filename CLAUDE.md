@@ -49,15 +49,20 @@ docs/
 - Place markdown files in the appropriate folder under `docs/`
 - Use frontmatter for metadata
 - Internal links should be extensionless (resolved at build time)
+- Links inside components (`<Card href="...">`) are emitted verbatim — the VitePress
+  build does **not** dead-link-check HTML attributes. Run `pnpm check:links` after
+  editing them
 - External links are restricted to: `github.com`, `tailor.tech`, `localhost`, `127.0.0.1`
 - Headings must not skip levels (e.g., h1 -> h3 is invalid), max depth is h4
 - Custom words in `_typos.toml` won't be flagged by the typo checker
 
 ## CI Checks
 
-GitHub Actions workflows run on PRs:
+GitHub Actions workflows run on PRs (`.github/workflows/pr-checks.yml`):
 
-- **schema-check** — Validates doc structure
-- **link-check** — Validates links
-- **typo_check** — Catches typos
-- **sdk-docs-sync** — Syncs SDK documentation
+- **lint** — `pnpm typecheck`, `pnpm lint`, `pnpm fmt:check`, `pnpm check:links`, `pnpm build`
+  (the build is also what dead-link-checks markdown links)
+- **typo-check** — Catches typos
+- **schema-check** — Validates doc structure via mdschema
+
+Separate workflows: **sdk-docs-sync** and **app-shell-sync** sync generated pages.
