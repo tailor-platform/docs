@@ -26,7 +26,7 @@ export const redirectMap: Record<string, string> = {
   "/tailor-sdk/cli/workspace": "/sdk/cli/workspace",
 
   // Services
-  "/tailor-sdk/services": "/sdk/services/",
+  "/tailor-sdk/services": "/sdk/",
   "/tailor-sdk/services/auth": "/sdk/services/auth",
   "/tailor-sdk/services/executor": "/sdk/services/executor",
   "/tailor-sdk/services/idp": "/sdk/services/idp",
@@ -36,11 +36,12 @@ export const redirectMap: Record<string, string> = {
   "/tailor-sdk/services/tailordb": "/sdk/services/tailordb",
   "/tailor-sdk/services/workflow": "/sdk/services/workflow",
 
-  // Generator
-  "/tailor-sdk/generator": "/sdk/generator/",
-  "/tailor-sdk/generator/builtin": "/sdk/generator/builtin",
-  "/tailor-sdk/generator/custom": "/sdk/generator/custom",
-  "/tailor-sdk/generator/index-file": "/sdk/generator/index",
+  // Generator — defineGenerators() became definePlugins() in SDK v2, and the
+  // generator pages were replaced by the plugin pages.
+  "/tailor-sdk/generator": "/sdk/plugin/",
+  "/tailor-sdk/generator/builtin": "/sdk/plugin/",
+  "/tailor-sdk/generator/custom": "/sdk/plugin/custom",
+  "/tailor-sdk/generator/index-file": "/sdk/plugin/",
 
   // Plugin
   "/tailor-sdk/plugin": "/sdk/plugin/",
@@ -85,10 +86,10 @@ export const redirectMap: Record<string, string> = {
   // ============================================
   // Tutorials base-template → develop-from-scratch
   // ============================================
-  "/tutorials/base-template": "/tutorials/develop-from-scratch/",
-  "/tutorials/base-template/cue": "/tutorials/develop-from-scratch/",
-  "/tutorials/base-template/sdk": "/tutorials/develop-from-scratch/",
-  "/tutorials/base-template/terraform": "/tutorials/develop-from-scratch/",
+  "/tutorials/base-template": "/tutorials/develop-from-scratch/overview",
+  "/tutorials/base-template/cue": "/tutorials/develop-from-scratch/overview",
+  "/tutorials/base-template/sdk": "/tutorials/develop-from-scratch/overview",
+  "/tutorials/base-template/terraform": "/tutorials/develop-from-scratch/overview",
 
   // ============================================
   // Root pages that moved to /reference
@@ -115,11 +116,13 @@ export const redirectMap: Record<string, string> = {
   "/guides/executor/index": "/guides/executor/overview",
   "/guides/function/index": "/guides/function/overview",
   "/guides/tailordb/index": "/guides/tailordb/overview",
-  "/guides/workflow/index": "/guides/workflow/overview",
+  "/guides/workflow/index": "/guides/workflow/",
   "/guides/integration/index": "/guides/integration/overview",
 };
 
-// Fuzzy match redirects - tries to find similar pages
+// Resolve a legacy path to its current location. Only ever called for paths that
+// 404, so returning null (and letting the 404 page render) is the correct
+// fallback — guessing a destination is worse than admitting the page is gone.
 export function findBestMatch(path: string): string | null {
   // Remove trailing slashes and normalize
   const normalizedPath = path.replace(/\/$/, "").toLowerCase();
@@ -146,18 +149,9 @@ export function findBestMatch(path: string): string | null {
     return converted;
   }
 
-  // Try fuzzy matching based on path segments
-  const segments = normalizedPath.split("/").filter(Boolean);
-  const lastSegment = segments[segments.length - 1];
-
-  // Look for pages with the same last segment in redirect map
-  for (const [oldPath, newPath] of Object.entries(redirectMap)) {
-    if (oldPath.endsWith("/" + lastSegment) && newPath) {
-      return newPath;
-    }
-  }
-
-  // No match found
+  // Deliberately no last-path-segment fuzzy matching: matching on the final
+  // segment alone sends unrelated pages to wrong destinations (any */overview
+  // resolved to /getting-started/, /guides/workflow/ to /sdk/cli/workflow).
   return null;
 }
 
