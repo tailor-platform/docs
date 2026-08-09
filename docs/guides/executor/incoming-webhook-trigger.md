@@ -81,6 +81,14 @@ incomingWebhookTrigger<WebhookPayload>({
 });
 ```
 
+## Rate Limits
+
+Incoming webhook endpoints are rate limited to **100 requests per second per workspace**, counted across all incoming webhook executors in the workspace. Requests above the limit are rejected at the gateway with `429 Too Many Requests` and the executor is not invoked.
+
+Responses include `RateLimit-Limit`, `RateLimit-Remaining`, and `RateLimit-Reset` headers so senders can track remaining headroom. When you control the sending side, retry `429` responses with exponential backoff.
+
+See [Incoming Webhook Rate Limit](/reference/platform/platform-limits#incoming-webhook-rate-limit) for details.
+
 ## Properties
 
 **Incoming Webhook Trigger Properties**
