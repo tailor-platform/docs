@@ -6,6 +6,7 @@
   "scripts": {
     "typecheck": "vue-tsc --noEmit",
     "lint": "oxlint .",
+    "check:links": "node scripts/check-links.mts",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "dev": "vitepress dev",

@@ -15,7 +15,7 @@ In this guide, we will explain how to integrate QuickBooks with Tailor Platform 
 
 You can integrate QuickBooks with Tailor Platform using triggers. Refer to [executor service guide](/guides/executor/overview) to learn about different types of triggers.
 
-## Connect Quickbooks
+## Connect QuickBooks
 
 This integration guide will walk you through the steps to set up a connection between Tailor PF and QuickBooks.
 
@@ -40,7 +40,7 @@ QuickBooks uses OAuth 2.0 for API authentication. Follow these steps to get your
 
 1. Select `My Hub` from the option menu and click `Playground` to access the authentication testing environment
 
-![Quickbooks Integration Guide – Select Playground](../assets/quickbooks/select-playground.png)
+![QuickBooks Integration Guide – Select Playground](../assets/quickbooks/select-playground.png)
 
 The `Playground` is a testing environment that helps you understand the OAuth 2.0 flow and obtain your access token.
 
@@ -65,7 +65,7 @@ Follow these steps in the `Playground` to generate your authentication credentia
 
 - Click the `Get tokens` button
 
-![Quickbooks Integration Guide – Get Token](../assets/quickbooks/console-quickbooks-get-token.png)
+![QuickBooks Integration Guide – Get Token](../assets/quickbooks/console-quickbooks-get-token.png)
 
 ### 2. Store QuickBooks Credentials
 
@@ -86,11 +86,11 @@ tailor secret create --vault-name quickbooks-vault --name quickbooks-key --value
 
 1. Navigate to your workspace where the app is deployed and select `settings` tab to add the secret
 
-![Quickbooks Integration Guide – Add Secret](../assets/quickbooks/console-quickbooks-add-secret.png)
+![QuickBooks Integration Guide – Add Secret](../assets/quickbooks/console-quickbooks-add-secret.png)
 
 2. Create a new vault and add the access token
 
-![Quickbooks Integration Guide – Create Vault](../assets/quickbooks/console-quickbooks-create-vault.png)
+![QuickBooks Integration Guide – Create Vault](../assets/quickbooks/console-quickbooks-create-vault.png)
 
 ### 3. Making API Requests to QuickBooks
 

@@ -34,6 +34,11 @@ jobs:
       - name: Format check
         run: pnpm fmt:check
 
+      # Covers internal links in HTML/component attributes, which the VitePress
+      # build's dead-link check does not inspect.
+      - name: Link check
+        run: pnpm check:links
+
       - name: Build
         run: pnpm build
 
