@@ -48,17 +48,37 @@ Specify the model with the `model` field in the request body. The following mode
 | `gpt-5`                  | Chat      | Regional |
 | `gpt-5-mini`             | Chat      | Regional |
 | `gpt-5-nano`             | Chat      | Regional |
+| `gpt-5.6-luna`           | Chat      | Regional |
+| `gpt-5.6-sol`            | Chat      | Regional |
+| `gpt-5.6-terra`          | Chat      | Regional |
 | `gpt-4.1`                | Chat      | Regional |
 | `gpt-4o-mini`            | Chat      | Regional |
-| `gemini-2.5-pro`         | Chat      | Regional |
-| `gemini-2.5-flash`       | Chat      | Regional |
-| `gemini-2.5-flash-lite`  | Chat      | Global   |
+| `gemini-3.1-flash-lite`  | Chat      | Global   |
+| `gemini-3.5-flash-lite`  | Chat      | Global   |
 | `gemini-3.5-flash`       | Chat      | Global   |
+| `gemini-3.6-flash`       | Chat      | Global   |
 | `text-embedding-3-large` | Embedding | Regional |
 | `text-embedding-3-small` | Embedding | Regional |
 | `gemini-embedding-001`   | Embedding | Global   |
 
 A model's **Type** determines which endpoints it can be used with: **Chat** models are available through `/v1/chat/completions` and `/v1/responses`, and **Embedding** models through `/v1/embeddings`. If the `model` value does not match a supported model exactly, the gateway returns `404 No matching route found`.
+
+### Deprecated models
+
+The following models remain fully available until their retirement date, after which they will stop being served. Please migrate to the suggested replacement before then:
+
+| Model                   | Type | Location | Retires    | Replacement             |
+| ----------------------- | ---- | -------- | ---------- | ----------------------- |
+| `gemini-2.5-pro`        | Chat | Regional | 2027-01-14 | `gemini-3.6-flash`      |
+| `gemini-2.5-flash`      | Chat | Regional | 2027-01-14 | `gemini-3.5-flash`      |
+| `gemini-2.5-flash-lite` | Chat | Global   | 2027-01-14 | `gemini-3.1-flash-lite` |
+
+Two things to check before migrating:
+
+- **Region**: all suggested replacements are **Global**, while `gemini-2.5-pro` and `gemini-2.5-flash` are **Regional**. If your workload requires in-region inference for data-residency reasons, note that after retirement no Regional Gemini chat models remain — evaluate whether Global routing is acceptable, or use a Regional model from the table above.
+- **Thought signatures**: Gemini 3.x models use [thought signatures](https://ai.google.dev/gemini-api/docs/thought-signatures) — to preserve reasoning quality in multi-turn conversations, return each response's thought signatures in your follow-up requests unchanged.
+
+Validate your workflows against the replacement model before switching.
 
 ### Model location and region restriction
 

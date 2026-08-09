@@ -52,7 +52,7 @@ docs/
 - Links inside components (`<Card href="...">`) are emitted verbatim — the VitePress
   build does **not** dead-link-check HTML attributes. Run `pnpm check:links` after
   editing them
-- External links are restricted to: `github.com`, `tailor.tech`, `localhost`, `127.0.0.1`
+- External links are restricted to the `allowed_domains` list in `schema.yml` (add a domain there when linking to a new, trustworthy destination)
 - Headings must not skip levels (e.g., h1 -> h3 is invalid), max depth is h4
 - Custom words in `_typos.toml` won't be flagged by the typo checker
 
