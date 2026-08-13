@@ -23,7 +23,7 @@
     "markdown-it-container": "^4.0.0",
     "mermaid": "11.16.1",
     "oxfmt": "0.62.0",
-    "oxlint": "1.77.0",
+    "oxlint": "1.78.0",
     "remark-frontmatter": "^5.0.0",
     "remark-mdx": "^3.1.1",
     "remark-parse": "^11.0.0",
