@@ -243,7 +243,7 @@ When you enable web search (`web_search` or `google_search`), your query and rel
 Server-side [functions](/guides/function/overview) — resolvers, executor functions, job functions, workflow jobs, and auth hook handlers — can call the gateway with plain `fetch`, and **you do not set an `Authorization` header**. The function runtime recognizes requests addressed to your own workspace's AI Gateway and attaches the execution's identity for you, so no token ever has to be minted, stored, or passed through your code.
 
 :::tip Prefer an asynchronous execution site
-LLM inference is slow — a single completion routinely takes tens of seconds, and longer for reasoning-heavy models, long outputs, or [web search](#web-search--grounding). Synchronous execution sites cannot absorb that: resolvers and Function service executions are [capped at 60 seconds](/reference/platform/timeouts), as is the API gateway in front of them, so a slow completion fails the whole operation.
+LLM inference is slow — a single completion routinely takes tens of seconds, and longer for reasoning-heavy models, long outputs, or [web search](#web-search-grounding). Synchronous execution sites cannot absorb that: resolvers and Function service executions are [capped at 60 seconds](/reference/platform/timeouts), as is the API gateway in front of them, so a slow completion fails the whole operation.
 
 **Call the gateway from a [job function](/guides/executor/job-function-operation) or a [workflow](/sdk/services/workflow) job**, which run asynchronously with a much higher execution ceiling, and have the caller pick the result up afterwards — read it from the record the job writes, or subscribe to the executor or workflow completion event.
 
