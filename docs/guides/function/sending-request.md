@@ -10,6 +10,8 @@ This enables you to integrate with external services and retrieve data from them
 **Currently, sending requests from the Function service to your application on the Tailor Platform is not supported.**
 **You can only send requests to external services.**
 
+The one exception is [AI Gateway](/guides/ai-gateway), which functions can call directly — and without an `Authorization` header, since the platform authenticates those requests as the identity the function runs as. See [Calling from a Function](/guides/ai-gateway#calling-from-a-function).
+
 In this guide, we will show you how to send an HTTP request from the Function service using npm packages.
 
 ## 1. Write your function and bundle it for deployment

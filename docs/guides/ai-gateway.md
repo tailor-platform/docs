@@ -11,7 +11,7 @@ AI Gateway provides a unified, OpenAI-compatible endpoint for accessing a range 
 
 - **One endpoint, many models.** Send standard OpenAI-style requests (`/v1/chat/completions`, `/v1/responses`, `/v1/embeddings`, …) and choose a model by setting the `model` field. The gateway routes the request to the selected model and handles protocol translation for you.
 - **Platform-managed credentials.** All model credentials are managed by the platform — you never handle API keys.
-- **Mandatory authentication.** Every request must carry a valid application user token, resolved against the auth namespace you configure.
+- **Mandatory authentication.** Every request is authenticated against the auth namespace you configure. External clients present an application user token; server-side [functions](#calling-from-a-function) are authenticated by the platform and need no token of their own.
 - **Per-workspace isolation.** Each gateway is provisioned with its own URL and its own usage tracking and rate limits.
 
 ## Configuration
@@ -98,6 +98,8 @@ Authorization: Bearer <application-user-token>
 ```
 
 The token is resolved against the `authNamespace` configured on the gateway. Requests without a valid token are rejected. DPoP-bound tokens (`Authorization: DPoP <token>`) are also supported.
+
+Calls made from inside your workspace are the exception: server-side [functions](#calling-from-a-function) are authenticated by the platform and send no `Authorization` header at all.
 
 ## Calling the gateway
 
@@ -238,11 +240,93 @@ When you enable web search (`web_search` or `google_search`), your query and rel
 
 ## Calling from a Function
 
-Server-side [functions](/guides/function/overview) can call the gateway over HTTP with `fetch`. See [Sending requests from Function service](/guides/function/sending-request) for the general pattern of making outbound HTTP requests from a function.
+Server-side [functions](/guides/function/overview) — resolvers, executor functions, job functions, workflow jobs, and auth hook handlers — can call the gateway with plain `fetch`, and **you do not set an `Authorization` header**. The function runtime recognizes requests addressed to your own workspace's AI Gateway and attaches the execution's identity for you, so no token ever has to be minted, stored, or passed through your code.
+
+:::tip Prefer an asynchronous execution site
+LLM inference is slow — a single completion routinely takes tens of seconds, and longer for reasoning-heavy models, long outputs, or [web search](#web-search--grounding). Synchronous execution sites cannot absorb that: resolvers and Function service executions are [capped at 60 seconds](/reference/platform/timeouts), as is the API gateway in front of them, so a slow completion fails the whole operation.
+
+**Call the gateway from a [job function](/guides/executor/job-function-operation) or a [workflow](/sdk/services/workflow) job**, which run asynchronously with a much higher execution ceiling, and have the caller pick the result up afterwards — read it from the record the job writes, or subscribe to the executor or workflow completion event.
+
+Calling from a resolver or an [auth hook](/guides/auth/hook) works but is discouraged. Both make a user wait on inference: a resolver holds the GraphQL request open, and a `beforeLogin` hook adds the latency to **every** login and fails the login outright if the call errors. Reserve them for cases where you know the response is small and fast, and always set a timeout you control.
+:::
+
+Resolve the gateway URL with [`aigateway.get()`](/sdk/services/aigateway#runtime-usage) rather than hardcoding it — the name is type-checked against the gateways declared in `aiGateways`:
+
+```typescript {{ title: "executors/summarize-order.ts" }}
+import { createExecutor, recordCreatedTrigger } from "@tailor-platform/sdk";
+import { aigateway } from "@tailor-platform/sdk/runtime";
+import { getDB } from "../generated/tailordb";
+import { order } from "../tailordb/order";
+
+export default createExecutor({
+  name: "summarize-order",
+  trigger: recordCreatedTrigger({ type: order }),
+  operation: {
+    // Asynchronous, so a slow completion can't time out a caller.
+    kind: "jobFunction",
+    // Runs the function as this machine user; its auth namespace must be the
+    // one the gateway is configured with.
+    invoker: "ai-machine-user",
+    body: async ({ newRecord }) => {
+      const { url } = await aigateway.get("my-aigateway");
+
+      const res = await fetch(`${url}/v1/chat/completions`, {
+        method: "POST",
+        // No Authorization header — the runtime authenticates the call.
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "gpt-5",
+          messages: [{ role: "user", content: `Summarize this order: ${newRecord.notes}` }],
+        }),
+      });
+
+      const body = await res.json();
+
+      // Persist the result rather than returning it — nothing is waiting.
+      await getDB("tailordb")
+        .updateTable("Order")
+        .set({ summary: body.choices[0].message.content })
+        .where("id", "=", newRecord.id)
+        .execute();
+    },
+  },
+});
+```
+
+Only `https` requests to your own workspace's gateway hostname are treated this way. Every other `fetch` — a third-party API you authenticate with your own key, for example — is left completely untouched.
+
+:::info Not available in inline expressions
+Short inline expressions — [TailorDB hooks](/guides/tailordb/hooks), [validations](/guides/tailordb/validations), and default values, plus executor `variables` — are evaluated in a sandbox with no outbound network access at all, so they cannot reach the gateway (or any other host). Move the call into an executor function, job function, resolver, workflow job, or auth hook handler.
+:::
+
+### Which identity the request runs as
+
+The gateway sees the identity the function execution itself runs as, which is what the `invoker` option controls:
+
+| Where the function runs                 | Identity attached to the gateway request                                                                                                                |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Resolver](/sdk/services/resolver)      | The resolver's `invoker` machine user if it declares one; otherwise the GraphQL caller.                                                                 |
+| Executor `function` / `jobFunction`     | The operation's `invoker` machine user if it declares one; otherwise the user whose action raised the trigger event; otherwise anonymous.               |
+| [Workflow](/sdk/services/workflow) jobs | The `invoker` passed when the workflow was started — via `workflow.start(args, { invoker })` or the executor `workflow` operation; otherwise anonymous. |
+| [Auth hook](/guides/auth/hook) handler  | The hook's `invoker` machine user, which is always required.                                                                                            |
+
+:::warning The invoker's auth namespace must match the gateway's
+The gateway accepts the request only when the identity's auth namespace is the same one the gateway was configured with in `authNamespace`. A machine user from a different auth namespace is rejected with `401 Unauthorized`.
+
+Anonymous executions carry no auth namespace at all, so they are always rejected. In practice this means a schedule-triggered executor, or a workflow started without an invoker, **must** declare an `invoker` to reach the gateway — there is no ambient identity to fall back on.
+:::
+
+### Authenticating explicitly instead
+
+If you set an `Authorization` header yourself, the runtime skips its own authentication entirely and sends the request as you wrote it — the [external path](#authentication) with an application user token. Use this when you deliberately want the request to run as a specific end user whose token you already hold.
+
+The internal header the runtime uses is platform-managed: any value your code sets for it is stripped before the request leaves the runtime, so a function cannot pick its own identity by forging one.
 
 ## Streaming
 
 Streaming responses (`"stream": true`) are supported across all layers of the gateway. Long-running streams — such as high-effort reasoning — are kept alive by generous upstream timeouts that allow responses to stream for several minutes. The exact limit is managed by the platform and may change; don't rely on a specific value.
+
+Note that this budget is the gateway's own. A stream consumed inside a function is still bounded by that execution's [timeout](/reference/platform/timeouts) — a stream the gateway would happily hold open for minutes will still be cut off at 60 seconds in a resolver. This is another reason to prefer an [asynchronous execution site](#calling-from-a-function).
 
 ## CORS
 
