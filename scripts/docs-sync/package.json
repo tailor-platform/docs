@@ -7,10 +7,12 @@
   "type": "module",
   "main": "main.ts",
   "scripts": {
-    "start": "node main.ts"
+    "start": "node main.ts",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/node": "^25.3.3"
+    "@types/node": "^25.3.3",
+    "typescript": "7.0.2"
   },
   "engines": {
     "node": ">=22.18"

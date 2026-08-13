@@ -28,6 +28,17 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      # docs-sync is a separate npm project that the root typecheck does not
+      # cover. It runs on Node's type stripping, so nothing checks its types at
+      # runtime — without this the sync workflows only fail on the nightly cron.
+      - name: Install docs-sync dependencies
+        working-directory: scripts/docs-sync
+        run: npm ci
+
+      - name: Typecheck docs-sync
+        working-directory: scripts/docs-sync
+        run: npm run typecheck
+
       - name: Lint
         run: pnpm lint
 
