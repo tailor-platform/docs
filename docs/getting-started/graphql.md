@@ -335,7 +335,7 @@ Aggregation queries can also be combined with filtering to further customize the
 
 ```graphql {{ title: 'graphql'}}
 query {
-  aggreagteOrder {
+  aggregateOrder {
     sum {
       total
     }
@@ -346,7 +346,7 @@ query {
 }
 ```
 
-In this query, we use the `aggreagteOrder` query to perform an aggregation on the `Order` table. The `groupBy` syntax is used to group the orders by the `productId` field. For each group (each unique product), we calculate the sum of the `total` field, which represents the revenue for that specific product. We alias the result as `totalRevenue`.
+In this query, we use the `aggregateOrder` query to perform an aggregation on the `Order` table. The `groupBy` syntax is used to group the orders by the `productId` field. For each group (each unique product), we calculate the sum of the `total` field, which represents the revenue for that specific product. We alias the result as `totalRevenue`.
 
 The response will include a list of grouped results, where each group is identified by a unique `key` (the `productId` in this case), and the corresponding aggregated values, such as the total revenue for that specific product.
 
