@@ -2,6 +2,14 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "module": "nodenext",
-    "moduleResolution": "nodenext"
-  }
+    "moduleResolution": "nodenext",
+    "strict": true,
+    "noEmit": true,
+    "types": ["node"],
+    // main.ts is executed by Node's type stripping, which erases types without
+    // transforming them. This rejects syntax that needs a real transform (enums,
+    // namespaces, parameter properties) at check time rather than at runtime.
+    "erasableSyntaxOnly": true
+  },
+  "include": ["main.ts"]
 }
