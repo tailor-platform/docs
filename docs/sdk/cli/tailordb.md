@@ -28,14 +28,14 @@ Truncate (delete all records from) TailorDB tables.
 **Usage**
 
 ```
-tailor tailordb truncate [options] [types]
+tailor tailordb truncate [options] [tables]
 ```
 
 **Arguments**
 
-| Argument | Description            | Required |
-| -------- | ---------------------- | -------- |
-| `types`  | Type names to truncate | No       |
+| Argument | Description             | Required |
+| -------- | ----------------------- | -------- |
+| `tables` | Table names to truncate | No       |
 
 **Options**
 
@@ -62,21 +62,21 @@ tailor tailordb truncate --all --yes
 # Truncate all tables in a specific namespace
 tailor tailordb truncate --namespace myNamespace
 
-# Truncate specific types (namespace is auto-detected)
+# Truncate specific tables (namespace is auto-detected)
 tailor tailordb truncate User Post Comment
 
-# Truncate specific types with confirmation skipped
+# Truncate specific tables with confirmation skipped
 tailor tailordb truncate User Post --yes
 ```
 
 **Notes:**
 
-- You must specify exactly one of: `--all`, `--namespace`, or type names
-- When truncating specific types, the namespace is automatically detected from your config
+- You must specify exactly one of: `--all`, `--namespace`, or table names
+- When truncating specific tables, the namespace is automatically detected from your config
 - Confirmation prompts vary based on the operation:
   - `--all`: requires typing `truncate all`
   - `--namespace`: requires typing `truncate <namespace-name>`
-  - Specific types: requires typing `yes`
+  - Specific tables: requires typing `yes`
 - Use `--yes` flag to skip confirmation prompts (useful for scripts and CI/CD)
 - Namespaces declared with `{ external: true }` are skipped by `--all` and rejected with a dedicated error when targeted by `--namespace`. Run truncate from the app that owns the namespace.
 
@@ -94,22 +94,22 @@ tailor tailordb migration <command>
 
 **Commands**
 
-| Command                                                           | Description                                                                                                                                                                                                                                                                                                              |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`tailordb migration generate`](#tailordb-migration-generate)     | Generate migration files by detecting schema differences between current local types and the previous migration snapshot.                                                                                                                                                                                                |
-| [`tailordb migration rebaseline`](#tailordb-migration-rebaseline) | Collapse the full migration history into a new 0000 baseline.                                                                                                                                                                                                                                                            |
-| [`tailordb migration script`](#tailordb-migration-script)         | Add a migration script (migrate.ts) template to an existing migration directory, or record with --no-script that a migration intentionally has none.                                                                                                                                                                     |
-| [`tailordb migration set`](#tailordb-migration-set)               | Set migration checkpoint to a specific number.                                                                                                                                                                                                                                                                           |
-| [`tailordb migration status`](#tailordb-migration-status)         | Show the current migration status for TailorDB namespaces, including applied and pending migrations.                                                                                                                                                                                                                     |
-| [`tailordb migration sync`](#tailordb-migration-sync)             | Sync remote TailorDB schema to a specific migration snapshot (recovery from --no-schema-check drift).                                                                                                                                                                                                                    |
-| [`tailordb migration test`](#tailordb-migration-test)             | Test pending migrations with seed fixtures or cloned data in a temporary workspace.                                                                                                                                                                                                                                      |
-| [`tailordb migration validate`](#tailordb-migration-validate)     | Validate the full migration history, unreviewed generated migration scripts, and schema drift (local types vs. migration snapshot, remote schema vs. migration checkpoint) without deploying. This includes the migration and schema-drift checks used by 'deploy' and exits with a non-zero code when issues are found. |
+| Command                                                           | Description                                                                                                                                                                                                                                                                                                               |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`tailordb migration generate`](#tailordb-migration-generate)     | Generate migration files by detecting schema differences between current local tables and the previous migration snapshot.                                                                                                                                                                                                |
+| [`tailordb migration rebaseline`](#tailordb-migration-rebaseline) | Collapse the full migration history into a new 0000 baseline.                                                                                                                                                                                                                                                             |
+| [`tailordb migration script`](#tailordb-migration-script)         | Add a migration script (migrate.ts) template to an existing migration directory, or record with --no-script that a migration intentionally has none.                                                                                                                                                                      |
+| [`tailordb migration set`](#tailordb-migration-set)               | Set migration checkpoint to a specific number.                                                                                                                                                                                                                                                                            |
+| [`tailordb migration status`](#tailordb-migration-status)         | Show the current migration status for TailorDB namespaces, including applied and pending migrations.                                                                                                                                                                                                                      |
+| [`tailordb migration sync`](#tailordb-migration-sync)             | Sync remote TailorDB schema to a specific migration snapshot (recovery from --no-schema-check drift).                                                                                                                                                                                                                     |
+| [`tailordb migration test`](#tailordb-migration-test)             | Test pending migrations with seed fixtures or cloned data in a temporary workspace.                                                                                                                                                                                                                                       |
+| [`tailordb migration validate`](#tailordb-migration-validate)     | Validate the full migration history, unreviewed generated migration scripts, and schema drift (local tables vs. migration snapshot, remote schema vs. migration checkpoint) without deploying. This includes the migration and schema-drift checks used by 'deploy' and exits with a non-zero code when issues are found. |
 
 See [Global Options](../cli-reference.md#global-options) for options available to all commands.
 
 ### tailordb migration generate
 
-Generate migration files by detecting schema differences between current local types and the previous migration snapshot.
+Generate migration files by detecting schema differences between current local tables and the previous migration snapshot.
 
 **Usage**
 
@@ -119,15 +119,15 @@ tailor tailordb migration generate [options]
 
 **Options**
 
-| Option                                | Alias | Description                                                                                                                                                                                  | Required | Default              | Env                  |
-| ------------------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------- | -------------------- |
-| `--yes`                               | `-y`  | Skip confirmation prompts                                                                                                                                                                    | No       | `false`              | -                    |
-| `--config <CONFIG>`                   | `-c`  | Path to Tailor config file                                                                                                                                                                   | No       | `"tailor.config.ts"` | `TAILOR_CONFIG_PATH` |
-| `--name <NAME>`                       | `-n`  | Optional description for the migration                                                                                                                                                       | No       | -                    | -                    |
-| `--init`                              | -     | Delete existing migrations and start fresh                                                                                                                                                   | No       | `false`              | -                    |
-| `--rename <RENAME>`                   | -     | Record a field or type rename instead of remove + add (format: "Type.oldField:newField" or "OldType:NewType"; repeatable). Renames require a migration script that copies the data.          | No       | -                    | -                    |
-| `--drop <DROP>`                       | -     | Confirm that a removed field or type is a genuine removal, not a rename (format: "Type.field" or "Type"; repeatable). Required in non-interactive runs for a removal with rename candidates. | No       | -                    | -                    |
-| `--expand-contract <EXPAND_CONTRACT>` | -     | Convert a field type through a temporary field (format: "Type.field"; repeatable). Generates two migrations.                                                                                 | No       | -                    | -                    |
+| Option                                | Alias | Description                                                                                                                                                                                     | Required | Default              | Env                  |
+| ------------------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------- | -------------------- |
+| `--yes`                               | `-y`  | Skip confirmation prompts                                                                                                                                                                       | No       | `false`              | -                    |
+| `--config <CONFIG>`                   | `-c`  | Path to Tailor config file                                                                                                                                                                      | No       | `"tailor.config.ts"` | `TAILOR_CONFIG_PATH` |
+| `--name <NAME>`                       | `-n`  | Optional description for the migration                                                                                                                                                          | No       | -                    | -                    |
+| `--init`                              | -     | Delete existing migrations and start fresh                                                                                                                                                      | No       | `false`              | -                    |
+| `--rename <RENAME>`                   | -     | Record a field or table rename instead of remove + add (format: "Table.oldField:newField" or "OldTable:NewTable"; repeatable). Renames require a migration script that copies the data.         | No       | -                    | -                    |
+| `--drop <DROP>`                       | -     | Confirm that a removed field or table is a genuine removal, not a rename (format: "Table.field" or "Table"; repeatable). Required in non-interactive runs for a removal with rename candidates. | No       | -                    | -                    |
+| `--expand-contract <EXPAND_CONTRACT>` | -     | Convert a field type through a temporary field (format: "Table.field"; repeatable). Generates two migrations.                                                                                   | No       | -                    | -                    |
 
 See [Global Options](../cli-reference.md#global-options) for options available to all commands.
 
@@ -309,7 +309,7 @@ The source workspace is read-only. Without --target-workspace-id, the command cr
 
 #### tailordb migration validate
 
-Validate the full migration history, unreviewed generated migration scripts, and schema drift (local types vs. migration snapshot, remote schema vs. migration checkpoint) without deploying. This includes the migration and schema-drift checks used by 'deploy' and exits with a non-zero code when issues are found.
+Validate the full migration history, unreviewed generated migration scripts, and schema drift (local tables vs. migration snapshot, remote schema vs. migration checkpoint) without deploying. This includes the migration and schema-drift checks used by 'deploy' and exits with a non-zero code when issues are found.
 
 **Usage**
 
