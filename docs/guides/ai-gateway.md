@@ -55,8 +55,7 @@ Specify the model with the `model` field in the request body. The following mode
 | `gemini-3.5-flash`       | Chat      | Global   |
 | `gemini-3.5-flash-lite`  | Chat      | Global   |
 | `gemini-3.6-flash`       | Chat      | Global   |
-| `gpt-4.1`                | Chat      | Regional |
-| `gpt-4o-mini`            | Chat      | Regional |
+| `gemini-3.7-flash`       | Chat      | Global   |
 | `gpt-5`                  | Chat      | Regional |
 | `gpt-5-mini`             | Chat      | Regional |
 | `gpt-5-nano`             | Chat      | Regional |
@@ -82,6 +81,8 @@ The following models remain fully available until their retirement date, after w
 | `gemini-2.5-flash`      | Chat | Regional | 2027-01-14 | `gemini-3.5-flash`      |
 | `gemini-2.5-flash-lite` | Chat | Global   | 2027-01-14 | `gemini-3.1-flash-lite` |
 | `gemini-2.5-pro`        | Chat | Regional | 2027-01-14 | `gemini-3.6-flash`      |
+| `gpt-4.1`               | Chat | Regional | 2027-03-31 | `gpt-5.6-terra`         |
+| `gpt-4o-mini`           | Chat | Regional | 2027-03-31 | `gpt-5.6-luna`          |
 
 <!-- END GENERATED: deprecated-models -->
 
