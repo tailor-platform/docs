@@ -407,7 +407,7 @@ export const builtinIdp = defineIdp("builtin-idp", {
 Microsoft OAuth cannot be enabled together with password authentication when the Built-in IdP uses email addresses as user identifiers (`useNonEmailIdentifier: false`). This is because:
 
 - The `email` claim from Microsoft Entra ID is not guaranteed to be unique within a tenant and may be empty, so it cannot be used reliably to identify and match users.
-- The `preferred_username` claim (UPN) is used instead because it is globally unique. Although it has an email-address-like format, it is not necessarily a deliverable email address.
+- The `preferred_username` claim (UPN) is used instead because it is unique within an Entra ID tenant. Although it has an email-address-like format, it is not necessarily a deliverable email address.
 
 The Built-in IdP uses the user's identifier as the destination address for password reset emails sent by the Tailor Platform. Because a UPN is not necessarily a deliverable email address, these messages may be sent to addresses that cannot receive them. To maintain reliable email delivery from the Platform, Microsoft OAuth cannot be combined with password authentication. Google OAuth does not have this conflict because its `email` claim is suitable for user matching and password reset delivery.
 
