@@ -116,6 +116,42 @@ function stripNonAllowedLinks(content: string): string {
   });
 }
 
+// Upstream links to the files in `extraCopies` by their path in the source
+// repo. Those files land here under a different name, so the original path
+// resolves to nothing and fails the VitePress dead-link check. Derive the
+// rewrite from the copy list itself so the two cannot drift apart.
+function rewriteExtraCopyLinks(content: string, config: SyncConfig): string {
+  const repoRoot = path.dirname(config.src);
+  for (const [src, dst] of config.extraCopies ?? []) {
+    const from = path.relative(repoRoot, src).replace(/\.md$/, "");
+    const to = path.basename(dst, ".md");
+    const pattern = new RegExp(
+      `\\]\\((?:\\.\\./)*${from.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?:\\.md)?\\)`,
+      "g",
+    );
+    content = content.replace(pattern, `](./${to})`);
+  }
+  return content;
+}
+
+// Upstream anchors are written with GitHub's slugger, which keeps a hyphen per
+// separator character, so " / " and " \u2192 " yield a doubled hyphen. mdschema
+// collapses runs of hyphens and reports those links as broken.
+//
+// This only settles the disagreement with mdschema. VitePress slugs headings a
+// third way (`## 1.12.0: ...` renders as `id="_1-12-0-..."`), so anchors onto
+// headings that contain `.`, `/` or an arrow still scroll nowhere on the site
+// — 9 of them in app-shell/migrations.md today. The build does not check
+// fragments, so nothing catches that. Fixing it means emitting VitePress's
+// dialect here and moving the anchor check out of mdschema, which was judged
+// more machinery than the problem currently warrants.
+function collapseAnchorHyphens(content: string): string {
+  return content.replace(
+    /\]\((#[^)]+)\)/g,
+    (_, anchor: string) => `](${anchor.replace(/-{2,}/g, "-")})`,
+  );
+}
+
 // 1. Backup index.md
 const indexBackupPath = path.join(config.dst, "index.md");
 const indexBackup = fs.existsSync(indexBackupPath)
@@ -167,6 +203,8 @@ walk(config.dst)
     content = content.replace(/\.md\)/g, ")");
     content = fixHeadingLevels(content);
     content = stripNonAllowedLinks(content);
+    content = rewriteExtraCopyLinks(content, config);
+    content = collapseAnchorHyphens(content);
     fs.writeFileSync(f, content);
   });
 

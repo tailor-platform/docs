@@ -7,17 +7,17 @@ description: Breaking changes and required migration steps for AppShell upgrades
 
 Every change that requires you to edit your application before or after upgrading, newest first.
 
-This page is deliberately narrow. It is **not** a changelog — see [`packages/core/CHANGELOG.md`](../packages/core/CHANGELOG) for the full release history including features and fixes. A change belongs here only if an app that does nothing will break, misbehave, or silently drift.
+This page is deliberately narrow. It is **not** a changelog — see [`packages/core/CHANGELOG.md`](./changelog) for the full release history including features and fixes. A change belongs here only if an app that does nothing will break, misbehave, or silently drift.
 
 Each entry states which versions are affected, what breaks, how to detect it, and what to change. Entries stay here permanently; they are not pruned when they get old, because apps upgrade across arbitrary version gaps.
 
 | Version       | Change                                                                                                                       |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| 1.12.0        | [`DateField` / `DatePicker` field chrome moved to `Field.Root`](#1120-datefield--datepicker-field-chrome-moved-to-fieldroot) |
+| 1.12.0        | [`DateField` / `DatePicker` field chrome moved to `Field.Root`](#1120-datefield-datepicker-field-chrome-moved-to-fieldroot) |
 | 1.11.0        | [React 19.2.7 and React Router v8 required](#1110-react-1927-and-react-router-v8-are-now-required)                           |
 | 1.11.0        | [Non-modal `Sheet` renders no backdrop](#1110-non-modal-sheet-no-longer-renders-a-backdrop)                                  |
 | 1.8.0         | [`stream` removed from `useAIChat()`](#180-stream-removed-from-useaichat)                                                    |
-| 1.5.0 → 1.7.0 | [Remove the theme bridge workaround](#150--170-remove-the-theme-bridge-workaround)                                           |
+| 1.5.0 → 1.7.0 | [Remove the theme bridge workaround](#150-170-remove-the-theme-bridge-workaround)                                           |
 | 1.5.0         | [`loader` removed from file-based pages](#150-loader-removed-from-file-based-page-definitions)                               |
 | 1.3.0         | [Column inference and badge defaults changed](#130-column-inference-and-badge-defaults-changed)                              |
 | 1.0.2         | [`Toaster` no longer accepts `richColors`](#102-toaster-no-longer-accepts-richcolors)                                        |
@@ -158,7 +158,7 @@ The prop is removed, and toasts no longer colour-code the success, error, warnin
 
 Pre-1.0 releases changed the public API often, mostly around authentication and routing. If you are upgrading from a 0.x version, work through these in order — several supersede each other, so applying them out of sequence will not land you in the right place.
 
-Each is summarised here; [`packages/core/CHANGELOG.md`](../packages/core/CHANGELOG) carries the full before/after code for every one.
+Each is summarised here; [`packages/core/CHANGELOG.md`](./changelog) carries the full before/after code for every one.
 
 | Version | Change                                                                                                                                                                                                                                                                                                                                                                             |
 | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
