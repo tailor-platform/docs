@@ -404,7 +404,7 @@ export const builtinIdp = defineIdp("builtin-idp", {
 :::
 
 :::warning Why Microsoft OAuth cannot be combined with password authentication
-Microsoft OAuth cannot be enabled together with password authentication when the Built-in IdP uses email addresses as user identifiers (`useNonEmailIdentifier: false`). This is because:
+Microsoft OAuth cannot be enabled together with password authentication in the Built-in IdP. When the Built-in IdP uses email addresses as user identifiers (`useNonEmailIdentifier: false`), this restriction is necessary because:
 
 - The `email` claim from Microsoft Entra ID is not guaranteed to be unique within a tenant and may be empty, so it cannot be used reliably to identify and match users.
 - The `preferred_username` claim (UPN) is used instead because it is unique within an Entra ID tenant. Although it has an email-address-like format, it is not necessarily a deliverable email address.
