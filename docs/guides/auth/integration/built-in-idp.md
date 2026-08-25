@@ -403,6 +403,17 @@ export const builtinIdp = defineIdp("builtin-idp", {
 `allowMicrosoftOauth` requires both `allowedEmailDomains` and `disablePasswordAuth` to be set. This ensures that only users from specified email domains can authenticate, and that Microsoft OAuth is the sole authentication method.
 :::
 
+:::warning Why Microsoft OAuth cannot be combined with password authentication
+Microsoft OAuth cannot be enabled together with password authentication when the Built-in IdP uses email addresses as user identifiers (`useNonEmailIdentifier: false`). This is because:
+
+- The `email` claim from Microsoft Entra ID is not guaranteed to be unique within a tenant and may be empty, so it cannot be used reliably to identify and match users.
+- The `preferred_username` claim (UPN) is used instead because it is globally unique. Although it has an email-address-like format, it is not necessarily a deliverable email address.
+
+The Built-in IdP uses the user's identifier as the destination address for password reset emails sent by the Tailor Platform. Because a UPN is not necessarily a deliverable email address, these messages may be sent to addresses that cannot receive them. To maintain reliable email delivery from the Platform, Microsoft OAuth cannot be combined with password authentication. Google OAuth does not have this conflict because its `email` claim is suitable for user matching and password reset delivery.
+
+For this reason, configure Microsoft OAuth as the sole authentication method by setting `disablePasswordAuth: true`, or use separate IdP namespaces when both Microsoft OAuth and password authentication are required.
+:::
+
 :::warning
 `allowMicrosoftOauth` cannot be enabled when `useNonEmailIdentifier` is `true`. Microsoft OAuth requires email-based identifiers because Microsoft accounts are identified by their preferred username (UPN).
 :::
