@@ -1,18 +1,78 @@
 name: Deploy VitePress site to Pages
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
 jobs:
-  slack-debug:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Debug raw Slack API response
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          CHANNEL_ID: ${{ vars.DOCS_SLACK_CHANNEL_ID }}
-        run: |
-          curl -s -X POST https://slack.com/api/chat.postMessage \
-            -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
-            -H "Content-Type: application/json; charset=utf-8" \
-            --data "{\"channel\":\"$CHANNEL_ID\",\"text\":\"debug test from GH Actions\"}"
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        name: Install pnpm
+        with:
+          standalone: true
+          run_install: false
+
+      - name: Install Node.js
+        run: pnpm env use --global 24
+        shell: bash
+
+      - name: Setup Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build with VitePress
+        run: pnpm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: .vitepress/dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+
+  notify-on-failure:
+    if: failure()
+    needs: [build, deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack notification for docs deploy failure
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
+        with:
+          method: chat.postMessage
+          token: ${{ env.SLACK_BOT_TOKEN }}
+          payload: |
+            {
+              "channel": "${{ vars.DOCS_SLACK_CHANNEL_ID }}",
+              "text": "*Docs deploy Failure Alert* :rotating_light:\nPlease check the results at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
