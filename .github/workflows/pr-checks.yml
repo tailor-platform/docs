@@ -71,7 +71,7 @@ jobs:
           fetch-depth: 0
 
       - name: Validate markdown schema
-        uses: jackchuka/mdschema@246aae8f01ae2c2e38dcde50a00135929093de77 # v0.15.1
+        uses: jackchuka/mdschema@c6c04c75292369e8105a358416392da6947c51d6 # v0.15.2
         with:
           files: "README.md docs/**/*.md"
           schema: "schema.yml"
