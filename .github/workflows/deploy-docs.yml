@@ -42,9 +42,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: TEMP force failure to test Slack notification
-        run: exit 1
-
       - name: Build with VitePress
         run: pnpm run build
 
