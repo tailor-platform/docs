@@ -14,6 +14,9 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+env:
+  SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -57,3 +60,19 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+
+  notify-on-failure:
+    if: failure()
+    needs: [build, deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack notification for docs deploy failure
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
+        with:
+          method: chat.postMessage
+          token: ${{ env.SLACK_BOT_TOKEN }}
+          payload: |
+            {
+              "channel": "${{ vars.DOCS_SLACK_CHANNEL_ID }}",
+              "text": "*Docs deploy Failure Alert*\nPlease check the results at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
