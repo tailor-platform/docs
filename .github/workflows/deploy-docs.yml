@@ -74,5 +74,5 @@ jobs:
           payload: |
             {
               "channel": "${{ vars.DOCS_SLACK_CHANNEL_ID }}",
-              "text": "*Docs deploy Failure Alert* :rotating_light:\nPlease check the results at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              "text": "*Docs deploy Failure Alert*\nPlease check the results at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
