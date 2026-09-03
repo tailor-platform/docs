@@ -75,4 +75,5 @@ import { type InputProps } from "@tailor-platform/app-shell";
 ## Related Components
 
 - [Button](button) - Pair with inputs in forms
+- [Textarea](textarea) - Multi-line counterpart, for free-text that outgrows one line
 - [Checkbox](checkbox) - Boolean control with the same `Field` / React Hook Form integration
