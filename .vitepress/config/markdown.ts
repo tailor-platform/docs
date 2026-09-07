@@ -1,9 +1,9 @@
 import container from "markdown-it-container";
-import type MarkdownIt from "markdown-it";
+import type { MarkdownRenderer } from "vitepress";
 import type Token from "markdown-it/lib/token.mjs";
 import type { Options } from "markdown-it";
 
-export function configureMarkdown(md: MarkdownIt) {
+export function configureMarkdown(md: MarkdownRenderer) {
   md.use(container, "tabs", {
     render(
       tokens: Token[],
