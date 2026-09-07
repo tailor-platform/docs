@@ -387,10 +387,10 @@ curl -sS -D - -o /dev/null \
 :::tip Read the headers rather than hardcoding numbers
 Limits are deliberately not published as a table here. They differ by workspace and change over time, so any number written into your code or into this page is one that can go stale without either of us noticing. The headers are always current and always specific to the workspace you are calling.
 
-If you are sizing a workload before building it — "how many documents an hour can I put through this?" — take `limit-tokens` from a single call and divide by your measured tokens per document. Token cost varies enormously by input: a spreadsheet serialized to text is far cheaper than the same content sent as page images.
+If you are sizing a workload before building it — "how many documents an hour can I put through this?" — take `x-ratelimit-limit-tokens` from a single call and divide by your measured tokens per document. Token cost varies enormously by input: a spreadsheet serialized to text is far cheaper than the same content sent as page images.
 :::
 
-More than one token window may be in force at once (for example an hourly and a daily cap). The `-tokens` headers report whichever is **most restrictive** at that moment, which is the one that will actually reject you. That is also what other OpenAI-compatible providers do.
+More than one token window may be in force at once (for example an hourly and a daily cap). The `x-ratelimit-*-tokens` headers report whichever is **most restrictive** at that moment, which is the one that will actually reject you. That is also what other OpenAI-compatible providers do.
 
 ### Handling a rejection
 
@@ -411,7 +411,7 @@ Resolvers and Function service executions are [capped at 60 seconds](/reference/
 
 ### The unsuffixed headers
 
-You will also see `x-ratelimit-limit`, `x-ratelimit-remaining`, and `x-ratelimit-reset` without a suffix. These follow the IETF draft format and describe every window in one place:
+You will also see `x-ratelimit-limit`, `x-ratelimit-remaining`, and `x-ratelimit-reset` without a suffix. These come from the IETF `RateLimit` header fields Internet-Draft — the `draft-03` syntax specifically, since later revisions changed it — and describe every window in one place:
 
 ```
 x-ratelimit-limit: <requests>, <requests>;w=60, <tokens>;w=3600, <tokens>;w=86400
