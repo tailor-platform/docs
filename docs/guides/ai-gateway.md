@@ -362,14 +362,14 @@ Whichever limit is reached first rejects the request.
 
 Every response carries your current limits, so you never need to look them up:
 
-| Header | Meaning |
-| --- | --- |
-| `x-ratelimit-limit-requests` | Requests allowed in the current window |
-| `x-ratelimit-remaining-requests` | Requests left in it |
-| `x-ratelimit-reset-requests` | Time until it resets, e.g. `41s` |
-| `x-ratelimit-limit-tokens` | Tokens allowed in the current window |
-| `x-ratelimit-remaining-tokens` | Tokens left in it |
-| `x-ratelimit-reset-tokens` | Time until it resets, e.g. `33m41s` |
+| Header                           | Meaning                                |
+| -------------------------------- | -------------------------------------- |
+| `x-ratelimit-limit-requests`     | Requests allowed in the current window |
+| `x-ratelimit-remaining-requests` | Requests left in it                    |
+| `x-ratelimit-reset-requests`     | Time until it resets, e.g. `41s`       |
+| `x-ratelimit-limit-tokens`       | Tokens allowed in the current window   |
+| `x-ratelimit-remaining-tokens`   | Tokens left in it                      |
+| `x-ratelimit-reset-tokens`       | Time until it resets, e.g. `33m41s`    |
 
 The names and formats match the OpenAI convention, so SDK middleware written against OpenAI's headers works unchanged.
 
