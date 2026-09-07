@@ -405,6 +405,8 @@ retry-after: 12
 
 Rate-limit rejections are worth distinguishing from other 429s your own application may produce, so check for the header rather than the status alone.
 
+A 429 carries the same `x-ratelimit-*` headers as any other response, so you can see the state you were rejected against. Note that the `remaining` values are a snapshot from when the request was admitted rather than from the moment it was rejected — under concurrency they can lag slightly, and may occasionally show a small remainder on a request that was rejected anyway. **Do not branch on `remaining`; treat the 429 and its `retry-after` as authoritative.**
+
 :::warning Do not retry inside a synchronous execution site
 Resolvers and Function service executions are [capped at 60 seconds](/reference/platform/timeouts). A `retry-after` can exceed that, so waiting out a rate limit there fails the whole operation. Do the work in a [job function](/guides/executor/job-function-operation) or a [workflow](/sdk/services/workflow) job, which can absorb the wait — the same reasoning as [calling from a function](#calling-from-a-function).
 :::
