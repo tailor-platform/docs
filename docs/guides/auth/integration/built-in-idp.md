@@ -328,6 +328,8 @@ Users created via Google OAuth do not have a password set. They can only sign in
 
 :::warning
 `allow_google_oauth`, `allow_microsoft_oauth`, `allowed_email_domains`, and `disable_password_auth` are only available via the Terraform provider. These settings are not currently supported in CUE configurations.
+
+This guide names these settings as the Terraform provider and the Platform API do, in snake_case. The `@tailor-platform/sdk` examples below use the equivalent camelCase properties, so `allowed_email_domains` is `allowedEmailDomains` in a `defineIdp` call.
 :::
 
 To enable Google OAuth, set `allow_google_oauth` to `true` and specify `allowed_email_domains` in the `user_auth_policy` block:
