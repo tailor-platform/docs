@@ -251,9 +251,9 @@ The `user_auth_policy` block allows you to configure how users authenticate with
 - **Email-only authentication** (default): When `use_non_email_identifier` is `false` or omitted, users can only authenticate using email addresses
 - **Username-based authentication**: When `use_non_email_identifier` is `true`, users can authenticate using identifiers other than email addresses (such as usernames)
 - **Self-service password reset**: When `allow_self_password_reset` is `true`, a "Forgot Password?" link is displayed on the sign-in screen, allowing users to reset their own password. This option is disabled by default.
-- **Google OAuth**: When `allow_google_oauth` is `true`, a "Sign in with Google" button is displayed on the sign-in screen, allowing users to authenticate using their Google account. Requires `allowed_email_domains` to be set. See [Google OAuth](#google-oauth) for details.
-- **Allowed email domains**: When `allowed_email_domains` is set, only users with email addresses from the specified domains can sign in or be created. See [Allowed Email Domains](#allowed-email-domains) for details.
-- **Microsoft OAuth**: When `allow_microsoft_oauth` is `true`, a "Sign in with Microsoft" button is displayed on the sign-in screen, allowing users to authenticate using their Microsoft account. Requires `allowed_email_domains` and `disable_password_auth` to be set. See [Microsoft OAuth](#microsoft-oauth) for details.
+- **Google OAuth**: When `allow_google_oauth` is `true`, a "Sign in with Google" button is displayed on the sign-in screen, allowing users to authenticate using their Google account. Requires a non-empty `allowed_email_domains` (`["*"]` to allow every domain). See [Google OAuth](#google-oauth) for details.
+- **Allowed email domains**: When `allowed_email_domains` lists one or more domains, only users with email addresses from those domains can sign in or be created. The single entry `["*"]` allows every domain instead. See [Allowed Email Domains](#allowed-email-domains) for details.
+- **Microsoft OAuth**: When `allow_microsoft_oauth` is `true`, a "Sign in with Microsoft" button is displayed on the sign-in screen, allowing users to authenticate using their Microsoft account. Requires a non-empty `allowed_email_domains` (`["*"]` to allow every domain) and `disable_password_auth` to be set. See [Microsoft OAuth](#microsoft-oauth) for details.
 - **Disable password authentication**: When `disable_password_auth` is `true`, password-based sign-in and password reset are disabled. Google OAuth or Microsoft OAuth becomes the sole authentication method. See [Disable Password Authentication](#disable-password-authentication) for details.
 
 This flexibility allows you to choose the authentication method that best fits your application's requirements.
@@ -328,6 +328,8 @@ Users created via Google OAuth do not have a password set. They can only sign in
 
 :::warning
 `allow_google_oauth`, `allow_microsoft_oauth`, `allowed_email_domains`, and `disable_password_auth` are only available via the Terraform provider. These settings are not currently supported in CUE configurations.
+
+This guide names these settings as the Terraform provider and the Platform API do, in snake_case. The `@tailor-platform/sdk` examples below use the equivalent camelCase properties, so `allowed_email_domains` is `allowedEmailDomains` in a `defineIdp` call.
 :::
 
 To enable Google OAuth, set `allow_google_oauth` to `true` and specify `allowed_email_domains` in the `user_auth_policy` block:
@@ -352,7 +354,7 @@ export const builtinIdp = defineIdp("builtin-idp", {
 ```
 
 :::tip
-`allow_google_oauth` requires `allowed_email_domains` to be set. This ensures that only users from specified email domains can authenticate via Google OAuth.
+`allow_google_oauth` requires a non-empty `allowed_email_domains`. This ensures that only users from specified email domains can authenticate via Google OAuth. To serve accounts from any domain, set `allowedEmailDomains: ["*"]`. See [Allowing every email domain](#allowing-every-email-domain).
 :::
 
 :::warning
@@ -400,7 +402,7 @@ export const builtinIdp = defineIdp("builtin-idp", {
 ```
 
 :::tip
-`allowMicrosoftOauth` requires both `allowedEmailDomains` and `disablePasswordAuth` to be set. This ensures that only users from specified email domains can authenticate, and that Microsoft OAuth is the sole authentication method.
+`allowMicrosoftOauth` requires both a non-empty `allowedEmailDomains` and `disablePasswordAuth` to be set. This ensures that only users from specified email domains can authenticate, and that Microsoft OAuth is the sole authentication method. To serve accounts from any domain, set `allowedEmailDomains: ["*"]`. See [Allowing every email domain](#allowing-every-email-domain).
 :::
 
 :::warning Why Microsoft OAuth cannot be combined with password authentication
@@ -420,11 +422,13 @@ For this reason, configure Microsoft OAuth as the sole authentication method by 
 
 ### Allowed Email Domains
 
-You can restrict which email domains are allowed to sign in or be created in the Built-in IdP by setting `allowed_email_domains`. When configured, only users whose email addresses belong to one of the specified domains can authenticate or be registered. This applies to both standard email/password sign-in and Google OAuth.
+You can restrict which email domains are allowed to sign in or be created in the Built-in IdP by setting `allowed_email_domains`. When configured, only users whose email addresses belong to one of the specified domains can authenticate or be registered. This applies to standard email/password sign-in, Google OAuth, Microsoft OAuth, and users created or updated through the IdP's GraphQL API.
 
 **Configuration:**
 
-- `allowed_email_domains` (list of strings) - A list of allowed email domains (e.g., `["example.com", "corp.example.com"]`). An empty list (default) means all domains are allowed. Maximum 100 domains.
+- `allowed_email_domains` (list of strings) - A list of allowed email domains (e.g., `["example.com", "corp.example.com"]`), or the single entry `["*"]` to allow every domain. Maximum 100 entries, each of which must be unique. An empty list (default) means all domains are allowed, but see [Allowing every email domain](#allowing-every-email-domain) before relying on that.
+
+Each entry is a hostname compared exactly and case-insensitively against the part of the address after `@`, so `example.com` admits `user@example.com` but not `user@sub.example.com`. Subdomain wildcards such as `*.example.com` are rejected, and every subdomain you accept needs its own entry.
 
 **Example Configuration:**
 
@@ -451,6 +455,39 @@ export const builtinIdp = defineIdp("builtin-idp", {
 `allowed_email_domains` cannot be set when `use_non_email_identifier` is `true`, as email domain validation requires email-based identifiers.
 :::
 
+#### Allowing every email domain
+
+Google OAuth and Microsoft OAuth both require a non-empty `allowed_email_domains`, which means an application serving many companies would otherwise have to enumerate every customer domain up front and stay under the 100-entry limit. Setting the single entry `["*"]` allows every email domain instead, and is the only way to enable either provider without listing domains.
+
+```typescript
+import { defineIdp } from "@tailor-platform/sdk";
+
+export const builtinIdp = defineIdp("builtin-idp", {
+  clients: ["main-client"],
+  permission: {
+    create: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    sendPasswordResetEmail: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+  },
+  userAuthPolicy: {
+    allowGoogleOauth: true,
+    allowedEmailDomains: ["*"],
+  },
+});
+```
+
+`"*"` must be the only entry. A list that mixes it with other domains is rejected, and `"*"` never matches a real domain when it appears alongside them.
+
+:::warning
+Google OAuth and Microsoft OAuth create the IdP user just-in-time on a successful sign-in, so with `["*"]` any Google or Microsoft account can sign in and become a user of your application. The domain list is the only gate the Built-in IdP applies, so use `["*"]` only when your application controls who may join through its own invitation or approval flow. A [`beforeLogin` hook](/guides/auth/hook) can reject the login, but it runs after the user record has been created.
+:::
+
+:::warning An empty list will stop meaning "every domain"
+An empty `allowed_email_domains`, whether omitted or set to `[]`, currently also allows every domain. That meaning is being removed so that allowing every domain always has to be spelled out, and a future release requires the field to be set for any authentication method to work, password sign-in included. `tailor deploy` warns about a service that leaves it empty while both forms still work. Set `allowedEmailDomains: ["*"]` to keep allowing every domain, or list the domains you accept.
+:::
+
 ### Disable Password Authentication
 
 You can disable password-based authentication entirely by setting `disable_password_auth` to `true`. When enabled, the sign-in screen displays only the OAuth sign-in buttons (Google and/or Microsoft), and all password-related operations are blocked.
@@ -470,7 +507,7 @@ You can disable password-based authentication entirely by setting `disable_passw
 **Requirements:**
 
 - `allow_google_oauth` or `allow_microsoft_oauth` must be `true` (at least one authentication method must remain available)
-- `allowed_email_domains` must be set (required by `allow_google_oauth`)
+- `allowed_email_domains` must be non-empty (required by `allow_google_oauth` and `allow_microsoft_oauth`), either as a list of domains or as `["*"]`
 - `allow_self_password_reset` must be `false` (cannot enable password reset when password authentication is disabled)
 
 **Example Configuration:**
