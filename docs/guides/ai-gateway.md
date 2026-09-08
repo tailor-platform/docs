@@ -347,4 +347,84 @@ To call the gateway directly from a browser, configure allowed origins with the 
 
 ## Usage tracking and rate limiting
 
-Token usage is tracked per workspace, including prompt-caching metrics where the model supports it. Each gateway is rate-limited per workspace. Both are managed by the platform.
+Token usage is tracked per workspace, including prompt-caching metrics where the model supports it. Both usage tracking and rate limiting are managed by the platform.
+
+### What is limited
+
+Limits apply **per workspace, across every model and every gateway in it** — not per API key, per user, or per model. Two kinds run at once:
+
+- **Requests**, counted per minute. A request is charged the moment it arrives, so a burst is rejected on arrival rather than after the work is done.
+- **Tokens**, counted over longer windows. Charged from the completed response, so the cost of a call is known only once it finishes.
+
+Whichever limit is reached first rejects the request.
+
+### Reading your limits
+
+Every response carries your current limits, so you never need to look them up:
+
+| Header                           | Meaning                                |
+| -------------------------------- | -------------------------------------- |
+| `x-ratelimit-limit-requests`     | Requests allowed in the current window |
+| `x-ratelimit-remaining-requests` | Requests left in it                    |
+| `x-ratelimit-reset-requests`     | Time until it resets, e.g. `41s`       |
+| `x-ratelimit-limit-tokens`       | Tokens allowed in the current window   |
+| `x-ratelimit-remaining-tokens`   | Tokens left in it                      |
+| `x-ratelimit-reset-tokens`       | Time until it resets, e.g. `33m41s`    |
+
+The names and formats match the OpenAI convention, so SDK middleware written against OpenAI's headers works unchanged.
+
+To find your own limits, send one cheap request and read the headers off it:
+
+```bash
+curl -sS -D - -o /dev/null \
+  -X POST "$AI_GATEWAY_URL/v1/chat/completions" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"gpt-5-mini","max_completion_tokens":1,"messages":[{"role":"user","content":"hi"}]}' \
+  | grep -i x-ratelimit
+```
+
+:::tip Read the headers rather than hardcoding numbers
+Limits are deliberately not published as a table here. They differ by workspace and change over time, so any number written into your code or into this page is one that can go stale without either of us noticing. The headers are always current and always specific to the workspace you are calling.
+
+If you are sizing a workload before building it — "how many documents an hour can I put through this?" — take `x-ratelimit-limit-tokens` from a single call and divide by your measured tokens per document. Token cost varies enormously by input: a spreadsheet serialized to text is far cheaper than the same content sent as page images.
+:::
+
+More than one token window may be in force at once (for example an hourly and a daily cap). The `x-ratelimit-*-tokens` headers report whichever is **most restrictive** at that moment, which is the one that will actually reject you. That is also what other OpenAI-compatible providers do.
+
+### Handling a rejection
+
+When a limit is exceeded the gateway returns **429 Too Many Requests** with a `retry-after` header, in seconds:
+
+```
+HTTP/2 429
+retry-after: 12
+```
+
+**Use `retry-after` as the backoff signal.** It is the one value that directly answers "when may I try again", and it is present on every rate-limit 429. Retrying sooner will simply be rejected again; exponential backoff without reading it will usually wait longer than necessary.
+
+Rate-limit rejections are worth distinguishing from other 429s your own application may produce, so check for the header rather than the status alone.
+
+A 429 carries the same `x-ratelimit-*` headers as any other response, so you can see the state you were rejected against. Note that the `remaining` values are a snapshot from when the request was admitted rather than from the moment it was rejected — under concurrency they can lag slightly, and may occasionally show a small remainder on a request that was rejected anyway. **Do not branch on `remaining`; treat the 429 and its `retry-after` as authoritative.**
+
+:::warning Do not retry inside a synchronous execution site
+Resolvers and Function service executions are [capped at 60 seconds](/reference/platform/timeouts). A `retry-after` can exceed that, so waiting out a rate limit there fails the whole operation. Do the work in a [job function](/guides/executor/job-function-operation) or a [workflow](/sdk/services/workflow) job, which can absorb the wait — the same reasoning as [calling from a function](#calling-from-a-function).
+:::
+
+### The unsuffixed headers
+
+You will also see `x-ratelimit-limit`, `x-ratelimit-remaining`, and `x-ratelimit-reset` without a suffix. These come from the IETF `RateLimit` header fields Internet-Draft — the `draft-03` syntax specifically, since later revisions changed it — and describe every window in one place:
+
+```
+x-ratelimit-limit: <requests>, <requests>;w=60, <tokens>;w=3600, <tokens>;w=86400
+```
+
+The first entry is the allowance that is closest to being reached. Each one after it is `value;w=seconds` — an allowance and the length of the window it applies to.
+
+:::warning The unsuffixed `remaining` has no fixed unit
+`x-ratelimit-remaining` reports whichever window has least left, which may be requests on one call and tokens on the next, with nothing in the header to say which. **Read the suffixed headers when you need a number you can reason about**, and treat the unsuffixed set as a summary of the window structure.
+:::
+
+### Reading limits in the browser
+
+All the headers above are exposed via `Access-Control-Expose-Headers`, so browser clients can read them on cross-origin requests. See [CORS](#cors).
