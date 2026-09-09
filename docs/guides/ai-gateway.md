@@ -72,7 +72,7 @@ A model's **Type** determines which endpoints it can be used with: **Chat** mode
 
 ### Model names and versions
 
-The names in the tables above are the exact ids the gateway routes on. Variants with a version or date suffix (for example `gemini-2.5-flash-001`) are not recognized and return `404 No matching route found`.
+The names in the tables above are the exact ids the gateway routes on — use them verbatim, including any suffix they already carry (such as `gemini-embedding-001`). Appending a version or date suffix of your own (for example `gemini-2.5-flash-001` instead of `gemini-2.5-flash`) is not recognized and returns `404 No matching route found`.
 
 Whether a response identifies the exact model version that served it differs by provider:
 
