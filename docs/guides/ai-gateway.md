@@ -56,12 +56,11 @@ Specify the model with the `model` field in the request body. The following mode
 | `gemini-3.5-flash-lite`  | Chat      | Global   |
 | `gemini-3.6-flash`       | Chat      | Global   |
 | `gemini-3.7-flash`       | Chat      | Global   |
-| `gpt-5`                  | Chat      | Regional |
-| `gpt-5-mini`             | Chat      | Regional |
-| `gpt-5-nano`             | Chat      | Regional |
+| `gemini-3.8-flash`       | Chat      | Global   |
 | `gpt-5.6-luna`           | Chat      | Regional |
 | `gpt-5.6-sol`            | Chat      | Regional |
 | `gpt-5.6-terra`          | Chat      | Regional |
+| `gpt-6-astra`            | Chat      | Regional |
 | `gemini-embedding-001`   | Embedding | Global   |
 | `text-embedding-3-large` | Embedding | Regional |
 | `text-embedding-3-small` | Embedding | Regional |
@@ -83,6 +82,9 @@ The following models remain fully available until their retirement date, after w
 | `gemini-2.5-pro`        | Chat | Regional | 2027-01-14 | `gemini-3.6-flash`      |
 | `gpt-4.1`               | Chat | Regional | 2027-03-31 | `gpt-5.6-terra`         |
 | `gpt-4o-mini`           | Chat | Regional | 2027-03-31 | `gpt-5.6-luna`          |
+| `gpt-5`                 | Chat | Regional | 2027-01-26 | `gpt-5.6-sol`           |
+| `gpt-5-mini`            | Chat | Regional | 2027-01-26 | `gpt-5.6-terra`         |
+| `gpt-5-nano`            | Chat | Regional | 2027-01-26 | `gpt-5.6-luna`          |
 
 <!-- END GENERATED: deprecated-models -->
 
