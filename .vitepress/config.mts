@@ -38,6 +38,18 @@ export default withMermaid(
       optimizeDeps: {
         include: ["mermaid"],
       },
+      // The changelog API does not allow cross-origin requests from localhost, so in
+      // `pnpm dev` the browser calls this same-origin path and Vite forwards it upstream.
+      // Production calls the API directly (see composables/useChangelogData.ts).
+      server: {
+        proxy: {
+          "/__changelog-api": {
+            target: "https://changelog-i0d011qixh.erp.dev",
+            changeOrigin: true,
+            rewrite: (p) => p.replace(/^\/__changelog-api/, ""),
+          },
+        },
+      },
       plugins: [
         llmstxt({
           domain: "https://docs.tailor.tech",

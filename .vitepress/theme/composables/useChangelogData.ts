@@ -1,7 +1,11 @@
 import { ref } from "vue";
 import type { ChangelogData, ChangelogItem } from "./useChangelog";
 
-const ENDPOINT = "https://changelog-i0d011qixh.erp.dev/query";
+// In local dev the API is reached through the Vite proxy configured in config.mts,
+// because the upstream does not send CORS headers for a localhost origin.
+const ENDPOINT = import.meta.env.DEV
+  ? "/__changelog-api/query"
+  : "https://changelog-i0d011qixh.erp.dev/query";
 
 const PAGE_SIZE = 100;
 
