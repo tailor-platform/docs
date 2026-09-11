@@ -1,9 +1,8 @@
 ---
 doc_type: guide
-preview: true
 ---
 
-# Built-in IdP <PreviewTag />
+# Built-in IdP
 
 Managing multiple identity providers can be a hassle. The Built-in IdP offers a native solution within the Tailor Platform, eliminating the need for external providers and seamlessly integrating with your Auth service. In this guide, you’ll learn how to set it up, configure it, and integrate it with your applications in just a few steps.
 
