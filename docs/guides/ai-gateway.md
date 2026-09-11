@@ -69,6 +69,17 @@ Specify the model with the `model` field in the request body. The following mode
 
 A model's **Type** determines which endpoints it can be used with: **Chat** models are available through `/v1/chat/completions` and `/v1/responses`, and **Embedding** models through `/v1/embeddings`. If the `model` value does not match a supported model exactly, the gateway returns `404 No matching route found`.
 
+### Model names and versions
+
+The names in the tables above are the exact ids the gateway routes on — use them verbatim, including any suffix they already carry (such as `gemini-embedding-001`). Appending a version or date suffix of your own (for example `gemini-2.5-flash-001` instead of `gemini-2.5-flash`) is not recognized and returns `404 No matching route found`.
+
+Whether a response identifies the exact model version that served it differs by provider:
+
+- **GPT models** resolve to a dated snapshot upstream, and the response's `model` field reports that snapshot — for example, a request for `gpt-5-nano` returns `"model": "gpt-5-nano-2025-08-07"`. If you need to record which model version produced a response, for auditing or reproducibility, log this field.
+- **Gemini models** are published by Google under versionless names only: the name in the table is the canonical stable id, and the [Gemini API](https://ai.google.dev/gemini-api/docs/models#model-versions) exposes no finer-grained snapshot version. The response's `model` field reports the same versionless name you requested. Google states that stable models "usually don't change"; the gateway passes through what the provider serves and cannot pin or report a more specific Gemini version.
+
+If your workload requires a verifiable record of the exact model version behind each response, use a GPT model and log the response's `model` field.
+
 ### Deprecated models
 
 The following models remain fully available until their retirement date, after which they will stop being served. Please migrate to the suggested replacement before then:
