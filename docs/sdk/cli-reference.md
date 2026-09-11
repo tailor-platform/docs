@@ -34,6 +34,17 @@ a command failure under `--json` emits a JSON error envelope to stderr. CLI erro
 recovery. Diagnostic lines may precede the error envelope, and stdout is not guaranteed to contain
 an error object.
 
+### Verbose Output
+
+Use `--verbose` to include debug diagnostics and error stack traces. `DEBUG=true` or
+`RUNNER_DEBUG=1` also enables verbose output, including stacks in JSON errors. GitHub Actions
+sets `RUNNER_DEBUG=1` when debug logging is enabled, so the same command automatically includes
+these details in a debug run. These settings do not enable JSON output; pass `--json` separately.
+
+Capture the original failure's stderr and exit code before retrying. Argument parsing and failures
+before the CLI starts may produce plain text even with `--json`. A failed deployment may have
+already applied changes, so inspect its output before deciding to run it again.
+
 ## Common Options
 
 The following options are available for most commands:
@@ -265,27 +276,28 @@ Commands for managing organizations and folders.
 
 Commands for managing workspaces and profiles.
 
-| Command                                                           | Description                                                |
-| ----------------------------------------------------------------- | ---------------------------------------------------------- |
-| [workspace](cli/workspace.md#workspace)                         | Manage Tailor Platform workspaces.                         |
-| [workspace app](cli/workspace.md#workspace-app)                 | Manage workspace applications                              |
-| [workspace app health](cli/workspace.md#workspace-app-health)   | Check application schema health                            |
-| [workspace app list](cli/workspace.md#workspace-app-list)       | List applications in a workspace                           |
-| [workspace create](cli/workspace.md#workspace-create)           | Create a new Tailor Platform workspace.                    |
-| [workspace delete](cli/workspace.md#workspace-delete)           | Delete a Tailor Platform workspace.                        |
-| [workspace get](cli/workspace.md#workspace-get)                 | Show detailed information about a workspace                |
-| [workspace list](cli/workspace.md#workspace-list)               | List all Tailor Platform workspaces.                       |
-| [workspace restore](cli/workspace.md#workspace-restore)         | Restore a deleted workspace                                |
-| [workspace user](cli/workspace.md#workspace-user)               | Manage workspace users                                     |
-| [workspace user invite](cli/workspace.md#workspace-user-invite) | Invite a user to a workspace                               |
-| [workspace user list](cli/workspace.md#workspace-user-list)     | List users in a workspace                                  |
-| [workspace user remove](cli/workspace.md#workspace-user-remove) | Remove a user from a workspace                             |
-| [workspace user update](cli/workspace.md#workspace-user-update) | Update a user's role in a workspace                        |
-| [profile](cli/workspace.md#profile)                             | Manage workspace profiles (user + workspace combinations). |
-| [profile create](cli/workspace.md#profile-create)               | Create a new profile.                                      |
-| [profile delete](cli/workspace.md#profile-delete)               | Delete a profile.                                          |
-| [profile list](cli/workspace.md#profile-list)                   | List all profiles.                                         |
-| [profile update](cli/workspace.md#profile-update)               | Update profile properties.                                 |
+| Command                                                           | Description                                                                      |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| [workspace](cli/workspace.md#workspace)                         | Manage Tailor Platform workspaces.                                               |
+| [workspace app](cli/workspace.md#workspace-app)                 | Manage workspace applications                                                    |
+| [workspace app health](cli/workspace.md#workspace-app-health)   | Check application schema health                                                  |
+| [workspace app list](cli/workspace.md#workspace-app-list)       | List applications in a workspace                                                 |
+| [workspace create](cli/workspace.md#workspace-create)           | Create a new Tailor Platform workspace.                                          |
+| [workspace delete](cli/workspace.md#workspace-delete)           | Delete a Tailor Platform workspace.                                              |
+| [workspace get](cli/workspace.md#workspace-get)                 | Show detailed information about a workspace                                      |
+| [workspace list](cli/workspace.md#workspace-list)               | List all Tailor Platform workspaces.                                             |
+| [workspace prune](cli/workspace.md#workspace-prune)             | Delete stale temporary workspaces that match a name filter and an age threshold. |
+| [workspace restore](cli/workspace.md#workspace-restore)         | Restore a deleted workspace                                                      |
+| [workspace user](cli/workspace.md#workspace-user)               | Manage workspace users                                                           |
+| [workspace user invite](cli/workspace.md#workspace-user-invite) | Invite a user to a workspace                                                     |
+| [workspace user list](cli/workspace.md#workspace-user-list)     | List users in a workspace                                                        |
+| [workspace user remove](cli/workspace.md#workspace-user-remove) | Remove a user from a workspace                                                   |
+| [workspace user update](cli/workspace.md#workspace-user-update) | Update a user's role in a workspace                                              |
+| [profile](cli/workspace.md#profile)                             | Manage workspace profiles (user + workspace combinations).                       |
+| [profile create](cli/workspace.md#profile-create)               | Create a new profile.                                                            |
+| [profile delete](cli/workspace.md#profile-delete)               | Delete a profile.                                                                |
+| [profile list](cli/workspace.md#profile-list)                   | List all profiles.                                                               |
+| [profile update](cli/workspace.md#profile-update)               | Update profile properties.                                                       |
 
 ### [Auth Resource Commands](cli/auth)
 
