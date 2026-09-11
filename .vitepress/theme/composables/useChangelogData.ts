@@ -1,11 +1,14 @@
 import { ref } from "vue";
 import type { ChangelogData, ChangelogItem } from "./useChangelog";
+import { CHANGELOG_PROXY_PATH, resolveChangelogEndpoint } from "../../config/changelog";
 
-// In local dev the API is reached through the Vite proxy configured in config.mts,
-// because the upstream does not send CORS headers for a localhost origin.
+// Endpoint comes from VITE_CHANGELOG_ENDPOINT (default in config/changelog.ts). In local
+// dev the request goes through the Vite proxy configured in config.mts, because the
+// upstream does not send CORS headers for a localhost origin.
+const endpointUrl = resolveChangelogEndpoint(import.meta.env.VITE_CHANGELOG_ENDPOINT);
 const ENDPOINT = import.meta.env.DEV
-  ? "/__changelog-api/query"
-  : "https://changelog-i0d011qixh.erp.dev/query";
+  ? `${CHANGELOG_PROXY_PATH}${endpointUrl.pathname}${endpointUrl.search}`
+  : endpointUrl.href;
 
 const PAGE_SIZE = 100;
 
