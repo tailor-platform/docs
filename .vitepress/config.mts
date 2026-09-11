@@ -5,13 +5,19 @@ import { generateNav } from "./config/nav.js";
 import { generateAllSidebars } from "./config/sidebar.js";
 import { configureMarkdown } from "./config/markdown.js";
 import { generateSitemap } from "./config/sitemap.js";
-import { CHANGELOG_PROXY_PATH, resolveChangelogEndpoint } from "./config/changelog.js";
+import {
+  CHANGELOG_ENDPOINT_VAR,
+  CHANGELOG_PROXY_PATH,
+  resolveChangelogEndpoint,
+} from "./config/changelog.js";
 import llmstxt from "vitepress-plugin-llms";
 
 const docsDir = path.join(process.cwd(), "docs");
 
+// Resolved at config load so a missing/invalid endpoint fails `pnpm dev` and
+// `pnpm build` immediately, rather than shipping a page that errors at runtime.
 const env = loadEnv("", process.cwd());
-const changelogEndpoint = resolveChangelogEndpoint(env.VITE_CHANGELOG_ENDPOINT);
+const changelogEndpoint = resolveChangelogEndpoint(env[CHANGELOG_ENDPOINT_VAR]);
 
 export default withMermaid(
   defineConfig({
@@ -45,7 +51,7 @@ export default withMermaid(
       // The changelog API does not allow cross-origin requests from localhost, so in
       // `pnpm dev` the browser calls this same-origin path and Vite forwards it upstream.
       // Production calls the API directly (see composables/useChangelogData.ts).
-      // Endpoint is configurable via VITE_CHANGELOG_ENDPOINT (see config/changelog.ts).
+      // Endpoint comes from VITE_CHANGELOG_ENDPOINT (see config/changelog.ts).
       server: {
         proxy: {
           [CHANGELOG_PROXY_PATH]: {
