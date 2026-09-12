@@ -6,6 +6,8 @@ Tailor Platform documentation site built with **VitePress 1.6.4**. Contains tech
 
 ## Quick Commands
 
+First run: `cp .env.example .env` and set `VITE_CHANGELOG_ENDPOINT` (required by dev and build).
+
 - `pnpm dev` — Start dev server (http://localhost:5173)
 - `pnpm build` — Production build
 - `pnpm preview` — Preview production build

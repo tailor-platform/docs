@@ -52,6 +52,8 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          VITE_CHANGELOG_ENDPOINT: ${{ vars.VITE_CHANGELOG_ENDPOINT }}
 
   typo-check:
     runs-on: ubuntu-latest

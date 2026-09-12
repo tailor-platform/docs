@@ -40,6 +40,44 @@ export function formatDate(dateString: string): string {
   });
 }
 
+/**
+ * Renders plain-text narrative prose (as delivered by the changelog API) to safe HTML:
+ * escapes markup, turns `backtick` spans into <code>, and links bare URLs.
+ */
+export function formatNarrativeHtml(text: string): string {
+  const escaped = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
+  return escaped
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(
+      /(https?:\/\/[^\s<]+?)([.,;:)]*)(?=\s|$|<)/g,
+      '<a href="$1" target="_blank" rel="noopener">$1</a>$2',
+    );
+}
+
+/**
+ * Splits a migration paragraph into list items. Prefers explicit "(1) … (2) …"
+ * markers; otherwise falls back to sentence boundaries. Returns any text that
+ * precedes the first numbered marker as `intro`.
+ */
+export function splitNarrativeItems(text: string): { intro: string; items: string[] } {
+  const trimmed = text.trim();
+  const numbered = trimmed.split(/\s*\(\d+\)\s+/);
+  if (numbered.length > 2) {
+    const [intro, ...items] = numbered;
+    return { intro: intro.trim(), items: items.map((i) => i.trim()).filter(Boolean) };
+  }
+  const sentences = trimmed
+    .split(/(?<=[.!?])\s+(?=[A-Z`(])/)
+    .map((i) => i.trim())
+    .filter(Boolean);
+  return { intro: "", items: sentences };
+}
+
 export function useChangelog(data: Ref<ChangelogData | null>) {
   const selectedProduct = ref("All");
   const currentPage = ref(1);

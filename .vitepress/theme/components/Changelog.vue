@@ -45,22 +45,41 @@
           <h3 class="entry-title">{{ entry.title }}</h3>
 
           <div v-if="entry.narrative" class="entry-narrative">
-            <div class="narrative-summary">
-              <strong>What's new:</strong> {{ entry.narrative.summary }}
-            </div>
-            <div v-if="entry.narrative.impact" class="narrative-impact">
-              <strong>Impact:</strong> {{ entry.narrative.impact }}
-            </div>
-            <div v-if="entry.narrative.details?.length" class="narrative-details">
-              <strong>Key changes:</strong>
+            <section class="narrative-section narrative-summary">
+              <h4 class="narrative-label">What's new</h4>
+              <p v-html="formatNarrativeHtml(entry.narrative.summary)" />
+            </section>
+            <section v-if="entry.narrative.impact" class="narrative-section narrative-impact">
+              <h4 class="narrative-label">Impact</h4>
+              <p v-html="formatNarrativeHtml(entry.narrative.impact)" />
+            </section>
+            <section
+              v-if="entry.narrative.details?.length"
+              class="narrative-section narrative-details"
+            >
+              <h4 class="narrative-label">Key changes</h4>
               <ul>
-                <li v-for="(detail, i) in entry.narrative.details" :key="i">{{ detail }}</li>
+                <li
+                  v-for="(detail, i) in entry.narrative.details"
+                  :key="i"
+                  v-html="formatNarrativeHtml(detail)"
+                />
               </ul>
-            </div>
-            <div v-if="entry.narrative.migration" class="narrative-migration">
-              <strong>⚠️ Migration required:</strong>
-              <div v-html="entry.narrative.migration" />
-            </div>
+            </section>
+            <section
+              v-if="entry.narrative.migration"
+              class="narrative-section narrative-migration"
+              role="note"
+            >
+              <h4 class="narrative-label">⚠️ Migration required</h4>
+              <template v-for="mig in [splitNarrativeItems(entry.narrative.migration)]" :key="0">
+                <p v-if="mig.intro" v-html="formatNarrativeHtml(mig.intro)" />
+                <p v-if="mig.items.length === 1" v-html="formatNarrativeHtml(mig.items[0])" />
+                <ol v-else>
+                  <li v-for="(item, i) in mig.items" :key="i" v-html="formatNarrativeHtml(item)" />
+                </ol>
+              </template>
+            </section>
           </div>
 
           <div v-else-if="entry.githubUrl" class="narrative-full-notes">
@@ -96,7 +115,13 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useChangelogData } from "../composables/useChangelogData";
-import { useChangelog, formatDate, PRODUCTS } from "../composables/useChangelog";
+import {
+  useChangelog,
+  formatDate,
+  formatNarrativeHtml,
+  splitNarrativeItems,
+  PRODUCTS,
+} from "../composables/useChangelog";
 import FilterTabs from "./FilterTabs.vue";
 
 const { data: changelogData, loading, error, load } = useChangelogData();
