@@ -146,12 +146,6 @@
   border-color: rgba(191, 219, 254, 0.25);
 }
 
-:root.dark .narrative-migration {
-  background: rgba(254, 242, 242, 0.08);
-  border-color: rgba(254, 202, 202, 0.25);
-  color: #fca5a5;
-}
-
 /* Footer tags */
 .entry-tag {
   padding: 0.125rem 0.5rem;
@@ -198,42 +192,90 @@
   padding: 1.5rem;
 }
 
-.narrative-summary,
-.narrative-impact,
-.narrative-details {
-  margin-bottom: 1rem;
+.narrative-section {
+  margin-bottom: 1.25rem;
 }
 
-.narrative-summary:last-child,
-.narrative-impact:last-child,
-.narrative-details:last-child {
+.narrative-section:last-child {
   margin-bottom: 0;
 }
 
-.narrative-summary strong,
-.narrative-impact strong,
-.narrative-details strong {
-  color: var(--vp-c-text-1);
+/* Section labels — Tailor brand blue eyebrow, visually distinct from body copy */
+.entry-narrative .narrative-label {
+  margin: 0 0 0.375rem;
+  font-size: 0.75rem;
+  line-height: 1.25rem;
   font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--vp-c-brand-1);
+}
+
+.entry-narrative p {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--vp-c-text-1);
 }
 
 .narrative-details ul {
-  margin: 0.5rem 0 0 0;
+  margin: 0;
   padding-left: 1.5rem;
 }
 
 .narrative-details li {
   margin-bottom: 0.25rem;
-  color: var(--vp-c-text-2);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--vp-c-text-1);
 }
 
+/* Migration callout — warning-tinted background only; body copy stays in the
+   standard text colour so it remains readable, and only the label carries the
+   warning hue. Uses VitePress semantic tokens, so dark mode needs no override. */
 .narrative-migration {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--vp-c-warning-soft);
   border-radius: 6px;
-  color: #991b1b;
+}
+
+.narrative-migration p + ol {
+  margin-top: 0.5rem;
+}
+
+.narrative-migration ol {
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style: decimal;
+}
+
+.narrative-migration li {
+  margin-bottom: 0.375rem;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--vp-c-text-1);
+}
+
+.narrative-migration li:last-child {
+  margin-bottom: 0;
+}
+
+.narrative-migration .narrative-label {
+  color: var(--vp-c-warning-1);
+}
+
+/* Inline code inherits the site standard (.vp-doc :not(pre) > code in typography.css);
+   only allow long identifiers to wrap so they don't overflow the card. */
+.entry-narrative code {
+  overflow-wrap: anywhere;
+}
+
+.entry-narrative a {
+  color: var(--vp-c-brand-1);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-all;
 }
 
 /* Body (markdown rendered from GitHub release notes) */
