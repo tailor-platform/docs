@@ -13,6 +13,10 @@ Tailor Platform exposes a remote MCP server for each application (currently in p
 
 By registering your Tailor PF app as a remote MCP server in Claude or Claude Code, you can let them read and write your application data through the same OAuth2-authenticated GraphQL API used by your other clients.
 
+::: tip Looking for the documentation server?
+This page is about the per-application server that reads and writes **your data**. The public [Tailor MCP server](/guides/integration/mcp) at `https://mcp.tailor.tech/` gives AI assistants **these docs** instead, needs no authentication, and works alongside the per-app server.
+:::
+
 ## Prerequisites
 
 - A deployed Tailor PF application reachable at `https://{YOUR_APP_SUBDOMAIN}.erp.dev`

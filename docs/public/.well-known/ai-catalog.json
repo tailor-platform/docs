@@ -1,0 +1,10 @@
+{
+  "specVersion": "1.0",
+  "entries": [
+    {
+      "identifier": "urn:air:tailor.tech:mcp:mcp",
+      "type": "application/mcp-server-card+json",
+      "url": "https://mcp.tailor.tech/server-card"
+    }
+  ]
+}
