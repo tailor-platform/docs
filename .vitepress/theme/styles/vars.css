@@ -9,7 +9,12 @@
   --vp-c-brand-1: #535ae8; /* tailorBlue - primary brand color */
   --vp-c-brand-2: #7981e2; /* tailorMid - secondary */
   --vp-c-brand-3: #c6ccf4; /* tailorLight - accent */
-  --vp-c-brand-soft: #535ae8;
+  --vp-c-brand-soft: rgba(
+    83,
+    90,
+    232,
+    0.14
+  ); /* tip/note background; must stay translucent so brand-colored links remain readable */
 
   /* Text colors */
   --vp-c-text-1: #21245c; /* tailorBlack - headings & primary text */
@@ -41,7 +46,7 @@
   --vp-c-brand-1: #7981e2; /* tailorMid for dark mode */
   --vp-c-brand-2: #9891ff; /* lighter purple */
   --vp-c-brand-3: #c6ccf4;
-  --vp-c-brand-soft: #7981e2;
+  --vp-c-brand-soft: rgba(121, 129, 226, 0.16);
 
   /* Text colors */
   --vp-c-text-1: #ffffff;
