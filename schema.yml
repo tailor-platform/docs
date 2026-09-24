@@ -42,6 +42,13 @@ links:
     - www.npmjs.com
     - sonner.emilkowal.ski
     - tailortech.statuspage.io
+    - claude.ai
+    - claude.com
+    - modelcontextprotocol.io
+    - cursor.com
+    - code.visualstudio.com
+    - vscode.dev
+    - learn.chatgpt.com
   blocked_domains: [] # block links to these domains
 
 # Heading validation rules

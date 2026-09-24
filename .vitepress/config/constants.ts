@@ -144,4 +144,5 @@ export const acronyms: Record<string, string> = {
   csv: "CSV",
   scim: "SCIM",
   spa: "SPA",
+  mcp: "MCP",
 };

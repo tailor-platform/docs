@@ -60,7 +60,7 @@ Get a workspace running and your first schema deployed.
 
 ## Build with Tailor
 
-The two toolkits you'll use to build every app: define your backend, then build its frontend.
+The toolkits you'll use to build every app: define your backend, build its frontend, and let your AI assistant read these docs.
 
 <div class="cards-3">
   <Card title="Tailor SDK" href="/sdk/">
@@ -68,6 +68,9 @@ The two toolkits you'll use to build every app: define your backend, then build 
   </Card>
   <Card title="AppShell" href="/app-shell/">
     Ready-made UI components for your application's frontend.
+  </Card>
+  <Card title="AI assistants" href="/guides/integration/mcp">
+    Give Claude, ChatGPT, Cursor, and Codex these docs through the Tailor MCP server.
   </Card>
 </div>
 
