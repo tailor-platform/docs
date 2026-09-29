@@ -45,6 +45,10 @@ export default withMermaid(
     },
 
     vite: {
+      // VitePress sets Vite's root to `docs/`, so without this the browser bundle
+      // reads .env from there and never sees the repo-root .env that config.mts
+      // loads above; the Changelog page then throws on import and renders as 404.
+      envDir: process.cwd(),
       optimizeDeps: {
         include: ["mermaid"],
       },
