@@ -1,4 +1,5 @@
 ---
+title: Integrate Claude and Claude Code with Tailor Platform
 doc_type: guide
 preview: true
 ---

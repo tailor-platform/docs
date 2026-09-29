@@ -79,6 +79,7 @@ export const excludedSections: string[] = ["public"];
 // Custom title overrides for sections/folders
 export const customTitles: Record<string, string> = {
   "app-shell": "AppShell",
+  tailordb: "TailorDB",
   "wait-resolve": "Wait / Resolve",
   index: "Overview",
   "ai-gateway": "AI Gateway",

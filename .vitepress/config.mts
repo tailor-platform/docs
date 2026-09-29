@@ -5,6 +5,7 @@ import { generateNav } from "./config/nav.js";
 import { generateAllSidebars } from "./config/sidebar.js";
 import { configureMarkdown } from "./config/markdown.js";
 import { generateSitemap } from "./config/sitemap.js";
+import { groupSidebarForLlms } from "./config/llms.js";
 import {
   CHANGELOG_ENDPOINT_VAR,
   CHANGELOG_PROXY_PATH,
@@ -68,6 +69,8 @@ export default withMermaid(
           description:
             "Tailor is a headless ERP platform. These docs cover the SDK, AppShell UI framework, platform services (TailorDB, Resolver, StateFlow, Executor, Auth), and administration. AI assistants can search and read these docs through the Tailor MCP server at https://mcp.tailor.tech/ (Streamable HTTP, no authentication; tools: search_knowledge, list_knowledge, fetch_knowledge). See https://docs.tailor.tech/guides/integration/mcp for setup.",
           injectLLMHint: false,
+          // Only affects llms.txt; the site sidebar keeps its flat root links.
+          sidebar: groupSidebarForLlms(docsDir),
         }),
       ],
     },
