@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jackchuka/mdschema/main/schema.json
+
+# Frontmatter rules for pages authored in this repo.
+#
+# Applied by the schema-check job to getting-started/, administration/, reference/,
+# tutorials/ and guides/ only. The sdk/ and app-shell/ trees are synced nightly from
+# their own repos and get their frontmatter upstream, so they are not covered here.
+#
+# `description` is what llms.txt, the public knowledge MCP server (list_knowledge and
+# search excerpts) and the page's <meta name="description"> show for a page. Keep it
+# to one task-oriented sentence of roughly 160 characters.
+frontmatter:
+  fields:
+    - { name: "description", type: string }
