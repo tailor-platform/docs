@@ -1,4 +1,5 @@
 ---
+description: "Sync inventory and automate order processing and shipping with ShipStation using Executor triggers."
 doc_type: guide
 ---
 

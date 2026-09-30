@@ -1,4 +1,5 @@
 ---
+description: "Define single and composite indexes on a table, including uniqueness constraints across several fields."
 doc_type: guide
 ---
 

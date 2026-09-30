@@ -1,4 +1,5 @@
 ---
+description: "Set up Okta as an identity provider for the Auth service using OIDC or SAML."
 doc_type: guide
 ---
 

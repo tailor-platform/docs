@@ -1,4 +1,5 @@
 ---
+description: "Set up Microsoft Entra ID as an identity provider for the Auth service with OIDC."
 doc_type: guide
 ---
 

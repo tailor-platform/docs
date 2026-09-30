@@ -1,4 +1,5 @@
 ---
+description: "Set up Google Workspace as a SAML identity provider for enterprise SSO with the Auth service."
 doc_type: guide
 preview: true
 ---
