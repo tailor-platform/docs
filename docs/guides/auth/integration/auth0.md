@@ -1,4 +1,5 @@
 ---
+description: "Set up Auth0 as an identity provider for the Auth service using OIDC, SAML or ID token authentication."
 doc_type: guide
 ---
 

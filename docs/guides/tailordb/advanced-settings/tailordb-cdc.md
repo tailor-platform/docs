@@ -1,4 +1,5 @@
 ---
+description: "Publish record create, update and delete events from a table with change data capture so Executor triggers can react to them."
 doc_type: guide
 ---
 

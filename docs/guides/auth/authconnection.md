@@ -1,4 +1,5 @@
 ---
+description: "Connect to external OAuth2 providers such as Google, Microsoft 365 and QuickBooks on your app's behalf, with server-side secrets and tokens usable in Functions."
 doc_type: guide
 ---
 

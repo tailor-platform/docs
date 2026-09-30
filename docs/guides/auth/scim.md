@@ -1,4 +1,5 @@
 ---
+description: "Provision and deprovision users automatically from Okta, Entra ID or another IdP through the SCIM 2.0 endpoint."
 doc_type: guide
 ---
 

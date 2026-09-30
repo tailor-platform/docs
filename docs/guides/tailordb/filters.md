@@ -1,4 +1,5 @@
 ---
+description: "Filter operators available for each data type in list queries and conditional updates, with examples."
 doc_type: guide
 ---
 

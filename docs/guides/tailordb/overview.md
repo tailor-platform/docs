@@ -1,4 +1,5 @@
 ---
+description: "How TailorDB works: define tables in TypeScript with the SDK, deploy, and get a generated GraphQL API with filtering and sorting on every field."
 doc_type: guide
 ---
 

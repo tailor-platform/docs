@@ -1,4 +1,5 @@
 ---
+description: "Choose between Public and Browser OAuth2 clients for single-page apps, and the security settings each needs."
 doc_type: guide
 ---
 

@@ -1,4 +1,5 @@
 ---
+description: "Mark a string field as a vector field to compute embeddings automatically and query records with natural language."
 doc_type: guide
 ---
 

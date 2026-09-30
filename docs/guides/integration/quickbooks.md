@@ -1,4 +1,5 @@
 ---
+description: "Automate accounting workflows by connecting QuickBooks to Tailor Platform with Executor triggers and the QuickBooks API."
 doc_type: guide
 ---
 
