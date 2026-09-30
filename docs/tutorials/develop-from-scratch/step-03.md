@@ -1,3 +1,7 @@
+---
+description: "Add a closeProject mutation resolver that cancels open tasks and closes the project in one transaction, using generated Kysely types."
+---
+
 # Step 3: Add Resolver
 
 Add a `closeProject` mutation that cancels incomplete tasks and closes a project in a transaction. Also adds an `admin` machine user and Kysely type generator.

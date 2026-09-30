@@ -1,3 +1,7 @@
+---
+description: "Add a field to an existing TailorDB table with the SDK, deploy the change, and verify it in GraphQL."
+---
+
 # Adding a New Field to Data Model
 
 Tailor Platform makes it easy to modify data schemas. With TailorDB, you can modify existing data tables and the GraphQL endpoint will be automatically generated.

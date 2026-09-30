@@ -1,3 +1,7 @@
+---
+description: "Create an executor that external tools can call over HTTP to update project records, and verify it by sending webhook requests."
+---
+
 # Setting up an Incoming Webhook Trigger
 
 Incoming webhook triggers allow external services to invoke actions in your Tailor application via HTTP requests. In this tutorial, we'll create an executor that accepts project updates from external tools (like GitHub, Jira, or custom integrations) and updates project status in your application.

@@ -1,3 +1,7 @@
+---
+description: "Create an executor that runs on a cron schedule to generate a daily project status report."
+---
+
 # Setting up a Schedule-based Trigger
 
 Schedule-based triggers allow you to automatically run actions at predefined intervals using cron expressions. In this tutorial, we'll create an executor that generates a daily project status report.

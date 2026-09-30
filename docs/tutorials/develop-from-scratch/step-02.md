@@ -1,3 +1,7 @@
+---
+description: "Add an Auth namespace with a user profile, machine users for each role, and permission rules on the tables."
+---
+
 # Step 2: Add Authentication and Permissions
 
 This step adds authentication capabilities to your project management application. You'll configure user profile management linked to your User type and create machine users for different roles, enabling secure access control and automated operations. You will also implement role-based permissions to control data access.

@@ -1,3 +1,7 @@
+---
+description: "Configure an OAuth2 client in the Auth configuration, log in to your app through your IdP, and optionally connect a Next.js UI."
+---
+
 # Using OAuth2 to log in to the Tailor PF app
 
 In this tutorial, you'll learn how to set up secure user access to your Tailor PF app using OAuth2 authentication with the Tailor Platform SDK.

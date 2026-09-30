@@ -1,3 +1,7 @@
+---
+description: "Tutorial series on TailorDB: schema basics, adding fields, creating tables and validating field data."
+---
+
 # Managing Data Schema with Tailor Platform
 
 Tailor Platform offers a powerful feature that allows you to generate GraphQL APIs from schema files. This makes it easy for your company to create a custom data schema that aligns perfectly with your business requirements.
