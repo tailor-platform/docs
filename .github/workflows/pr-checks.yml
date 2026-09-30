@@ -77,3 +77,11 @@ jobs:
         with:
           files: "README.md docs/**/*.md"
           schema: "schema.yml"
+
+      # Pages authored in this repo must declare a description (see schema-frontmatter.yml).
+      # The synced sdk/ and app-shell/ trees are excluded on purpose.
+      - name: Require frontmatter description on docs-owned pages
+        uses: jackchuka/mdschema@be76a6548f8b577716891a7442271d78939d6bcd # v0.15.4
+        with:
+          files: "docs/getting-started/**/*.md docs/administration/**/*.md docs/reference/**/*.md docs/tutorials/**/*.md docs/guides/**/*.md"
+          schema: "schema-frontmatter.yml"
