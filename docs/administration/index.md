@@ -1,3 +1,7 @@
+---
+description: "Guides for administering the Tailor Platform: accounts and roles, workspaces, IP restriction, data retention and how to reach support."
+---
+
 # Administration
 
 Platform administration guides for managing workspaces, accounts, and platform resources.

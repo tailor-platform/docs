@@ -1,3 +1,7 @@
+---
+description: "Restrict which client IPs can reach your resources with allowlists at the organization, folder and application levels, and how the layers combine."
+---
+
 # IP Restriction
 
 IP restriction lets you define an IP allowlist that controls which client IPs can reach your resources.

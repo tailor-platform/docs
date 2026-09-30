@@ -1,3 +1,7 @@
+---
+description: "CEL expressions in resolvers, TailorDB hooks and validations, with the Tailor-specific extension functions and optional-type support."
+---
+
 # CEL scripting
 
 [CEL Script](https://github.com/google/cel-spec) is used to perform data transformation and run validations in the Tailor Platform.

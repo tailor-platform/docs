@@ -1,3 +1,7 @@
+---
+description: "Timeout limits for the gateway, resolvers, executor operations, hooks, functions and job functions, with practices for handling them."
+---
+
 # Timeouts
 
 This page documents the various timeout limits in the Tailor Platform services. Understanding these timeouts is essential for building robust applications that can handle potential delays or failures gracefully.

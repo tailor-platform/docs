@@ -1,4 +1,5 @@
 ---
+description: "Index of the platform guides: application manifests, resolvers, events, secrets, observability, hosting, and the TailorDB, Auth, Executor, Function, Workflow and integration guides."
 doc_type: guide
 ---
 

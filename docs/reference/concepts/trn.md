@@ -1,3 +1,7 @@
+---
+description: "Format of the Tailor Resource Name (TRN) that uniquely identifies workspace resources, with the supported resource types and examples."
+---
+
 # Tailor Resource Name (TRN)
 
 This page documents the Tailor Resource Name (TRN) format, which uniquely identifies resources within a Workspace in the Tailor Platform.

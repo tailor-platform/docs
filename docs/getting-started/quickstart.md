@@ -1,3 +1,7 @@
+---
+description: "Create an example app from a template, create a workspace, and deploy it to the Tailor Platform with the SDK in a few commands."
+---
+
 # Quickstart
 
 ## Getting Started

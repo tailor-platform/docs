@@ -1,3 +1,7 @@
+---
+description: "Create Workspaces in a region with the CLI or Console, and define Applications and their configuration inside them."
+---
+
 # Workspace & Application
 
 This guide explains how Workspaces and Applications work in Tailor Platform.

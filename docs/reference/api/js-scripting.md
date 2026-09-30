@@ -1,4 +1,5 @@
 ---
+description: "Where JavaScript runs on the platform (resolver hooks, executor triggers, TailorDB hooks and validations) and how to write and debug those scripts."
 tabs:
   resolver-example:
     - label: Terraform

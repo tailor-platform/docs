@@ -1,3 +1,7 @@
+---
+description: "Organize organizations, folders, workspaces and teams, and see which permissions the Admin, Editor and Viewer roles grant at each level."
+---
+
 # Platform Account management
 
 The Tailor Platform enables comprehensive account management for admins and developers through the [Console](https://console.tailor.tech).

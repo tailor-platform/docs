@@ -1,3 +1,7 @@
+---
+description: "Introduction to querying and mutating data through the Tailor Platform GraphQL API, with example queries, mutations and connection patterns."
+---
+
 # Interacting with Tailor Platform GraphQL
 
 If you're already familiar with the GraphQL, you can skip this page and

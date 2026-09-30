@@ -1,3 +1,7 @@
+---
+description: "How Workspaces, Applications and services nest in the Tailor Platform resource hierarchy, with the SDK commands and config that create each."
+---
+
 # Platform Architecture
 
 Tailor Platform resources are organized in a hierarchical structure.

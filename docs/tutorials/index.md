@@ -1,3 +1,7 @@
+---
+description: "Index of tutorials: build a project management app from scratch, then manage data schema, expose endpoints, chain resolvers, and set up Auth and Executor."
+---
+
 # Tutorials
 
 Follow the tutorials to learn how to manage the data schema within TailorDB. Activate services to set up authentication (Auth) for secure access control and configure the executor service for automation.

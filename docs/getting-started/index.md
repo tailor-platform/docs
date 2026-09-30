@@ -1,3 +1,7 @@
+---
+description: "Overview of the Console and the Tailor Platform SDK, how to install the tailor CLI, and where to go next to build your first application."
+---
+
 # Getting Started
 
 Getting started with the Tailor Platform is fast and straightforward. Tailor Platform offers powerful tools, such as the CLI and [console](https://console.tailor.tech), that simplify the process of creating and managing your applications.

@@ -1,3 +1,7 @@
+---
+description: "Start here for the platform's building blocks: the resource hierarchy, Workspaces and Applications, and the core services."
+---
+
 # Core Concepts
 
 - [Platform Architecture](platform-architecture.md) - Understand the hierarchical structure of Tailor Platform resources and how they relate to each other

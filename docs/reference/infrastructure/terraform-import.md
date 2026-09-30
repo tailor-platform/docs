@@ -1,3 +1,7 @@
+---
+description: "Import existing Tailor Platform resources into Terraform one at a time, or in bulk from a workspace export."
+---
+
 # Terraform Import
 
 The Tailor Platform Terraform provider supports importing existing resources into your Terraform configuration, allowing you to bring resources that were created through the console or CLI.

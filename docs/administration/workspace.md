@@ -1,3 +1,7 @@
+---
+description: "Create, list, delete and restore workspaces with the tailor CLI, manage workspace users, and understand the Platform user role."
+---
+
 # Workspace Administration
 
 A [Workspace](/getting-started/core-concepts/workspace-application#workspace) is the top-level namespace in the Tailor Platform for your organization,

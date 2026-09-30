@@ -1,3 +1,7 @@
+---
+description: "Overview of the core services (TailorDB, Auth, Resolver, Executor, Function, Workflow and Secret Manager), what each provides and where to learn more."
+---
+
 # Services
 
 Tailor Platform offers several core services to help you build applications. Each service is designed to handle specific functionality and can be composed together to create powerful applications.
