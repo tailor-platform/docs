@@ -564,9 +564,9 @@ These are visual-composition rules every screen must follow, regardless of patte
 | Concern                                                    | Where                                                           |
 | ---------------------------------------------------------- | --------------------------------------------------------------- |
 | Tokens, theming, the `astw:` styling boundary, conformance | **this document**                                               |
-| A component's imports, props, variants, composition        | its page under [`docs/components/`](../components/)             |
-| A hook / function API                                      | its page under [`docs/api/`](../api/)                           |
-| Screen / page layout recipes                               | [`docs/patterns/`](../patterns/) and [`docs/pages/`](../pages/) |
+| A component's imports, props, variants, composition        | its page under `docs/components/`             |
+| A hook / function API                                      | its page under `docs/api/`                           |
+| Screen / page layout recipes                               | `docs/patterns/` and `docs/pages/` |
 | Building a custom component to fill a gap                  | [Custom components](custom-components)                     |
 
 ### Semantic decisions

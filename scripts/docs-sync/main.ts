@@ -152,6 +152,22 @@ function collapseAnchorHyphens(content: string): string {
   );
 }
 
+// Upstream links to folders like `../components/`, which GitHub renders as a
+// file listing. The site has no page there unless the folder has an index.md,
+// so VitePress reports a dead link. Keep the link text and drop the link.
+function stripFolderLinks(content: string, file: string, config: SyncConfig): string {
+  return content.replace(/\[([^\]]+)\]\(([^)#\s]+)(#[^)]*)?\)/g, (match, text, target) => {
+    if (/^[a-z]+:/i.test(target) || target.startsWith("/")) return match;
+    const resolved = path.resolve(path.dirname(file), target);
+    if (!fs.existsSync(resolved) || !fs.statSync(resolved).isDirectory()) return match;
+    // The app-shell root gets its index.md from introduction.md in step 7
+    const hasIndex =
+      fs.existsSync(path.join(resolved, "index.md")) ||
+      (resolved === config.dst && fs.existsSync(path.join(resolved, "introduction.md")));
+    return hasIndex ? match : text;
+  });
+}
+
 // 1. Backup index.md
 const indexBackupPath = path.join(config.dst, "index.md");
 const indexBackup = fs.existsSync(indexBackupPath)
@@ -205,6 +221,7 @@ walk(config.dst)
     content = stripNonAllowedLinks(content);
     content = rewriteExtraCopyLinks(content, config);
     content = collapseAnchorHyphens(content);
+    content = stripFolderLinks(content, f, config);
     fs.writeFileSync(f, content);
   });
 

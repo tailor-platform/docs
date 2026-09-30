@@ -11,7 +11,7 @@ Most ERP screens compose entirely from AppShell primitives. When you hit a gap, 
 
 ## Decision tree
 
-1. **Can you compose existing AppShell primitives?** A "card with a metric and a trend arrow" is `MetricCard`, or `Card` plus a lucide icon — not a new component. Compose first, and check the [component docs](../components/) for what already exists before concluding there is a gap.
+1. **Can you compose existing AppShell primitives?** A "card with a metric and a trend arrow" is `MetricCard`, or `Card` plus a lucide icon — not a new component. Compose first, and check the component docs for what already exists before concluding there is a gap.
 2. **If not, build it locally** under `src/components/<name>/`, conforming to the rules below.
 
 > If a local custom proves reusable across several apps, it is a candidate to contribute upstream into AppShell — a separate, contributor workflow (see `CONTRIBUTING.md` / the `add-component` skill), not something to do from a consuming app.

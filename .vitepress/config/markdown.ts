@@ -4,6 +4,13 @@ import type Token from "markdown-it/lib/token.mjs";
 import type { Options } from "markdown-it";
 
 export function configureMarkdown(md: MarkdownRenderer) {
+  // Keep Vue from parsing `{{ ... }}` inside inline code as an interpolation
+  const renderCodeInline = md.renderer.rules.code_inline!;
+  md.renderer.rules.code_inline = (tokens, idx, options, env, self) => {
+    tokens[idx].attrSet("v-pre", "");
+    return renderCodeInline(tokens, idx, options, env, self);
+  };
+
   md.use(container, "tabs", {
     render(
       tokens: Token[],
