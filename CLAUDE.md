@@ -49,10 +49,11 @@ docs/
 ## Writing Docs
 
 - Place markdown files in the appropriate folder under `docs/`
-- Use frontmatter for metadata. On guide pages, `sdk_version: "x.y.z"` records the
-  `@tailor-platform/sdk` release the page's code examples were last checked against.
-  It is machine-readable data for the drift-check bot and is not rendered; leave it
-  off pages whose examples have not been checked
+- Use frontmatter for metadata. Every page needs a `description`: one task-oriented sentence of
+  roughly 160 characters, shown in `llms.txt`, by the knowledge MCP server and as the page's meta description
+- On guide pages, `sdk_version: "x.y.z"` records the `@tailor-platform/sdk` release the page's
+  code examples were last checked against. It is machine-readable data for the drift-check bot
+  and is not rendered; leave it off pages whose examples have not been checked
 - Internal links should be extensionless (resolved at build time)
 - Links inside components (`<Card href="...">`) are emitted verbatim — the VitePress
   build does **not** dead-link-check HTML attributes. Run `pnpm check:links` after
@@ -68,6 +69,8 @@ GitHub Actions workflows run on PRs (`.github/workflows/pr-checks.yml`):
 - **lint** — `pnpm typecheck`, `pnpm lint`, `pnpm fmt:check`, `pnpm check:links`, `pnpm build`
   (the build is also what dead-link-checks markdown links)
 - **typo-check** — Catches typos
-- **schema-check** — Validates doc structure via mdschema
+- **schema-check** — Validates doc structure via mdschema, and requires a `description` frontmatter
+  field on pages under `getting-started/`, `administration/`, `reference/`, `tutorials/` and `guides/`
+  (`schema-frontmatter.yml`; the synced `sdk/` and `app-shell/` trees are excluded)
 
 Separate workflows: **sdk-docs-sync** and **app-shell-sync** sync generated pages.
