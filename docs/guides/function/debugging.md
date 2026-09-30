@@ -1,4 +1,5 @@
 ---
+description: "Find and fix errors in a function by reading its execution logs with the CLI and adding your own log output."
 doc_type: guide
 ---
 

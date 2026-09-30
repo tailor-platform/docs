@@ -1,4 +1,5 @@
 ---
+description: "Send HTTP requests to third-party services from a function, bundling npm packages for deployment; only external endpoints and AI Gateway are reachable."
 doc_type: guide
 ---
 

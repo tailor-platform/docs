@@ -1,4 +1,5 @@
 ---
+description: "Run an executor on a cron schedule for periodic processing and maintenance tasks."
 doc_type: guide
 ---
 
