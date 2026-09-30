@@ -1,4 +1,5 @@
 ---
+description: "How the Executor service automates tasks: pair a trigger (event, webhook or schedule) with an operation (function, job, GraphQL, webhook or workflow)."
 doc_type: guide
 ---
 

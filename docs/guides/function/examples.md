@@ -1,4 +1,5 @@
 ---
+description: "Worked examples of Function service code, including Kysely with TailorDB, deployed and triggered from resolvers."
 doc_type: guide
 ---
 

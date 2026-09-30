@@ -1,4 +1,5 @@
 ---
+description: "Query TailorDB from a function with the built-in tailordb Client: connect to a namespace, run SQL, and use Kysely for type-safe queries."
 doc_type: guide
 ---
 

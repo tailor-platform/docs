@@ -1,4 +1,5 @@
 ---
+description: "Send an HTTP POST request to an external endpoint from an executor, with headers and a body built from the trigger payload."
 doc_type: guide
 ---
 

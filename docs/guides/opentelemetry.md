@@ -1,4 +1,5 @@
 ---
+description: "Forward the traces and logs the platform generates to your observability backend by configuring OTLP exporters, with service name and environment attributes."
 doc_type: guide
 title: Observability / OpenTelemetry
 ---
