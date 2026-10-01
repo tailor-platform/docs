@@ -1,4 +1,5 @@
 ---
+description: "Call many large language models through one OpenAI-compatible endpoint with platform-managed credentials, workspace isolation and app-user or function authentication."
 doc_type: guide
 preview: true
 ---

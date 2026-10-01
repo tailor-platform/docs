@@ -1,4 +1,5 @@
 ---
+description: "Write custom GraphQL resolvers with the SDK that chain queries, run business logic and transform data beyond the auto-generated API."
 doc_type: guide
 ---
 

@@ -1,4 +1,5 @@
 ---
+description: "Run a JavaScript or TypeScript function asynchronously as a job from an executor, for long-running work tracked by execution ID."
 doc_type: guide
 ---
 

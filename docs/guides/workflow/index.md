@@ -1,4 +1,5 @@
 ---
+description: "Build durable multi-step background jobs with the Workflow service, which saves state at each step and resumes failed runs from the point of failure."
 doc_type: guide
 preview: true
 ---

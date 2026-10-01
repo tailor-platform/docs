@@ -1,4 +1,5 @@
 ---
+description: "Pause a workflow until an external signal arrives, for approvals, payment confirmation or user input, with the Wait / Resolve API."
 doc_type: guide
 ---
 

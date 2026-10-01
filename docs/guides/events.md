@@ -1,4 +1,5 @@
 ---
+description: "Reference of the events the platform emits (TailorDB records, IdP users, authentication, workflow state) and the payload each delivers to a trigger."
 doc_type: guide
 ---
 

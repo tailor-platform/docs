@@ -1,4 +1,5 @@
 ---
+description: "Run JavaScript as serverless functions on the platform, triggered from resolvers or executors, to call external APIs, query TailorDB and use built-in interfaces."
 doc_type: guide
 ---
 
