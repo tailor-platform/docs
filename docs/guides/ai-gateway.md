@@ -1,4 +1,5 @@
 ---
+title: AI Gateway
 doc_type: guide
 preview: true
 ---

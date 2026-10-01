@@ -1,4 +1,5 @@
 ---
+title: Google Workspace Integration
 doc_type: guide
 preview: true
 ---

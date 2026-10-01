@@ -1,4 +1,5 @@
 ---
+title: Workflow Service
 doc_type: guide
 preview: true
 ---
