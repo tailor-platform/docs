@@ -1,4 +1,5 @@
 ---
+description: "Attach files to records with the file field type: schema definition, upload and download over HTTP, metadata queries and permission-based access."
 doc_type: guide
 ---
 

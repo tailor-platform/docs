@@ -1,4 +1,5 @@
 ---
+description: "Enable the aggregate query for a table to run count, sum, avg, min, max and groupBy over records."
 doc_type: guide
 ---
 

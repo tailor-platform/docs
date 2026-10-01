@@ -1,4 +1,6 @@
 ---
+title: "Shopify Integration with Zapier or Pipedream"
+description: "Connect a SaaS app such as Shopify to Tailor Platform with Zapier or Pipedream: a trigger on new orders and an action that calls the GraphQL API."
 doc_type: guide
 ---
 

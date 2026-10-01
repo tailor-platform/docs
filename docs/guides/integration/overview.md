@@ -1,4 +1,5 @@
 ---
+description: "Index of integration guides: Shopify (direct or via Zapier and Pipedream), QuickBooks, ShipStation, Loop and AI assistants."
 doc_type: guide
 ---
 

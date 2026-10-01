@@ -1,4 +1,5 @@
 ---
+description: "Run a Function during login with the beforeLogin hook, for example to provision users just in time or validate IdP claims."
 doc_type: guide
 ---
 

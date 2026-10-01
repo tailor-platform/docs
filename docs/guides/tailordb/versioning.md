@@ -1,4 +1,5 @@
 ---
+description: "Keep previous versions of records in a history table by combining change data capture with an event-based Executor trigger."
 doc_type: guide
 ---
 

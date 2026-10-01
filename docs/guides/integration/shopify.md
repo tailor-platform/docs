@@ -1,4 +1,5 @@
 ---
+description: "Push new TailorDB products to a Shopify store automatically with an Executor trigger and the Shopify API."
 doc_type: guide
 ---
 

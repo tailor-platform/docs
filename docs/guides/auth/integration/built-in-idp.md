@@ -1,4 +1,5 @@
 ---
+description: "Authenticate users without an external provider by configuring the Built-in IdP, its client, secrets and Auth service integration."
 doc_type: guide
 ---
 

@@ -1,4 +1,5 @@
 ---
+description: "Compute field values on create and update with hooks, using other fields and the invoker's identity and attributes, in CEL or JavaScript."
 doc_type: guide
 ---
 
