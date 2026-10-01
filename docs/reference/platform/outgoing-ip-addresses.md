@@ -1,3 +1,7 @@
+---
+description: "Outgoing IP addresses the Tailor Platform uses per region for webhooks and external requests, for allowlisting in your firewall."
+---
+
 # Outgoing IP Addresses
 
 This page lists the outgoing IP addresses used by the Tailor Platform. If your infrastructure requires IP whitelisting for incoming connections from Tailor services, you can use these addresses to configure your firewall or security rules.

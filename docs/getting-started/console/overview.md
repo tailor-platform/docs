@@ -1,3 +1,7 @@
+---
+description: "Tour of the Tailor Console: application dashboards, the embedded GraphQL Playground, schema browsing, pipeline logs, secrets and workspace settings."
+---
+
 # Console
 
 The [Console](https://console.tailor.tech) is a web-based interface that gives you a unified view of everything running inside the Tailor Platform.

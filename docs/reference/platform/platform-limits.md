@@ -1,3 +1,7 @@
+---
+description: "Limits enforced across Tailor Platform services, such as recursive call depth, workflow and executor concurrency, function memory and response sizes."
+---
+
 # Platform Limits
 
 This page documents the various limits and constraints in the Tailor Platform services. Understanding these limits is essential for building robust applications that operate within platform boundaries.

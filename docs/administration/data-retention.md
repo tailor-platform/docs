@@ -1,3 +1,7 @@
+---
+description: "Retention periods for job attempts, executions, resolver results and activity logs, and how to keep data the platform deletes after they expire."
+---
+
 # Data Retention
 
 Tailor Platform automatically removes old data after specific retention periods to maintain system performance and optimize storage.

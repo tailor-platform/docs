@@ -1,4 +1,5 @@
 ---
+description: "Call the Tailor Platform control-plane API (OperatorService) over gRPC or HTTP with curl or the Buf SDKs, and authenticate with a personal access token."
 tabs:
   api-usage:
     - label: curl

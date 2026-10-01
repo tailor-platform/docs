@@ -1,3 +1,7 @@
+---
+description: "Read application status indicators, inspect pipeline resolver execution logs and change platform user roles in the Console."
+---
+
 # Console Features
 
 ## Application Status

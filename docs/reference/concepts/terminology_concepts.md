@@ -1,3 +1,7 @@
+---
+description: "Glossary of Tailor Platform terms such as service, workspace, organization, type and data type."
+---
+
 # Tailor Platform terminology and concepts chart
 
 Testing if we can maintain this page.

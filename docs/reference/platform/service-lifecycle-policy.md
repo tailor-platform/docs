@@ -1,3 +1,7 @@
+---
+description: "Lifecycle stages of Tailor Platform services from Preview to Retired, what each tag means and what to do when a service changes stage."
+---
+
 # Service Lifecycle Policy
 
 Understand the full lifecycle of our services and how each stage affects your application.

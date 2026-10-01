@@ -1,3 +1,7 @@
+---
+description: "Character encodings supported by the tailor.iconv API in the Function service, including Unicode, Shift_JIS, EUC-JP and other CJK encodings and their aliases."
+---
+
 # Character Encodings
 
 This page documents the character encodings supported by the `tailor.iconv` API in the Function service. Understanding these encodings is essential for handling text data conversion between different character sets, especially when working with Japanese, Chinese, and Korean text.
