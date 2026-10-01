@@ -1,3 +1,7 @@
+---
+description: "Add a validation rule to a TailorDB field with the SDK, deploy it, and confirm that invalid values are rejected."
+---
+
 # Validate Field Data
 
 Accurate and valid data is essential to ensure the success of any application. Tailor Platform provides an easy way to validate data with TailorDB. You can define validation rules within your data model to ensure your data is accurate and valid.

@@ -1,3 +1,7 @@
+---
+description: "How TailorPF issues access tokens after IdP authentication, and how to create the user records that the Authorization Code flow requires."
+---
+
 # Create Users in Your Application
 
 In the authentication process, the user authenticates through the Identity Provider (IdP), which verifies their identity.

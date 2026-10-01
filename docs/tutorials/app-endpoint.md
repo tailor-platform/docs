@@ -1,3 +1,7 @@
+---
+description: "Add TailorDB, Resolver, Auth, Executor and Workflow services to an SDK app so each becomes an application endpoint, and verify the result in the GraphQL Playground."
+---
+
 # Adding Application Endpoints
 
 This tutorial shows how to add new services to your Tailor application using the SDK. Services provide different capabilities like database access, custom logic, authentication, and workflow orchestration.

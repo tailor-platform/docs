@@ -1,3 +1,7 @@
+---
+description: "Create a new TailorDB table with the SDK, deploy it, and confirm the auto-generated GraphQL API."
+---
+
 # Adding a New Data Model
 
 With Tailor Platform's TailorDB, you can easily add new tables (data models) to your application. The GraphQL API will be automatically generated for the new table.

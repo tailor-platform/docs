@@ -1,3 +1,7 @@
+---
+description: "Add an executor that posts a Slack notification whenever a Task record is created."
+---
+
 # Step 4: Add Executor
 
 Add an executor that sends a Slack notification whenever a Task is created.

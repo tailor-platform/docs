@@ -1,3 +1,7 @@
+---
+description: "Build a mutation resolver that assigns a task to a team member with validation, deploy it, test it, and read its execution logs."
+---
+
 # Creating Custom Resolvers
 
 Resolvers are custom GraphQL endpoints that implement business logic. In this tutorial, you'll create a mutation resolver that assigns a task to a team member with validation.

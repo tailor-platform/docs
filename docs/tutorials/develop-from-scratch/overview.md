@@ -1,3 +1,7 @@
+---
+description: "Four-step tutorial that builds a project management app with the SDK: database schema, auth and permissions, a resolver, and an executor."
+---
+
 # Develop from Scratch with Tailor Platform SDK
 
 Build a project management app with database types, auth, resolvers, and executors using TypeScript.

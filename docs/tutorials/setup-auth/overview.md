@@ -1,3 +1,7 @@
+---
+description: "Tutorial series on the Auth service: set up and register an identity provider, then obtain access tokens by OAuth2 login or by ID token."
+---
+
 # Setting up Auth
 
 In this tutorial, you'll learn key concepts and techniques that are fundamental to using Auth service.

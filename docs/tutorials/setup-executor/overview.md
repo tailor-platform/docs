@@ -1,3 +1,7 @@
+---
+description: "Tutorial series on the Executor service: activate it and build event-based, incoming webhook and schedule-based triggers."
+---
+
 # Setting up the Executor
 
 This tutorial section demonstrates how to create and use an Executor. You'll learn key concepts and techniques that are fundamental to using Executor service.

@@ -1,3 +1,7 @@
+---
+description: "Import rows into a TailorDB table from a CSV file in the Console, starting from the downloadable header template."
+---
+
 # Import CSV files
 
 CSV files are plain text files that contain tabular data, with each field separated by a comma.

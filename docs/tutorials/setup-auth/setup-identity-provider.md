@@ -1,3 +1,7 @@
+---
+description: "Set up an identity provider for the Auth service, using Auth0 as the worked example, and collect the credentials you need to register it."
+---
+
 # Set up your Identity Provider
 
 The [Auth service](/guides/auth/overview) works with an identity provider (IdP) to authenticate users.

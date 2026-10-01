@@ -1,3 +1,7 @@
+---
+description: "Typical SDK project layout and day-to-day loop: define services, generate types, deploy with tailor apply, and test in the GraphQL Playground."
+---
+
 # Development Workflow
 
 This guide covers the typical development workflow when building applications with the Tailor Platform SDK.

@@ -1,3 +1,7 @@
+---
+description: "Obtain an access token for server-to-server calls by presenting an IdP ID token to the OAuth2 API (JWT Bearer grant)."
+---
+
 # Using ID Token
 
 The ID Token Auth flow ([JWT Bearer Grant Type](https://datatracker.ietf.org/doc/html/rfc7523))enables OAuth 2.0 clients to obtain access tokens by presenting a signed JWT to the authorization server.\

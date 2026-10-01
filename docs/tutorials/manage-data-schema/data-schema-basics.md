@@ -1,3 +1,7 @@
+---
+description: "Define a Project table with the SDK and see how each part of the schema maps to the generated GraphQL types, queries and mutations."
+---
+
 # Data Schema in Tailor Platform
 
 This tutorial demonstrates how a data schema is mapped to GraphQL APIs using the SDK.

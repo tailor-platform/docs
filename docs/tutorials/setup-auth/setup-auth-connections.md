@@ -1,3 +1,7 @@
+---
+description: "Configure an Auth connection to an external OAuth2 provider such as Google in defineAuth, authorize it, and use its token from resolvers and functions."
+---
+
 # Setting up Auth Connections
 
 Auth connections enable your application to authenticate with external OAuth2 providers (such as Google, Microsoft 365, or QuickBooks) on behalf of itself, not on behalf of a user. Functions, executors, and workflows can then access those provider APIs at runtime using a managed access token.

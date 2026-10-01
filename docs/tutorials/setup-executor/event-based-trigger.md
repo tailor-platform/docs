@@ -1,3 +1,7 @@
+---
+description: "Create an executor that sends a Slack notification when a Project's status changes to COMPLETED, using a record-updated trigger and publishEvents."
+---
+
 # Setting up an Event-based Trigger
 
 Event-based triggers allow you to automatically run actions when specific database events occur. In this tutorial, we'll create an executor that sends a Slack notification when a Project's status changes to "COMPLETED".

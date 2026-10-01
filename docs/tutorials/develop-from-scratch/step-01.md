@@ -1,3 +1,7 @@
+---
+description: "Scaffold the project and define User, Project and Task tables with relationships and automatic timestamps in TypeScript."
+---
+
 # Step 1: Create Database Schema
 
 This step establishes the foundational database schema for your project management application using the Tailor Platform SDK. You'll define three core types (User, Project, Task) with relationships and automatic timestamp management, all using type-safe TypeScript.
