@@ -1,4 +1,5 @@
 ---
+description: "Run a JavaScript or TypeScript function synchronously from an executor and use its return value."
 doc_type: guide
 ---
 

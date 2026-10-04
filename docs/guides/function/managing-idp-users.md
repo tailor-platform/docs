@@ -1,5 +1,6 @@
 ---
 title: Managing Built-in IdP Users
+description: "Create, update, delete and list Built-in IdP users from a function with the tailor.idp Client."
 preview: true
 ---
 

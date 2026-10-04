@@ -1,4 +1,5 @@
 ---
+description: "npm packages and Web Standard APIs confirmed to work in the Function service runtime."
 doc_type: guide
 ---
 
