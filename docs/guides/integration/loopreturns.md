@@ -1,4 +1,5 @@
 ---
+description: "Sync orders and product catalogs with Loop and automate returns processing using Executor triggers."
 doc_type: guide
 ---
 

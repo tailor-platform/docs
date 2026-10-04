@@ -1,4 +1,5 @@
 ---
+description: "The queries and mutations generated for every table: fetch by ID or unique field, list with filters and sorting, create, update, delete and conditional update."
 doc_type: guide
 ---
 

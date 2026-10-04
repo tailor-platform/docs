@@ -1,4 +1,5 @@
 ---
+description: "Table-level settings that generate extra GraphQL operations: aggregation, bulk upsert, plural form for uncountable nouns and change data capture."
 doc_type: guide
 ---
 

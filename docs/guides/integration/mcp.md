@@ -1,4 +1,5 @@
 ---
+description: "Connect Claude, ChatGPT, Claude Code, Cursor, VS Code or Codex to the public Tailor MCP server at mcp.tailor.tech to search and read these docs."
 doc_type: guide
 ---
 
