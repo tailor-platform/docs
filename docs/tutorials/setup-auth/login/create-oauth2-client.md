@@ -23,7 +23,39 @@ In this tutorial, you'll learn how to set up secure user access to your Tailor P
 Update your `tailor.config.ts` to include OAuth2 client configuration:
 
 ```typescript
-import { defineConfig } from "@tailor-platform/sdk";
+import { defineAuth, defineConfig } from "@tailor-platform/sdk";
+import { user } from "./db/user";
+
+const auth = defineAuth("project-management-auth", {
+  idProvider: {
+    name: "oidc-provider",
+    kind: "OIDC",
+    clientID: process.env.OIDC_CLIENT_ID!,
+    clientSecret: {
+      vaultName: "my-vault",
+      secretKey: "oidc-client-secret",
+    },
+    providerURL: process.env.OIDC_PROVIDER_URL!,
+  },
+  userProfile: {
+    type: user,
+    usernameField: "email",
+    attributes: {
+      roles: true,
+    },
+  },
+  oauth2Clients: {
+    "spa-client": {
+      description: "OAuth2 browser client for SPA",
+      clientType: "browser",
+      redirectURIs: [
+        "http://localhost:3000/__oauth/callback",
+        "http://tailorctl.tailor.tech:8086/callback",
+      ],
+      grantTypes: ["authorization_code", "refresh_token"],
+    },
+  },
+});
 
 export default defineConfig({
   name: "project-management",
@@ -32,42 +64,7 @@ export default defineConfig({
       files: ["db/**/*.ts"],
     },
   },
-  auth: {
-    namespace: "project-management-auth",
-    idpConfigs: [
-      {
-        name: "oidc-provider",
-        oidc: {
-          clientId: process.env.OIDC_CLIENT_ID!,
-          clientSecret: {
-            vaultName: "my-vault",
-            secretName: "oidc-client-secret",
-          },
-          providerUrl: process.env.OIDC_PROVIDER_URL!,
-        },
-      },
-    ],
-    userProfileConfig: {
-      tailordb: {
-        namespace: "main-db",
-        type: "User",
-        usernameField: "email",
-        attributeFields: ["roles"],
-      },
-    },
-    oauth2Clients: [
-      {
-        name: "spa-client",
-        description: "OAuth2 browser client for SPA",
-        clientType: "browser",
-        redirectUris: [
-          "http://localhost:3000/__oauth/callback",
-          "http://tailorctl.tailor.tech:8086/callback",
-        ],
-        grantTypes: ["authorization_code", "refresh_token"],
-      },
-    ],
-  },
+  auth,
 });
 ```
 
@@ -75,39 +72,36 @@ export default defineConfig({
 
 | **Property**   | **Description**                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`         | The name of the OAuth2 client. Use descriptive names like `"spa-client"` or `"server-client"`.                                                                                                                                                                                                                                                                                                                                                        |
+| key            | The record key is the name of the OAuth2 client. Use descriptive names like `"spa-client"` or `"server-client"`.                                                                                                                                                                                                                                                                                                                                      |
 | `clientType`   | Specifies the OAuth2 client type: <br />- `"confidential"` for server-side applications that can securely store credentials <br />- `"public"` for mobile applications that cannot securely store secrets <br />- `"browser"` for Single Page Applications (SPAs) with enhanced security features. <br />For guidance on choosing the right client type for SPA applications, see [OAuth2 Client Selection for SPAs](/guides/auth/spa-oauth2-client). |
 | `grantTypes`   | An array specifying supported OAuth2 grant types: <br />- `authorization_code`: for standard OAuth2 flows <br />- `refresh_token`: to refresh access tokens.                                                                                                                                                                                                                                                                                          |
-| `redirectUris` | A list of redirect URIs where the authorization server will send users after authentication. Includes: <br />- `http://localhost:3000/__oauth/callback`: the default route in the Next.js app handling OAuth2 callbacks <br />- `http://tailorctl.tailor.tech:8086/callback`: enables login via `tailorctl`.                                                                                                                                          |
+| `redirectURIs` | A list of redirect URIs where the authorization server will send users after authentication. Includes: <br />- `http://localhost:3000/__oauth/callback`: the default route in the Next.js app handling OAuth2 callbacks <br />- `http://tailorctl.tailor.tech:8086/callback`: enables login via `tailorctl`.                                                                                                                                          |
 
 **Multiple OAuth2 Clients:**
 
 You can configure multiple OAuth2 clients for different use cases:
 
 ```typescript
-oauth2Clients: [
-  {
-    name: "spa-client",
+oauth2Clients: {
+  "spa-client": {
     description: "OAuth2 browser client for SPA",
     clientType: "browser",
-    redirectUris: ["http://localhost:3000/__oauth/callback"],
+    redirectURIs: ["http://localhost:3000/__oauth/callback"],
     grantTypes: ["authorization_code", "refresh_token"],
   },
-  {
-    name: "server-client",
+  "server-client": {
     description: "OAuth2 confidential client for server-side",
     clientType: "confidential",
-    redirectUris: ["https://api.example.com/callback"],
-    grantTypes: ["authorization_code", "refresh_token", "client_credentials"],
-  },
-  {
-    name: "mobile-client",
-    description: "OAuth2 public client for mobile apps",
-    clientType: "public",
-    redirectUris: ["myapp://callback"],
+    redirectURIs: ["https://api.example.com/callback"],
     grantTypes: ["authorization_code", "refresh_token"],
   },
-],
+  "mobile-client": {
+    description: "OAuth2 public client for mobile apps",
+    clientType: "public",
+    redirectURIs: ["myapp://callback"],
+    grantTypes: ["authorization_code", "refresh_token"],
+  },
+},
 ```
 
 ## 2. Deploy and Log In to Your Tailor PF App
