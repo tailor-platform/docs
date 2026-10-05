@@ -32,15 +32,15 @@ import { db } from "@tailor-platform/sdk";
 
 export const project = db.table("Project", {
   name: db.string().description("Project name"),
-  description: db.string().optional().description("Project description"),
+  description: db.string({ optional: true }).description("Project description"),
   status: db
     .enum(["planning", "active", "completed", "archived"])
     .description("Current project status"),
-  startDate: db.string().optional().description("Project start date"),
-  endDate: db.string().optional().description("Project end date"),
-  budget: db.float().optional().description("Project budget"),
+  startDate: db.string({ optional: true }).description("Project start date"),
+  endDate: db.string({ optional: true }).description("Project end date"),
+  budget: db.float({ optional: true }).description("Project budget"),
   priority: db.enum(["low", "medium", "high", "critical"]).description("Project priority level"),
-  teamSize: db.int().optional().description("Number of team members"),
+  teamSize: db.int({ optional: true }).description("Number of team members"),
   ...db.fields.timestamps(),
 });
 export type project = typeof project;

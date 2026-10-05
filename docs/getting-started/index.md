@@ -23,7 +23,7 @@ The `tailor` is the command-line interface for building, deploying, and managing
 
 ### Installation
 
-The Tailor Platform SDK requires Node.js 22 or later. You can use it in three ways:
+The Tailor Platform SDK requires Node.js 22.18 or later. You can use it in three ways:
 
 **1. With npx (recommended for quick start):**
 

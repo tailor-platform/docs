@@ -16,7 +16,7 @@ Contact us [here](https://www.tailor.tech/demo) to get started.
 
 ### Install Node.js
 
-The SDK requires Node.js 22 or later. Install Node.js via your package manager by following the official Node.js instructions.
+The SDK requires Node.js 22.18 or later. Install Node.js via your package manager by following the official Node.js instructions.
 
 ### Create an Example App
 
@@ -40,7 +40,7 @@ npx tailor workspace list
 
 ### Deploy Your App
 
-Run the apply command to deploy your project:
+Run the deploy command to deploy your project:
 
 ```bash
 cd example-app

@@ -8,7 +8,7 @@ Build a project management app with database types, auth, resolvers, and executo
 
 ## Prerequisites
 
-- **Node.js 22+**
+- **Node.js 22.18+**
 - **Tailor Platform workspace** — create one at [console.tailor.tech](https://console.tailor.tech). Note your workspace ID.
 
 ## Steps

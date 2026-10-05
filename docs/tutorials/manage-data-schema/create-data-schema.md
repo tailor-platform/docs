@@ -29,18 +29,18 @@ import { project } from "./project";
 
 export const task = db.table("Task", {
   title: db.string().description("Task title"),
-  description: db.string().optional().description("Task description"),
+  description: db.string({ optional: true }).description("Task description"),
   status: db
     .enum(["todo", "in_progress", "completed", "blocked"])
     .description("Current task status"),
   priority: db.enum(["low", "medium", "high", "urgent"]).description("Task priority level"),
   projectId: db
     .uuid()
-    .relation({ type: "n-1", toward: { type: project } })
+    .relation({ type: "n-1", toward: { table: project } })
     .description("Associated project"),
-  assigneeId: db.string().optional().description("ID of assigned team member"),
-  dueDate: db.string().optional().description("Task due date"),
-  estimatedHours: db.float().optional().description("Estimated hours to complete"),
+  assigneeId: db.string({ optional: true }).description("ID of assigned team member"),
+  dueDate: db.string({ optional: true }).description("Task due date"),
+  estimatedHours: db.float({ optional: true }).description("Estimated hours to complete"),
   ...db.fields.timestamps(),
 });
 export type task = typeof task;
