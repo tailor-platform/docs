@@ -61,7 +61,12 @@ export const product = db
     title: db.string().description("Title of the product").index(),
     description: db.string().description("Description of the product"),
   })
-  .permission({ read: [[{ user: "_loggedIn" }, "=", true]] });
+  .permission({
+    create: [{ conditions: [[{ user: "_loggedIn" }, "=", true]], permit: true }],
+    read: [{ conditions: [[{ user: "_loggedIn" }, "=", true]], permit: true }],
+    update: [{ conditions: [[{ user: "_loggedIn" }, "=", true]], permit: true }],
+    delete: [{ conditions: [[{ user: "_loggedIn" }, "=", true]], permit: true }],
+  });
 ```
 
 ## Field Types
