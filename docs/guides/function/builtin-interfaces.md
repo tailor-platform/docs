@@ -150,6 +150,8 @@ const result = converter.convert(inputBuffer);
 Start workflows and job functions from within a function.
 
 ```typescript
+import { executionPolicies } from "./workflows/policies";
+
 // Start a workflow
 const executionId = await tailor.workflow.startWorkflow("processOrder", {
   orderId: "order-123",
@@ -180,14 +182,16 @@ const result = await tailor.workflow.execJobFunction("calculateTax", {
 const scoped = await tailor.workflow.execJobFunction(
   "syncTenant",
   { tenantId: "acme" },
-  { executionPolicyKey: perTenant.keyFor("acme") },
+  { executionPolicyKey: executionPolicies.tenantApi.keyFor("acme") },
 );
 ```
 
-| Function                                 | Returns           | Description                                                                                                                                                                                                                                                |
-| ---------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `startWorkflow(name, args?, options?)`   | `Promise<string>` | Start a workflow. Returns the execution ID                                                                                                                                                                                                                 |
-| `execJobFunction(name, args?, options?)` | `Promise<any>`    | **Deprecated since SDK 2.5.0** — call the target job's own `.start()` method instead. Executes a job function and returns its result. `options.executionPolicyKey` routes the dispatch through a matching execution policy for per-key concurrency control |
+| Function                                 | Returns           | Description                                                                                                                                                        |
+| ---------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `startWorkflow(name, args?, options?)`   | `Promise<string>` | Start a workflow. Returns the execution ID                                                                                                                         |
+| `execJobFunction(name, args?, options?)` | `Promise<any>`    | Execute a job function and return its result. `options.executionPolicyKey` routes the dispatch through a matching execution policy for per-key concurrency control |
+
+`execJobFunction` is the Function-service entry point for dispatching a job by name. The `.start()` method on a job object declared with `createWorkflowJob` is only callable from within another workflow job's `body` (see [Job Function Execution Policies](/guides/workflow/#job-function-execution-policies) in the Workflow guide) — it is not reachable from a Function-service script, which only has the job's name.
 
 For details on declaring execution policies and the key grammar, see [Execution Policies](/sdk/services/workflow#execution-policies) in the SDK Workflow reference.
 

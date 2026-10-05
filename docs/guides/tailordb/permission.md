@@ -70,7 +70,7 @@ db.table("Example", {
 Multiple policies can be defined for each permission type. The evaluation follows these rules:
 
 - **Explicit allow required**: If no policy matches, access is denied by default (implicit deny)
-- **Explicit deny takes precedence**: A policy with `permit: false` always overrides allow policies
+- **Any matching policy grants access**: `.permission()` policies are plain condition arrays with no `permit` field and no explicit-deny mechanism — if any policy's conditions all match, the operation is permitted. (An explicit `permit: false` deny-override is only available on `.gqlPermission()` policies, which use a different `{ conditions, permit }` shape — see [GQLPermission](#gqlpermission-graphql-level-control).)
 - **All conditions must match**: Within a policy, all conditions must be satisfied for the policy to match
 
 ### Operands
@@ -127,10 +127,10 @@ Equality and inequality comparison.
 
 ```typescript
 // Check if the record's status is "TODO"
-[{ record: "status" }, "=", "TODO"][
-  // Check if the user's role is not "ADMIN"
-  ({ user: "role" }, "!=", "ADMIN")
-];
+[{ record: "status" }, "=", "TODO"];
+
+// Check if the user's role is not "ADMIN"
+[{ user: "role" }, "!=", "ADMIN"];
 ```
 
 #### `in` / `not in`
@@ -139,10 +139,10 @@ Array membership and non-membership.
 
 ```typescript
 // Check if the record's status is in a set of values
-[{ record: "status" }, "in", ["TODO", "IN_PROGRESS"]][
-  // Check if the user's role is not in a set of values
-  ({ user: "role" }, "not in", ["GUEST", "USER"])
-];
+[{ record: "status" }, "in", ["TODO", "IN_PROGRESS"]];
+
+// Check if the user's role is not in a set of values
+[{ user: "role" }, "not in", ["GUEST", "USER"]];
 ```
 
 #### `hasAny` / `not hasAny`
@@ -156,10 +156,10 @@ Supported array field types: `String`, `UUID`, `Enum`.
 
 ```typescript
 // Check if the record's roles share any values with the given list
-[{ record: "roles" }, "hasAny", ["ADMIN", "EDITOR"]][
-  // Check if the user's roles have no overlap with restricted roles
-  ({ user: "roles" }, "not hasAny", ["BLOCKED", "SUSPENDED"])
-];
+[{ record: "roles" }, "hasAny", ["ADMIN", "EDITOR"]];
+
+// Check if the user's roles have no overlap with restricted roles
+[{ user: "roles" }, "not hasAny", ["BLOCKED", "SUSPENDED"]];
 ```
 
 You can also compare a user attribute array against a record field array:
