@@ -1,6 +1,7 @@
 ---
 description: "Set up Microsoft Entra ID as an identity provider for the Auth service with OIDC."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Microsoft Entra ID Integration

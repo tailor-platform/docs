@@ -1,6 +1,7 @@
 ---
 description: "Set up Okta as an identity provider for the Auth service using OIDC or SAML."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Okta Integration

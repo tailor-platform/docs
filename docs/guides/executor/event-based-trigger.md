@@ -1,6 +1,7 @@
 ---
 description: "Run an executor when a platform event occurs, such as a TailorDB record change or a workflow state transition, with optional conditions on the event."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Event-based Trigger

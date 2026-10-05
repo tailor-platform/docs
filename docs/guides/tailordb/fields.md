@@ -1,6 +1,7 @@
 ---
 description: "Define table fields with the SDK: names, descriptions, data types, required, unique and index settings, defaults, arrays and nested types."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Fields in schema

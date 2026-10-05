@@ -2,6 +2,7 @@
 title: Integrate Claude and Claude Code with Tailor Platform
 description: "Register your app's remote MCP server in Claude or Claude Code so they can run GraphQL queries and mutations on your data as an authenticated user."
 doc_type: guide
+sdk_version: "2.25.0"
 preview: true
 ---
 

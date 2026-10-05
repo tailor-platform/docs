@@ -1,6 +1,7 @@
 ---
 description: "Run a GraphQL query or mutation against your application from an executor, with variables built from the trigger payload."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # TailorGraphql Operation

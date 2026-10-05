@@ -1,6 +1,7 @@
 ---
 description: "Attach files to records with the file field type: schema definition, upload and download over HTTP, metadata queries and permission-based access."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # File Type

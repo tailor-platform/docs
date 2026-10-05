@@ -1,6 +1,7 @@
 ---
 description: "Host a single-page application on the platform with CDN caching, optional IP restrictions and custom domains, defined in your workspace configuration."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Static Website Hosting

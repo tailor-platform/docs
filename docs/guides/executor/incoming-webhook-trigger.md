@@ -1,6 +1,7 @@
 ---
 description: "Expose an HTTP endpoint that external services call to run an executor, with typed request payloads."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Incoming Webhook Trigger

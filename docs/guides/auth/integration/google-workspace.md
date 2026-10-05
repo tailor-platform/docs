@@ -2,6 +2,7 @@
 title: Google Workspace Integration
 description: "Set up Google Workspace as a SAML identity provider for enterprise SSO with the Auth service."
 doc_type: guide
+sdk_version: "2.25.0"
 preview: true
 ---
 

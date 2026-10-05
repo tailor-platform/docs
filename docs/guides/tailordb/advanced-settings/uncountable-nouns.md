@@ -1,6 +1,7 @@
 ---
 description: "Set the plural form for a table whose name is an uncountable noun so its list queries are generated correctly."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Plural form for uncountable nouns

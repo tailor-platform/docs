@@ -1,6 +1,7 @@
 ---
 description: "Add validation rules to fields with .validate(), including custom error messages, value ranges and rules that use the invoker's attributes."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Data validations

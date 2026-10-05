@@ -1,6 +1,7 @@
 ---
 description: "Write custom GraphQL resolvers with the SDK that chain queries, run business logic and transform data beyond the auto-generated API."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Resolver

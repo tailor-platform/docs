@@ -1,6 +1,7 @@
 ---
 description: "Define a workflow and its steps in TypeScript with the SDK: project layout, step functions, execution policies and deployment."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Creating Workflows

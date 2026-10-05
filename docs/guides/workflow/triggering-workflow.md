@@ -1,6 +1,7 @@
 ---
 description: "Start workflows in production from a job function with tailor.workflow.startWorkflow or automatically from an executor."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Triggering Workflow

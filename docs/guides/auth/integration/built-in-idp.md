@@ -1,6 +1,7 @@
 ---
 description: "Authenticate users without an external provider by configuring the Built-in IdP, its client, secrets and Auth service integration."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Built-in IdP

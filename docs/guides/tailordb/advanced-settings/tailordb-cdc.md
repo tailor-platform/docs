@@ -1,6 +1,7 @@
 ---
 description: "Publish record create, update and delete events from a table with change data capture so Executor triggers can react to them."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # TailorDB CDC

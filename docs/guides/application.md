@@ -1,6 +1,7 @@
 ---
 description: "Define the application manifest that exposes your services as one GraphQL endpoint: name and subdomain, CORS, allowed IP addresses, auth and subgraphs."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Application

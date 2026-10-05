@@ -1,6 +1,7 @@
 ---
 description: "Enable the bulkUpsert mutation to insert or update many records of a table in one request."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Bulk Upsert

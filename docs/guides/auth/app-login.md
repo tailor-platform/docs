@@ -1,6 +1,7 @@
 ---
 description: "How users log in: IdP authentication, mapping to a TailorDB user profile, OAuth2 client configuration and the login flow with the tailor CLI."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Log in to your app

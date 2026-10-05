@@ -1,6 +1,7 @@
 ---
 description: "Run a JavaScript or TypeScript function synchronously from an executor and use its return value."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Function Operation

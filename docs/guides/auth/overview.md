@@ -1,6 +1,7 @@
 ---
 description: "Auth service capabilities: SSO with external IdPs, user profiles, role and attribute based access control, machine users, auth hooks and Auth as a subgraph."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Auth Service

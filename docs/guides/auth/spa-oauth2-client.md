@@ -1,6 +1,7 @@
 ---
 description: "Choose between Public and Browser OAuth2 clients for single-page apps, and the security settings each needs."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # OAuth2 Client Selection for SPAs

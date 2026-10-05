@@ -1,6 +1,7 @@
 ---
 description: "Global tailor.* interfaces available in functions for IdP users, secrets, files, workflows and TailorDB, without HTTP calls or token handling."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Built-in interfaces

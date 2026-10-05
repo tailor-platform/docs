@@ -1,6 +1,7 @@
 ---
 description: "Run a JavaScript or TypeScript function asynchronously as a job from an executor, for long-running work tracked by execution ID."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Job Function Operation

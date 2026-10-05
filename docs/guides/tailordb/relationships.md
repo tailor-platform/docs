@@ -1,6 +1,7 @@
 ---
 description: "Define relationships between tables with db.uuid().relation() to query related records, with automatic indexes and foreign key constraints."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Relationship Field

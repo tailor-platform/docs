@@ -1,6 +1,7 @@
 ---
 description: "Store API keys, tokens and credentials in Secret Manager with versioning and access control, and reference them from platform services without exposing values."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Secret Manager

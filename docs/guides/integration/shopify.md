@@ -1,6 +1,7 @@
 ---
 description: "Push new TailorDB products to a Shopify store automatically with an Executor trigger and the Shopify API."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Integrate Shopify with Tailor Platform

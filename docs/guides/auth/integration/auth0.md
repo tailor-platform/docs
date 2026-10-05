@@ -1,6 +1,7 @@
 ---
 description: "Set up Auth0 as an identity provider for the Auth service using OIDC, SAML or ID token authentication."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Auth0 Integration

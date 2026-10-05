@@ -1,6 +1,7 @@
 ---
 description: "Control access with Permission for record-level rules and GQLPermission for operation-level rules, and migrate from the legacy permission system."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Permission

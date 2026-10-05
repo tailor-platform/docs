@@ -1,6 +1,7 @@
 ---
 description: "Run an executor on a cron schedule for periodic processing and maintenance tasks."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Schedule-based Trigger

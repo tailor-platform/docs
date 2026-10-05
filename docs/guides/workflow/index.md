@@ -2,6 +2,7 @@
 title: Workflow Service
 description: "Build durable multi-step background jobs with the Workflow service, which saves state at each step and resumes failed runs from the point of failure."
 doc_type: guide
+sdk_version: "2.25.0"
 preview: true
 ---
 

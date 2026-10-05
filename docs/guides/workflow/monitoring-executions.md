@@ -1,6 +1,7 @@
 ---
 description: "Check a workflow execution's status and logs with the tailor workflow executions command, and list or filter past executions."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Monitoring Executions
