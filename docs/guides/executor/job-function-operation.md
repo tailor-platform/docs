@@ -1,27 +1,31 @@
 ---
-description: "Run a JavaScript or TypeScript function asynchronously as a job from an executor, for long-running work tracked by execution ID."
+description: "Run a JavaScript or TypeScript function as a job from an executor, with a 5-minute execution limit for work that needs more than the 60-second function timeout."
 doc_type: guide
 ---
 
 # Job Function Operation
 
-The Job Function operation executes JavaScript or TypeScript code asynchronously via the Function Service. It is typically used for tasks that do not require an immediate response, long-running operations that may exceed synchronous request timeouts, and background processes triggered by events or schedules.
+The Job Function operation executes JavaScript or TypeScript code via the Function Service with an execution limit of 5 minutes, longer than the 60-second limit of a `function` operation. It is typically used for tasks that need more than 60 seconds to complete, and for background processes triggered by events or schedules.
 
 Unlike synchronous functions, which return results directly, a Job Function returns an execution ID that can be used to track the status of the task.
 
 For more details on writing functions, refer to the [Function Service](/guides/function/overview) documentation.
+
+::: tip Need more than 5 minutes?
+A single job function is capped at 5 minutes. For longer work, split it into steps of 5 minutes or less and orchestrate them with a [Workflow](/guides/workflow/), which can retry failed steps and resume from where it stopped, running for minutes to hours.
+:::
 
 ## Configuration Example
 
 ```typescript
 createExecutor({
   name: "job-function-executor",
-  description: "Execute asynchronous job function",
+  description: "Execute job function",
   trigger: scheduleTrigger({ cron: "0 0 * * *" }),
   operation: {
     kind: "jobFunction",
     body: async () => {
-      // Long-running task logic
+      // Task logic (runs up to 5 minutes)
       const taskId = `task-${Date.now()}`;
       const timestamp = new Date().toISOString();
       // Background processing logic here
@@ -42,10 +46,10 @@ createExecutor({
 
 **Job Function Operation Properties**
 
-| Property | Type     | Required | Description                                              |
-| -------- | -------- | -------- | -------------------------------------------------------- |
-| `kind`   | string   | Yes      | Must be `"jobFunction"` for job function operations      |
-| `body`   | function | Yes      | An async function containing the long-running task logic |
+| Property | Type     | Required | Description                                         |
+| -------- | -------- | -------- | --------------------------------------------------- |
+| `kind`   | string   | Yes      | Must be `"jobFunction"` for job function operations |
+| `body`   | function | Yes      | An async function containing the task logic         |
 
 **Executor Properties**
 
@@ -92,7 +96,7 @@ See [Platform Limits](/reference/platform/platform-limits#executor-job-function-
 
 Job functions are ideal for:
 
-- **Long-running operations**: Tasks that may take several minutes or hours to complete
+- **Work beyond the 60-second limit**: Tasks that need more time than a `function` operation allows, running up to 5 minutes
 - **Background processing**: Operations that don't require immediate response
 - **Batch processing**: Processing large datasets or multiple records
 - **External API integrations**: Calling external services that may have high latency
