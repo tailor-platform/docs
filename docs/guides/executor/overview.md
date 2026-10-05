@@ -110,7 +110,7 @@ This operation type executes JavaScript/TypeScript code synchronously via the Fu
 
 4. [Job Function](job-function-operation)
 
-This operation type executes JavaScript/TypeScript code asynchronously via the Function Service. Job functions are typically used for asynchronous task processing, long-running operations, and background processing.
+This operation type executes JavaScript/TypeScript code via the Function Service with a longer execution limit of 5 minutes, compared to 60 seconds for a `function` operation. Job functions are suited to work that needs more time to complete, such as batch processing or background tasks.
 
 5. [Workflow](workflow-operation)
 
@@ -121,6 +121,8 @@ Each Trigger can be configured with the above five target types, providing fifte
 ## Timeouts
 
 Both operations `TailorGraphql` and `Webhook` have a timeout set to 60 seconds. If the process exceeds this limit, it is considered a failure, and a retry will be triggered (up to a maximum of 10 attempts).
+
+A `JobFunction` operation has a longer timeout of 5 minutes. See [Timeouts](/reference/platform/timeouts) for the full list of platform timeout limits.
 
 You can view the number of attempts for each job created for an executor in the [Tailor Console](https://console.tailor.tech).
 
