@@ -43,7 +43,7 @@ To proactively identify and address potential security risks, Tailor performs re
 
 ### Status Page
 
-For the product status page, we use [Statuspage](https://tailortech.statuspage.io/), a third-party service that provides a public status page for Tailor.
+For the product status page, please see [status.tailor.tech](https://status.tailor.tech/), which provides real-time and historical system health for Tailor.
 
 ### Release Notes
 
