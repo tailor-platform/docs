@@ -1,10 +1,10 @@
 ---
-description: "Create an executor that sends a Slack notification when a Project's status changes to COMPLETED, using a record-updated trigger and publishEvents."
+description: "Create an executor that sends a Slack notification when a Project's status changes to completed, using a record-updated trigger and publishEvents."
 ---
 
 # Setting up an Event-based Trigger
 
-Event-based triggers allow you to automatically run actions when specific database events occur. In this tutorial, we'll create an executor that sends a Slack notification when a Project's status changes to "COMPLETED".
+Event-based triggers allow you to automatically run actions when specific database events occur. In this tutorial, we'll create an executor that sends a Slack notification when a Project's status changes to "completed".
 
 - To follow along with this tutorial, first complete the [SDK Quickstart](../../sdk/quickstart) and the [Data Schema Basics](../manage-data-schema/data-schema-basics) tutorial.
 
@@ -55,7 +55,7 @@ export default createExecutor({
   trigger: recordUpdatedTrigger({
     type: project,
     condition: ({ newRecord, oldRecord }) =>
-      newRecord.status === "COMPLETED" && oldRecord.status !== "COMPLETED",
+      newRecord.status === "completed" && oldRecord.status !== "completed",
   }),
   operation: {
     kind: "webhook",
@@ -97,7 +97,7 @@ export default createExecutor({
 
 1. **Trigger**: `recordUpdatedTrigger()` fires when a Project record is updated
    - `type: project`: Specifies which table to monitor
-   - `condition`: Only triggers when status changes TO "COMPLETED" (not already completed)
+   - `condition`: Only triggers when status changes TO "completed" (not already completed)
 
 2. **Operation**: `webhook` sends HTTP POST request to Slack
    - `url`: Your Slack webhook URL (replace with actual URL from Slack)
@@ -117,12 +117,12 @@ import { db } from "@tailor-platform/sdk";
 export const project = db
   .table("Project", {
     name: db.string().description("Project name"),
-    description: db.string().optional().description("Project description"),
+    description: db.string({ optional: true }).description("Project description"),
     status: db
       .enum(["planning", "active", "completed", "archived"])
       .description("Current project status"),
-    startDate: db.string().optional().description("Project start date"),
-    endDate: db.string().optional().description("Project end date"),
+    startDate: db.string({ optional: true }).description("Project start date"),
+    endDate: db.string({ optional: true }).description("Project end date"),
     createdAt: db.string().description("Creation timestamp"),
     updatedAt: db.string().description("Last update timestamp"),
   })
@@ -198,13 +198,13 @@ mutation {
 }
 ```
 
-3. **Update the project status to COMPLETED**:
+3. **Update the project status to "completed"**:
 
 ```graphql
 mutation {
   updateProject(
     id: "<project-id>"
-    input: { status: "COMPLETED", updatedAt: "2026-02-09T11:00:00Z" }
+    input: { status: "completed", updatedAt: "2026-02-09T11:00:00Z" }
   ) {
     id
     status
@@ -238,7 +238,7 @@ import { project } from "../db/project";
 
 export default createExecutor({
   name: "notify-project-changes",
-  description: "Send Slack notification on project create or status change to COMPLETED",
+  description: "Send Slack notification on project create or status change to completed",
   trigger: recordTrigger({
     type: project,
     events: ["created", "updated"],
@@ -257,7 +257,7 @@ export default createExecutor({
       }
 
       // event === "updated"
-      if (newRecord.status === "COMPLETED" && oldRecord?.status !== "COMPLETED") {
+      if (newRecord.status === "completed" && oldRecord?.status !== "completed") {
         return {
           text: `🎉 Project Completed: ${newRecord.name}`,
         };

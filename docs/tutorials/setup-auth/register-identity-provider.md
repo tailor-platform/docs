@@ -29,7 +29,7 @@ import { db } from "@tailor-platform/sdk";
 export const user = db.table("User", {
   email: db.string().unique(), // usernameField must be unique
   name: db.string(),
-  roles: db.array(db.string()).optional(),
+  roles: db.string({ array: true, optional: true }),
   ...db.fields.timestamps(),
 });
 ```

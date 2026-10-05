@@ -27,7 +27,7 @@ import { db } from "@tailor-platform/sdk";
 
 export const project = db.table("Project", {
   name: db.string().description("Project name"),
-  description: db.string().optional().description("Project description"),
+  description: db.string({ optional: true }).description("Project description"),
   status: db.enum(["active", "completed", "archived"]).description("Project status"),
   ...db.fields.timestamps(),
 });
@@ -43,26 +43,25 @@ import { project } from "./project";
 export const teamMember = db.table("TeamMember", {
   name: db.string().description("Team member name"),
   email: db.string().description("Team member email"),
-  role: db.string().optional().description("Team member role"),
+  role: db.string({ optional: true }).description("Team member role"),
   ...db.fields.timestamps(),
 });
 export type teamMember = typeof teamMember;
 
 export const task = db.table("Task", {
   title: db.string().description("Task title"),
-  description: db.string().optional().description("Task description"),
+  description: db.string({ optional: true }).description("Task description"),
   status: db.enum(["todo", "in_progress", "completed"]).description("Task status"),
   priority: db.enum(["low", "medium", "high"]).description("Task priority"),
   projectId: db
     .uuid()
-    .relation({ type: "n-1", toward: { type: project } })
+    .relation({ type: "n-1", toward: { table: project } })
     .description("Associated project"),
   assigneeId: db
-    .uuid()
-    .relation({ type: "n-1", toward: { type: teamMember } })
-    .optional()
+    .uuid({ optional: true })
+    .relation({ type: "n-1", toward: { table: teamMember } })
     .description("Assigned team member"),
-  dueDate: db.string().optional().description("Due date"),
+  dueDate: db.string({ optional: true }).description("Due date"),
   ...db.fields.timestamps(),
 });
 export type task = typeof task;
@@ -107,7 +106,7 @@ export default createResolver({
   input: {
     taskId: t.string().description("ID of the task to assign"),
     assigneeId: t.string().description("ID of the team member"),
-    dueDate: t.string().optional().description("Optional due date"),
+    dueDate: t.string({ optional: true }).description("Optional due date"),
   },
   body: async (context) => {
     const db = getDB("project-db");
@@ -296,17 +295,21 @@ export default createExecutor({
   name: "notify-task-assigned",
   trigger: resolverExecutedTrigger({
     resolver: assignTaskResolver,
-    condition: ({ result, error }) => !error && !!result.taskId,
+    condition: (args) => args.success && !!args.result.taskId,
   }),
   operation: {
     kind: "function",
-    body: async ({ result }) => {
-      console.log(`Task ${result.taskId} assigned to ${result.assigneeName}`);
+    body: async (args) => {
+      if (!args.success) return;
+      console.log(`Task ${args.result.taskId} assigned to ${args.result.assigneeName}`);
       // Send notification logic here
     },
   },
 });
 ```
+
+The trigger args are a discriminated union on `success`: narrow on `args.success`
+before reading `args.result`, and read `args.error` on the failure branch.
 
 For more details, see [Executor Service - Resolver Executed Trigger](../sdk/services/executor#resolver-executed-trigger).
 

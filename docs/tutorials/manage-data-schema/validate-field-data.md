@@ -35,27 +35,25 @@ export const project = db.table("Project", {
       ({ value }) =>
         value.length <= 50 ? undefined : "Project name must be 50 characters or less",
     ),
-  description: db.string().optional().description("Project description"),
+  description: db.string({ optional: true }).description("Project description"),
   status: db
     .enum(["planning", "active", "completed", "archived"])
     .description("Current project status"),
-  startDate: db.string().optional().description("Project start date"),
-  endDate: db.string().optional().description("Project end date"),
+  startDate: db.string({ optional: true }).description("Project start date"),
+  endDate: db.string({ optional: true }).description("Project end date"),
   completionPercentage: db
-    .int()
-    .optional()
+    .int({ optional: true })
     .validate(({ value }) =>
-      value === undefined || (value >= 0 && value <= 100)
+      value === null || (value >= 0 && value <= 100)
         ? undefined
         : "Completion percentage must be between 0 and 100",
     )
     .description("Project completion percentage"),
   priority: db.enum(["low", "medium", "high", "critical"]).description("Project priority level"),
   teamSize: db
-    .int()
-    .optional()
+    .int({ optional: true })
     .validate(({ value }) =>
-      value === undefined || (value > 0 && value <= 100)
+      value === null || (value > 0 && value <= 100)
         ? undefined
         : "Team size must be between 1 and 100",
     )

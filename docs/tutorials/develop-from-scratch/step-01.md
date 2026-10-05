@@ -16,7 +16,7 @@ This step establishes the foundational database schema for your project manageme
   "private": true,
   "type": "module",
   "scripts": {
-    "deploy": "tailor apply",
+    "deploy": "tailor deploy",
     "generate": "tailor generate"
   },
   "dependencies": {
@@ -43,7 +43,7 @@ This step establishes the foundational database schema for your project manageme
     "noEmit": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "types": ["node", "@tailor-platform/function-types"]
+    "types": ["node"]
   },
   "include": ["**/*.ts"]
 }
@@ -104,11 +104,11 @@ export const task = db.table("Task", {
   projectId: db
     .uuid()
     .description("ID of the project the task belongs to")
-    .relation({ type: "n-1", toward: { type: project } }),
+    .relation({ type: "n-1", toward: { table: project } }),
   assigneeId: db
     .uuid({ optional: true })
     .description("ID of the user assigned to the task")
-    .relation({ type: "n-1", toward: { type: user } }),
+    .relation({ type: "n-1", toward: { table: user } }),
   status: db.enum([
     { value: "TODO", description: "To Do status" },
     { value: "IN_PROGRESS", description: "In Progress status" },
