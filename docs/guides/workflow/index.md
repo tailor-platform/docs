@@ -79,13 +79,16 @@ Step 3: Save to database        → Retry from here
 
 Workflows support nested function calls, similar to regular programming:
 
-```javascript
-export function main(args) {
-  // Call functions sequentially
-  const data = tailor.workflow.execJobFunction("fetchData", {});
-  const processed = tailor.workflow.execJobFunction("processData", data);
-  return processed;
-}
+```typescript
+export const main = createWorkflowJob({
+  name: "main",
+  body: () => {
+    // Call jobs sequentially
+    const data = fetchData.start({});
+    const processed = processData.start(data);
+    return processed;
+  },
+});
 ```
 
 The execution stack:

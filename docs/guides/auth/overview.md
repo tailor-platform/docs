@@ -176,16 +176,18 @@ the client can execute the authorization flow with TailorPF without being aware 
 Here is an example of an OIDC configuration with the SDK:
 
 ```typescript
-import { defineAuth, idp, secrets } from "@tailor-platform/sdk";
+import { defineAuth } from "@tailor-platform/sdk";
 import { user } from "./tailordb/user";
 
 const auth = defineAuth("my-auth", {
-  idProvider: idp.oidc("my-idp", {
-    clientId: "<client-id>",
-    clientSecret: secrets.value("default", "oidc-client-secret"),
-    providerUrl: "<your_auth_provider_url>",
+  idProvider: {
+    name: "my-idp",
+    kind: "OIDC",
+    clientID: "<client-id>",
+    clientSecret: { vaultName: "default", secretKey: "oidc-client-secret" },
+    providerURL: "<your_auth_provider_url>",
     // In the case of Auth0 "https://<your_tenant>.auth0.com"
-  }),
+  },
   userProfile: {
     type: user,
     usernameField: "email",
@@ -199,18 +201,19 @@ const auth = defineAuth("my-auth", {
 });
 ```
 
-| Property         | Description                                                          |
-| ---------------- | -------------------------------------------------------------------- |
-| **idProvider**   | An Identity Provider for SSO configured via `idp.oidc()`.            |
-| - clientId       | A client ID for the identity provider **(required)**.                |
-| - clientSecret   | A client secret. Managed via `secrets.value()` **(required)**.       |
-| - providerUrl    | The URL of the identity provider you want to use **(required)**.     |
-| **userProfile**  | Configuration for the user profile provider.                         |
-| - type           | Reference to the TailorDB type for user profiles **(required)**.     |
-| - usernameField  | Field to map username (e.g., `email`) **(required)**.                |
-| - attributes     | Object mapping attribute fields to `true` (e.g., `{ roles: true }`). |
-| **machineUsers** | Object mapping machine user names to their configurations.           |
-| - attributes     | Object mapping attribute fields to values.                           |
+| Property         | Description                                                                       |
+| ---------------- | --------------------------------------------------------------------------------- |
+| **idProvider**   | An Identity Provider for SSO declared with `kind: "OIDC"`.                        |
+| - name           | The name of the identity provider configuration **(required)**.                   |
+| - clientID       | A client ID for the identity provider **(required)**.                             |
+| - clientSecret   | A `{ vaultName, secretKey }` reference to a Secret Manager secret **(required)**. |
+| - providerURL    | The URL of the identity provider you want to use **(required)**.                  |
+| **userProfile**  | Configuration for the user profile provider.                                      |
+| - type           | Reference to the TailorDB type for user profiles **(required)**.                  |
+| - usernameField  | Field to map username (e.g., `email`) **(required)**.                             |
+| - attributes     | Object mapping attribute fields to `true` (e.g., `{ roles: true }`).              |
+| **machineUsers** | Object mapping machine user names to their configurations.                        |
+| - attributes     | Object mapping attribute fields to values.                                        |
 
 Refer to the [Tailor Platform Provider documentation](https://registry.terraform.io/providers/tailor-platform/tailor/latest/docs/resources/auth_idp_config) for more details on IdP config properties.
 
@@ -235,15 +238,17 @@ The Tailor Platform does not support the SAML IdP-initiated flow, because SP-ini
 Here is an example of a SAML configuration with the SDK:
 
 ```typescript
-import { defineAuth, idp } from "@tailor-platform/sdk";
+import { defineAuth } from "@tailor-platform/sdk";
 import { user } from "./tailordb/user";
 
 const auth = defineAuth("my-auth", {
-  idProvider: idp.saml("saml-local", {
-    metadataUrl: "{METADATA_URL}",
+  idProvider: {
+    name: "saml-local",
+    kind: "SAML",
+    metadataURL: "{METADATA_URL}",
     enableSignRequest: false,
     defaultRedirectURL: "https://your-app.example.com/login",
-  }),
+  },
   userProfile: {
     type: user,
     usernameField: "email",
@@ -259,8 +264,9 @@ const auth = defineAuth("my-auth", {
 
 | Property             | Description                                                                                                                                            |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **idProvider**       | An Identity Provider for SSO configured via `idp.saml()`.                                                                                              |
-| - metadataUrl        | Metadata URL of the identity provider.                                                                                                                 |
+| **idProvider**       | An Identity Provider for SSO declared with `kind: "SAML"`.                                                                                             |
+| - name               | The name of the identity provider configuration **(required)**.                                                                                        |
+| - metadataURL        | Metadata URL of the identity provider. Provide either `metadataURL` or `rawMetadata` (the raw metadata XML), not both.                                 |
 | - enableSignRequest  | Whether to enable signing of SAML authentication requests (optional, defaults to `false`). When enabled, the platform uses a built-in key for signing. |
 | - defaultRedirectURL | URL the platform redirects to when a SAML assertion arrives without a `RelayState`.                                                                    |
 | **userProfile**      | Configuration for the user profile provider.                                                                                                           |
@@ -293,15 +299,17 @@ The ID Token flow allows clients to exchange a valid ID token (JWT) directly for
 Here is an example of an ID Token configuration with the SDK:
 
 ```typescript
-import { defineAuth, idp } from "@tailor-platform/sdk";
+import { defineAuth } from "@tailor-platform/sdk";
 import { user } from "./tailordb/user";
 
 const auth = defineAuth("my-auth", {
-  idProvider: idp.idToken("my-idp", {
-    clientId: "<client-id>",
-    providerUrl: "<your_auth_provider_url>",
+  idProvider: {
+    name: "my-idp",
+    kind: "IDToken",
+    clientID: "<client-id>",
+    providerURL: "<your_auth_provider_url>",
     // In the case of Auth0 "https://<your_tenant>.auth0.com"
-  }),
+  },
   userProfile: {
     type: user,
     usernameField: "email",
@@ -317,10 +325,11 @@ const auth = defineAuth("my-auth", {
 
 | Property         | Description                                                          |
 | ---------------- | -------------------------------------------------------------------- |
-| **idProvider**   | An Identity Provider for SSO configured via `idp.idToken()`.         |
-| - clientId       | A client ID for the identity provider **(required)**.                |
-| - providerUrl    | The URL of the identity provider you want to use **(required)**.     |
-| - issuerUrl      | The URL of the token issuer (optional).                              |
+| **idProvider**   | An Identity Provider for SSO declared with `kind: "IDToken"`.        |
+| - name           | The name of the identity provider configuration **(required)**.      |
+| - clientID       | A client ID for the identity provider **(required)**.                |
+| - providerURL    | The URL of the identity provider you want to use **(required)**.     |
+| - issuerURL      | The URL of the token issuer (optional).                              |
 | - usernameClaim  | The claim that contains the username (optional).                     |
 | **userProfile**  | Configuration for the user profile provider.                         |
 | - type           | Reference to the TailorDB type for user profiles **(required)**.     |
@@ -337,13 +346,15 @@ To add a Machine user to the application, you must first define the user roles i
 Here is an example of a Machine user configuration with the SDK:
 
 ```typescript
-import { defineAuth, idp, secrets } from "@tailor-platform/sdk";
+import { defineAuth } from "@tailor-platform/sdk";
 import { user } from "./tailordb/user";
 
 const auth = defineAuth("my-auth", {
-  idProvider: idp.oidc("my-idp", {
+  idProvider: {
+    name: "my-idp",
+    kind: "OIDC",
     // ... idp configuration
-  }),
+  },
   userProfile: {
     type: user,
     usernameField: "email",

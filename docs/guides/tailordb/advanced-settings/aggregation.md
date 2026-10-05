@@ -19,9 +19,9 @@ import { db } from "@tailor-platform/sdk";
 export const payroll = db
   .table("Payroll", "payroll model", {
     name: db.string().description("name"),
-    paidAt: db.datetime().description("paidAt").required(),
-    paidAmount: db.int().description("paidAmount").required(),
-    payrollType: db.enum(["PAID", "UNPAID"]).description("paidType").required(),
+    paidAt: db.datetime().description("paidAt"),
+    paidAmount: db.int().description("paidAmount"),
+    payrollType: db.enum(["PAID", "UNPAID"]).description("paidType"),
     payrollCode: db.string().description("payrollCode"),
     customerID: db.uuid().description("customerID"),
   })

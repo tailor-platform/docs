@@ -22,32 +22,29 @@ This approach preserves historical data and enables change monitoring and analys
 Let's create a history table for the `StockSummary` table to log its data changes.
 
 ```typescript
+import { productVariant } from "./productVariant";
+
 db.table("StockSummaryHistory", {
-  variantID: db.uuid({ required: true, description: "Variant ID" }),
-  variant: db.link("ProductVariant", "variantID"),
-  onHoldQuantity: db.float({ required: true, description: "onHoldQuantity" }),
-  availableQuantity: db.float({
-    required: true,
-    description: "availableQuantity",
-  }),
-  inStockQuantity: db.float({
-    description: "DO NOT UPDATE FROM THE FRONT END. The quantity of the product in stock.",
-    hooks: {
-      create: "decimal(_value.onHoldQuantity) + decimal(_value.availableQuantity)",
-      update: "decimal(_value.onHoldQuantity) + decimal(_value.availableQuantity)",
-    },
-  }),
-  totalCost: db.float({ required: true, description: "totalCost" }),
-  averageCost: db.float({
-    description: "averageCost",
-    hooks: {
-      create: `(decimal(_value.onHoldQuantity) + decimal(_value.availableQuantity)) != decimal(0.0) ?
-          decimal(_value.totalCost) / (decimal(_value.onHoldQuantity) + decimal(_value.availableQuantity)) :
-          decimal(0.0)`,
-      update: `(decimal(_value.onHoldQuantity) + decimal(_value.availableQuantity)) != decimal(0.0) ?
-          decimal(_value.totalCost) / (decimal(_value.onHoldQuantity) + decimal(_value.availableQuantity)) :
-          decimal(0.0)`,
-    },
+  variantID: db
+    .uuid()
+    .description("Variant ID")
+    .relation({ type: "n-1", toward: { table: productVariant, as: "variant" } }),
+  onHoldQuantity: db.float().description("onHoldQuantity"),
+  availableQuantity: db.float().description("availableQuantity"),
+  totalCost: db.float().description("totalCost"),
+  inStockQuantity: db
+    .float()
+    .description("DO NOT UPDATE FROM THE FRONT END. The quantity of the product in stock."),
+  averageCost: db.float().description("averageCost"),
+}).hooks({
+  // inStockQuantity and averageCost are computed from other fields, so they need a
+  // type-level hook — field-level hooks cannot read sibling fields.
+  create: ({ input }) => ({
+    inStockQuantity: input.onHoldQuantity + input.availableQuantity,
+    averageCost:
+      input.onHoldQuantity + input.availableQuantity !== 0
+        ? input.totalCost / (input.onHoldQuantity + input.availableQuantity)
+        : 0,
   }),
 });
 ```

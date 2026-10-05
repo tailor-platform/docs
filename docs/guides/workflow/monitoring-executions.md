@@ -321,13 +321,18 @@ export function main(args) {
 Workflows are created and managed using the Tailor Platform SDK. Define workflows in your code using `createWorkflow`:
 
 ```typescript
-import { createWorkflow } from "@tailor-platform/sdk";
+import { createWorkflow, createWorkflowJob } from "@tailor-platform/sdk";
 
-export const myWorkflow = createWorkflow({
+export const myMainJob = createWorkflowJob({
+  name: "my-main-job",
+  body: async () => {
+    // Define your workflow logic, starting other jobs with `.start()`
+  },
+});
+
+export default createWorkflow({
   name: "my-workflow",
-  steps: [
-    // Define your workflow steps
-  ],
+  mainJob: myMainJob,
 });
 ```
 

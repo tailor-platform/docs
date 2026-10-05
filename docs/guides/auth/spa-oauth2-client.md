@@ -48,9 +48,9 @@ export const authConfig = defineAuth("my-auth", {
       grantTypes: ["authorization_code", "refresh_token"],
 
       // Required for SPA security
-      requireDPoP: true,
-      accessTokenLifetime: "15m",
-      refreshTokenLifetime: "7d", // default
+      requireDpop: true,
+      accessTokenLifetimeSeconds: 900, // 15 minutes
+      refreshTokenLifetimeSeconds: 604800, // 7 days
     },
   },
 });
@@ -58,11 +58,11 @@ export const authConfig = defineAuth("my-auth", {
 
 ### Security Properties
 
-| Property               | Description                                                                                                                                                                                                                |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `requireDPoP`          | When `true`, requires DPoP proof for all token requests. This binds tokens to the client's cryptographic key pair. DPoP is always available for clients to use; this setting controls whether the server enforces its use. |
-| `accessTokenLifetime`  | Sets the access token expiration. Use short values like `"15m"` for SPAs. Maximum is 24 hours. Specified as a duration string (e.g., "15m", "1h").                                                                         |
-| `refreshTokenLifetime` | Sets the refresh token expiration. Default is 7 days. On rotation, the new token's expiration does not extend beyond the original token's lifetime.                                                                        |
+| Property                      | Description                                                                                                                                                                                                                                                               |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `requireDpop`                 | When `true`, requires DPoP proof for all token requests. This binds tokens to the client's cryptographic key pair. DPoP is always available for clients to use; this setting controls whether the server enforces its use. Cannot be set to `true` for `browser` clients. |
+| `accessTokenLifetimeSeconds`  | Sets the access token expiration, in seconds. Use short values like `900` (15 minutes) for SPAs. Minimum 60 seconds, maximum 86400 (24 hours).                                                                                                                            |
+| `refreshTokenLifetimeSeconds` | Sets the refresh token expiration, in seconds. Minimum 60 seconds, maximum 604800 (7 days). On rotation, the new token's expiration does not extend beyond the original token's lifetime.                                                                                 |
 
 ### Security Mechanisms
 
@@ -132,7 +132,7 @@ Use the following table to determine which client type best fits your requiremen
 
 | Requirement                     | Recommended Client | Configuration Notes                                                    |
 | ------------------------------- | ------------------ | ---------------------------------------------------------------------- |
-| Safari support needed           | Public Client      | Require DPoP (`requireDPoP: true`) and set short access token lifetime |
+| Safari support needed           | Public Client      | Require DPoP (`requireDpop: true`) and set short access token lifetime |
 | More secure (Safari not needed) | Browser Client     | Uses HTTP-only cookies for token storage                               |
 | Shared codebase with mobile app | Public Client      | Same client type works across web and mobile platforms                 |
 

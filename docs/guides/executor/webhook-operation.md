@@ -10,24 +10,24 @@ The Webhook operation enables sending HTTP requests from your executor service t
 ## Configuration Example
 
 ```typescript {{title:'executor.ts'}}
-import { createExecutor } from "@tailor-platform/dev-kit/executor";
+import { createExecutor, recordCreatedTrigger } from "@tailor-platform/sdk";
+import { order } from "./tailordb/order";
 
 createExecutor({
   name: "webhook-executor",
   description: "Send HTTP requests to external endpoints",
-  trigger: {
-    // Choose one of the trigger types:
-    // eventTrigger({ ... })
-    // incomingWebhookTrigger({ ... })
-    // scheduleTrigger({ ... })
-  },
+  // Choose one of the trigger types:
+  // recordCreatedTrigger({ type: order })
+  // incomingWebhookTrigger()
+  // scheduleTrigger({ cron: "0 * * * *" })
+  trigger: recordCreatedTrigger({ type: order }),
   operation: {
     kind: "webhook",
-    url: "https://api.example.com/webhook",
+    url: () => "https://api.example.com/webhook",
     headers: { "Content-Type": "application/json" },
-    requestBody: ({ record }) => ({
+    requestBody: ({ newRecord }) => ({
       message: "Notification from executor",
-      data: record,
+      data: newRecord,
     }),
   },
 });
@@ -41,14 +41,14 @@ createExecutor({
 | ------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`        | string | Yes      | The name of the executor. The name field has the validation rule `^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$`, and it does not allow capital letters |
 | `description` | string | No       | The description of the executor                                                                                                             |
-| `trigger`     | object | Yes      | The type of trigger (eventTrigger, incomingWebhookTrigger, or scheduleTrigger)                                                              |
+| `trigger`     | object | Yes      | The type of trigger (recordCreatedTrigger, incomingWebhookTrigger, or scheduleTrigger)                                                      |
 
 **Webhook Operation Properties**
 
 | Property      | Type     | Required | Description                                                       |
 | ------------- | -------- | -------- | ----------------------------------------------------------------- |
 | `kind`        | string   | Yes      | Must be `"webhook"`                                               |
-| `url`         | string   | Yes      | The URL of the API endpoint                                       |
+| `url`         | function | Yes      | A function that returns the URL of the API endpoint               |
 | `headers`     | object   | No       | Key-value pairs for HTTP headers                                  |
 | `requestBody` | function | No       | A function that returns the payload to be included in the request |
 

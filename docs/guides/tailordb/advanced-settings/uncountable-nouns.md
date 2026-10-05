@@ -13,16 +13,14 @@ For example, to create table `userData` in the TailorDB, configure the `PluralFo
 ```typescript
 import { db } from "@tailor-platform/sdk";
 
-export const userData = db
-  .table("UserData", "User Data Model", {
-    name: db.string().description("Name of the user"),
-    ...db.fields.timestamps(),
-  })
-  .features({
-    pluralForm: "UserDataList",
-  });
+export const userData = db.table(["UserData", "UserDataList"], "User Data Model", {
+  name: db.string().description("Name of the user"),
+  ...db.fields.timestamps(),
+});
 export type userData = typeof userData;
 ```
+
+The plural form is given as the second element of the table name tuple — `db.table([name, pluralForm], ...)`. It cannot be set through `.features()`, and it must differ from the table name.
 
 The following query retrieves the list:
 

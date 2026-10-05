@@ -25,7 +25,7 @@ export default createExecutor({
   }>(),
   operation: {
     // Choose one of the operation types:
-    // kind: "tailorGraphql", ...
+    // kind: "graphql", ...
     // kind: "webhook", ...
     // kind: "function", ...
     // kind: "jobFunction", ...
@@ -66,7 +66,8 @@ Incoming webhook triggers provide access to HTTP request data through the `args`
 - `args.body` - The request payload/body
 - `args.headers` - The HTTP headers from the request
 - `args.method` - The HTTP method used (typically POST)
-- `args.query` - Query parameters from the URL
+- `args.rawBody` - The unparsed request body as a string
+- `args.env` - The environment variables available to the executor
 
 This data can be used in operation variables to process the incoming webhook data appropriately.
 

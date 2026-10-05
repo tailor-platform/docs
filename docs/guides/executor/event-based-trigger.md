@@ -25,7 +25,7 @@ export default createExecutor({
   }),
   operation: {
     // Choose one of the operation types:
-    // kind: "tailorGraphql", ...
+    // kind: "graphql", ...
     // kind: "webhook", ...
     // kind: "function", ...
     // kind: "jobFunction", ...
@@ -37,32 +37,33 @@ export default createExecutor({
 
 Event-based triggers provide access to event-specific data through the `args` object. The available data depends on the event type.
 
-`args.eventType` is available for all event types, indicating which specific event triggered the executor (e.g., `tailordb.type_record.created`). This is useful when an executor listens to multiple event types and needs to differentiate between them.
+`args.event` (the short event name) and `args.rawEvent` (the full event type, e.g. `tailordb.type_record.created`) are available for all event types, indicating which specific event triggered the executor. This is useful when an executor listens to multiple event types and needs to differentiate between them.
 
 ### TailorDB Events
 
-- `args.eventType` - The type of event that occurred (e.g., `tailordb.type_record.created`)
-- `args.namespaceName` - The namespace where the event occurred
+- `args.event` / `args.rawEvent` - The event that occurred (e.g., `created` / `tailordb.type_record.created`)
+- `args.appNamespace` - The namespace where the event occurred
 - `args.typeName` - The type name of the record
 - `args.newRecord` - The new/created record data (available for created and updated events)
 - `args.oldRecord` - The previous record data (available for updated and deleted events)
 
 ### IdP Events
 
-- `args.eventType` - The type of event that occurred (e.g., `idp.user.created`)
+- `args.event` / `args.rawEvent` - The event that occurred (e.g., `created` / `idp.user.created`)
 - `args.namespaceName` - The namespace where the event occurred
 - `args.userId` - The ID of the affected IdP user
 
 ### Auth Events
 
-- `args.eventType` - The type of event that occurred (e.g., `auth.access_token.issued`)
+- `args.event` / `args.rawEvent` - The event that occurred (e.g., `issued` / `auth.access_token.issued`)
 - `args.namespaceName` - The namespace where the event occurred
+- `args.userId` - The ID of the user the token belongs to
 
 ### Resolver Events
 
-- `args.eventType` - The type of event that occurred (e.g., `pipeline.resolver.executed`)
-- `args.namespaceName` - The namespace where the event occurred
+- `args.appNamespace` - The namespace where the event occurred
 - `args.resolverName` - The name of the resolver
+- `args.success` - Whether the resolver execution succeeded; narrow on it to access `result` or `error`
 - `args.result` - The resolver execution result (on success)
 - `args.error` - The error message (on failure)
 

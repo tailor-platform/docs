@@ -49,15 +49,17 @@ sequenceDiagram
 Configure the `beforeLogin` hook in `defineAuth` using the `hooks` property:
 
 ```typescript
-import { defineAuth, idp, secrets } from "@tailor-platform/sdk";
+import { defineAuth } from "@tailor-platform/sdk";
 import { user } from "./tailordb/user";
 
 const auth = defineAuth("my-auth", {
-  idProvider: idp.oidc("my-idp", {
-    clientId: "<client-id>",
-    clientSecret: secrets.value("default", "oidc-client-secret"),
-    providerUrl: "<your_auth_provider_url>",
-  }),
+  idProvider: {
+    name: "my-idp",
+    kind: "OIDC",
+    clientID: "<client-id>",
+    clientSecret: { vaultName: "default", secretKey: "oidc-client-secret" },
+    providerURL: "<your_auth_provider_url>",
+  },
   userProfile: {
     type: user,
     usernameField: "email",
@@ -135,15 +137,17 @@ hooks: {
 The following example configures a `beforeLogin` hook inline in `defineAuth` that creates a user record in TailorDB when a user logs in for the first time:
 
 ```typescript
-import { defineAuth, idp, secrets } from "@tailor-platform/sdk";
+import { defineAuth } from "@tailor-platform/sdk";
 import { user } from "./tailordb/user";
 
 const auth = defineAuth("my-auth", {
-  idProvider: idp.oidc("my-idp", {
-    clientId: "<client-id>",
-    clientSecret: secrets.value("default", "oidc-client-secret"),
-    providerUrl: "<your_auth_provider_url>",
-  }),
+  idProvider: {
+    name: "my-idp",
+    kind: "OIDC",
+    clientID: "<client-id>",
+    clientSecret: { vaultName: "default", secretKey: "oidc-client-secret" },
+    providerURL: "<your_auth_provider_url>",
+  },
   userProfile: {
     type: user,
     usernameField: "email",

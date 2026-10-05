@@ -69,6 +69,7 @@ await client.sendPasswordResetEmail({
 | `updateUser(input)`             | `Promise<User>`              | Update an existing user                           |
 | `deleteUser(userId)`            | `Promise<boolean>`           | Delete a user by ID                               |
 | `sendPasswordResetEmail(input)` | `Promise<boolean>`           | Send a password reset email                       |
+| `unenrollMfa(input)`            | `Promise<boolean>`           | Remove one enrolled MFA factor from a user        |
 
 ## Secret Manager
 
@@ -173,17 +174,20 @@ const result = await tailor.workflow.execJobFunction("calculateTax", {
 
 // Route the dispatch through a workspace-registered execution policy for
 // per-key concurrency control (see the SDK Workflow guide for policy setup).
+// `executionPolicyKey` only accepts a key produced by a declared policy
+// instance — `.key` on an exact policy, `.keyFor(suffix)` on a prefix one —
+// a bare string is rejected at compile time.
 const scoped = await tailor.workflow.execJobFunction(
   "syncTenant",
   { tenantId: "acme" },
-  { executionPolicyKey: `tenant-api.acme` },
+  { executionPolicyKey: perTenant.keyFor("acme") },
 );
 ```
 
-| Function                                 | Returns           | Description                                                                                                                                                        |
-| ---------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `startWorkflow(name, args?, options?)`   | `Promise<string>` | Start a workflow. Returns the execution ID                                                                                                                         |
-| `execJobFunction(name, args?, options?)` | `Promise<any>`    | Execute a job function and return its result. `options.executionPolicyKey` routes the dispatch through a matching execution policy for per-key concurrency control |
+| Function                                 | Returns           | Description                                                                                                                                                                                                                                                |
+| ---------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `startWorkflow(name, args?, options?)`   | `Promise<string>` | Start a workflow. Returns the execution ID                                                                                                                                                                                                                 |
+| `execJobFunction(name, args?, options?)` | `Promise<any>`    | **Deprecated since SDK 2.5.0** — call the target job's own `.start()` method instead. Executes a job function and returns its result. `options.executionPolicyKey` routes the dispatch through a matching execution policy for per-key concurrency control |
 
 For details on declaring execution policies and the key grammar, see [Execution Policies](/sdk/services/workflow#execution-policies) in the SDK Workflow reference.
 

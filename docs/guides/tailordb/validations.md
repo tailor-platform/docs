@@ -9,10 +9,10 @@ Data validation allows you to define rules for your fields, including acceptable
 
 ## Validation Properties
 
-Use the `.validate()` method to add validation rules to a field. The method accepts validation rules as arguments, where each rule can be either:
+Use the `.validate()` method to add validation rules to a field. The method accepts one or more validation functions as arguments. Each function:
 
-- A validation function that returns `true` for valid values
-- A tuple of `[validationFunction, errorMessage]` for custom error messages
+- Receives `{ value }` and returns an error message `string` to fail the value
+- Returns `undefined` (or nothing) when the value is valid
 
 ```typescript
 db.string().validate(

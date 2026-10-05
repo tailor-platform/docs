@@ -25,7 +25,7 @@ export default createExecutor({
   }),
   operation: {
     // Choose one of the operation types:
-    // kind: "tailorGraphql", ...
+    // kind: "graphql", ...
     // kind: "webhook", ...
     // kind: "function", ...
     // kind: "jobFunction", ...
@@ -37,7 +37,7 @@ export default createExecutor({
 
 Schedule-based triggers use cron expressions to define when operations should execute:
 
-- `frequency` - A cron expression defining the schedule (e.g., `"0 */6 * * *"` for every 6 hours)
+- `cron` - A cron expression defining the schedule (e.g., `"0 */6 * * *"` for every 6 hours)
 - `timezone` - The timezone for schedule interpretation (e.g., `"UTC"`, `"America/New_York"`)
 
 ### Common Cron Expression Examples
@@ -52,10 +52,10 @@ Schedule-based triggers use cron expressions to define when operations should ex
 
 **Schedule-Based Trigger Properties**
 
-| Property    | Type   | Required | Description                                                                                           |
-| ----------- | ------ | -------- | ----------------------------------------------------------------------------------------------------- |
-| `timezone`  | string | No       | This refers to the specific time zone in which the job's scheduled times are interpreted and executed |
-| `frequency` | string | Yes      | The intervals at which the job is scheduled to run (cron expression)                                  |
+| Property   | Type   | Required | Description                                                                                           |
+| ---------- | ------ | -------- | ----------------------------------------------------------------------------------------------------- |
+| `timezone` | string | No       | This refers to the specific time zone in which the job's scheduled times are interpreted and executed |
+| `cron`     | string | Yes      | The intervals at which the job is scheduled to run (cron expression)                                  |
 
 For detailed operation properties, see the dedicated operation pages:
 

@@ -20,18 +20,26 @@ Common use cases include:
 
 There are two ways to register secrets in Secret Manager:
 
-You can define secrets using the SDK with `defineSecret()`:
+You can define secrets using the SDK with `defineSecretManager()`:
 
-```typescript {{ title: 'secrets.ts' }}
-import { defineSecret } from "@tailor-platform/sdk";
+```typescript {{ title: 'tailor.config.ts' }}
+import { defineConfig, defineSecretManager } from "@tailor-platform/sdk";
 
-export const secrets = defineSecret("my-secrets", {
-  "api-key": { description: "External API key" },
+export const secrets = defineSecretManager({
+  "my-vault": {
+    "api-key": process.env.API_KEY!,
+  },
+});
+
+export default defineConfig({
+  name: "my-app",
+  secrets,
 });
 ```
 
-- **name**: The first argument is the vault name for organizing secrets
-- **secrets**: An object where each key is a secret name and the value contains metadata like description
+- **vaults**: Each top-level key is a vault name for organizing secrets
+- **secrets**: Each vault maps secret names to their values. Because values must not be committed to source control, read them from environment variables
+- Pass `{ ignoreNullishValues: true }` as a second argument to skip secrets whose value is `undefined` or `null` instead of failing the deploy
 
 You can manage secrets using the Terraform provider with dedicated vault and secret resources:
 

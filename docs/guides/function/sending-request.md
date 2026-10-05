@@ -107,7 +107,7 @@ export default createResolver({
     return { species: res.getFuzzyPokemon[0].species };
   },
   output: t.object({
-    species: t.string().nullable(),
+    species: t.string({ optional: true }),
   }),
 });
 ```

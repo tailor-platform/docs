@@ -215,8 +215,10 @@ The data type of `SourceId` field is `UUID`.
 
 ```typescript
   // Define a relation to another type
-  supplierId: db.uuid().description("UUID of type Supplier").index(),
-  supplier: db.relation("Supplier", "supplierId").description("Link to the model Supplier"),
+  supplierId: db
+    .uuid()
+    .description("UUID of type Supplier")
+    .relation({ type: "n-1", toward: { table: supplier, as: "supplier" } }),
 ```
 
 ```sh
@@ -238,12 +240,14 @@ The data type of `SourceId` field is `UUID`.
 
 ### Foreign key
 
-Foreign key constraints are automatically applied when using `db.relation()`. For explicit foreign key configuration:
+Foreign key constraints are automatically applied when using `.relation()`. For explicit foreign key configuration:
 
 ```typescript
 // Foreign key with relation
-supplierId: db.uuid().description("UUID of type Supplier").index(),
-supplier: db.relation("Supplier", "supplierId"),
+supplierId: db
+  .uuid()
+  .description("UUID of type Supplier")
+  .relation({ type: "n-1", toward: { table: supplier } }),
 ```
 
 Foreign key `type` and `field` can be configured when the source field is set.
