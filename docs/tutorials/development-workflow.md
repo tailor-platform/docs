@@ -65,7 +65,7 @@ resolver context, so a unit test passes `caller`, `invoker` and `env` alongside 
 
 ```typescript
 import { test, expect } from "vitest";
-import hello from "./resolvers/hello";
+import hello from "./resolver/hello";
 
 test("hello resolver returns greeting", async () => {
   const result = await hello.body({
