@@ -1,6 +1,7 @@
 ---
 description: "Set the plural form for a table whose name is an uncountable noun so its list queries are generated correctly."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Plural form for uncountable nouns
@@ -13,16 +14,14 @@ For example, to create table `userData` in the TailorDB, configure the `PluralFo
 ```typescript
 import { db } from "@tailor-platform/sdk";
 
-export const userData = db
-  .table("UserData", "User Data Model", {
-    name: db.string().description("Name of the user"),
-    ...db.fields.timestamps(),
-  })
-  .features({
-    pluralForm: "UserDataList",
-  });
+export const userData = db.table(["UserData", "UserDataList"], "User Data Model", {
+  name: db.string().description("Name of the user"),
+  ...db.fields.timestamps(),
+});
 export type userData = typeof userData;
 ```
+
+The plural form is given as the second element of the table name tuple — `db.table([name, pluralForm], ...)`. It cannot be set through `.features()`, and it must differ from the table name.
 
 The following query retrieves the list:
 

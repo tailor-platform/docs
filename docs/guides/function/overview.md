@@ -1,6 +1,7 @@
 ---
 description: "Run JavaScript as serverless functions on the platform, triggered from resolvers or executors, to call external APIs, query TailorDB and use built-in interfaces."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Function service
@@ -80,7 +81,7 @@ export default createResolver({
     };
   },
   output: t.object({
-    message: t.string().nullable(),
+    message: t.string({ optional: true }),
   }),
 });
 ```
@@ -97,9 +98,7 @@ export default createExecutor({
   operation: {
     kind: "function",
     body: async () => {
-      return {
-        message: "hi " + new Date().toISOString(),
-      };
+      console.log("hi " + new Date().toISOString());
     },
   },
 });
@@ -116,11 +115,13 @@ npx tailor deploy
 
 After deploying your function, you can open the graphql playground and run the query.
 
-To open the graphql playground, run the following command:
+To open your application in the Tailor Platform Console, run the following command:
 
 ```bash
-npx tailor app open -n {APP_NAME}
+npx tailor open
 ```
+
+The application name is read from `name` in `tailor.config.ts`, so it is not passed on the command line.
 
 Then, you can run the query in the playground:
 
@@ -166,7 +167,7 @@ export default createResolver({
     };
   },
   output: t.object({
-    message: t.string().nullable(),
+    message: t.string({ optional: true }),
   }),
 });
 ```
@@ -183,9 +184,7 @@ export default createExecutor({
   operation: {
     kind: "function",
     body: async (context) => {
-      return {
-        message: "hi " + context.invoker?.id,
-      };
+      console.log("hi " + context.invoker?.id);
     },
   },
 });

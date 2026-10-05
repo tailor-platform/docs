@@ -1,6 +1,7 @@
 ---
 description: "Run a JavaScript or TypeScript function synchronously from an executor and use its return value."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Function Operation
@@ -37,7 +38,7 @@ createExecutor({
 | ------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`        | string | Yes      | The name of the executor. The name field has the validation rule `^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$`, and it does not allow capital letters |
 | `description` | string | No       | The description of the executor                                                                                                             |
-| `trigger`     | object | Yes      | The type of trigger (e.g., `recordCreatedTrigger`, `webhookTrigger`, `scheduleTrigger`)                                                     |
+| `trigger`     | object | Yes      | The type of trigger (e.g., `recordCreatedTrigger`, `incomingWebhookTrigger`, `scheduleTrigger`)                                             |
 
 **Function Operation Properties**
 

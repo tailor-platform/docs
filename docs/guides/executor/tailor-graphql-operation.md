@@ -1,6 +1,7 @@
 ---
 description: "Run a GraphQL query or mutation against your application from an executor, with variables built from the trigger payload."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # TailorGraphql Operation
@@ -11,7 +12,7 @@ This operation type is ideal for database operations triggered by events, webhoo
 ## Configuration Example
 
 ```typescript {{title:'executor.ts'}}
-import { createExecutor, recordCreatedTrigger } from "@tailor-platform/core/executor";
+import { createExecutor, recordCreatedTrigger } from "@tailor-platform/sdk";
 import { product } from "./tailordb/product";
 
 export const tailorGraphqlExecutor = createExecutor({
@@ -55,7 +56,7 @@ export const tailorGraphqlExecutor = createExecutor({
 | Property    | Type     | Required | Description                                                            |
 | ----------- | -------- | -------- | ---------------------------------------------------------------------- |
 | `kind`      | string   | Yes      | Must be `"graphql"` for TailorGraphql operations                       |
-| `appName`   | string   | Yes      | The name of the TailorDB application                                   |
+| `appName`   | string   | No       | The name of the TailorDB application                                   |
 | `query`     | string   | Yes      | The GraphQL query or mutation to execute                               |
 | `variables` | function | No       | A function that returns the variables to pass to the GraphQL operation |
 | `invoker`   | string   | No       | The invoker of the operation (e.g., `"eventUser"`)                     |

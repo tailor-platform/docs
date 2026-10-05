@@ -1,6 +1,7 @@
 ---
 description: "Authenticate users without an external provider by configuring the Built-in IdP, its client, secrets and Auth service integration."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Built-in IdP
@@ -62,6 +63,7 @@ const auth = defineAuth("my-auth", {
 
 // 3. Export the complete configuration
 export default defineConfig({
+  name: "my-app",
   idp: [idp],
   auth,
 });
@@ -733,16 +735,26 @@ When you register a Built-in IdP service in your application's subgraph, it auto
 
 ### Registering IdP as a Subgraph
 
-To enable GraphQL user management, include the IdP service in your application's subgraphs configuration:
+To enable GraphQL user management, list the IdP service in your application's `idp` array:
 
 ```typescript
-import { defineIdp } from "@tailor-platform/sdk";
+// tailor.config.ts
+import { defineConfig, defineIdp } from "@tailor-platform/sdk";
 
 export const builtinIdp = defineIdp("builtin-idp", {
-  clientId: "your-client-id",
-  oidcConfiguration: {
-    issuer: "https://your-builtin-idp-provider-url",
+  clients: ["main-client"],
+  permission: {
+    create: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    read: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    update: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    delete: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
+    sendPasswordResetEmail: [{ conditions: [[{ user: "role" }, "=", "ADMIN"]], permit: true }],
   },
+});
+
+export default defineConfig({
+  name: "my-app",
+  idp: [builtinIdp],
 });
 ```
 

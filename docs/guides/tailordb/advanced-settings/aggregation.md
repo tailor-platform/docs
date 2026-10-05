@@ -1,6 +1,7 @@
 ---
 description: "Enable the aggregate query for a table to run count, sum, avg, min, max and groupBy over records."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Aggregation
@@ -19,9 +20,9 @@ import { db } from "@tailor-platform/sdk";
 export const payroll = db
   .table("Payroll", "payroll model", {
     name: db.string().description("name"),
-    paidAt: db.datetime().description("paidAt").required(),
-    paidAmount: db.int().description("paidAmount").required(),
-    payrollType: db.enum(["PAID", "UNPAID"]).description("paidType").required(),
+    paidAt: db.datetime().description("paidAt"),
+    paidAmount: db.int().description("paidAmount"),
+    payrollType: db.enum(["PAID", "UNPAID"]).description("paidType"),
     payrollCode: db.string().description("payrollCode"),
     customerID: db.uuid().description("customerID"),
   })

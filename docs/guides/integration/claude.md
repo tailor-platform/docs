@@ -2,6 +2,7 @@
 title: Integrate Claude and Claude Code with Tailor Platform
 description: "Register your app's remote MCP server in Claude or Claude Code so they can run GraphQL queries and mutations on your data as an authenticated user."
 doc_type: guide
+sdk_version: "2.25.0"
 preview: true
 ---
 
@@ -34,7 +35,7 @@ Use the following settings:
 | Setting        | Value                                                                                                                                                       |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `clientType`   | `public` (Claude and Claude Code are public clients and cannot securely store a client secret)                                                              |
-| `requireDPoP`  | `false` (Claude's and Claude Code's MCP clients do not support DPoP)                                                                                        |
+| `requireDpop`  | `false` (Claude's and Claude Code's MCP clients do not support DPoP)                                                                                        |
 | `redirectURIs` | `https://claude.ai/api/mcp/auth_callback` for Claude, and `http://localhost:3000/oauth/callback` for Claude Code (the port matches `--callback-port` below) |
 | `grantTypes`   | `authorization_code`, `refresh_token`                                                                                                                       |
 
@@ -48,7 +49,7 @@ export const authConfig = defineAuth("my-auth", {
     "claude-connector": {
       description: "OAuth2 client for Claude and Claude Code",
       clientType: "public",
-      requireDPoP: false,
+      requireDpop: false,
       redirectURIs: [
         // For Claude (custom connector)
         "https://claude.ai/api/mcp/auth_callback",

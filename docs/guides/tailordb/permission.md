@@ -1,6 +1,7 @@
 ---
 description: "Control access with Permission for record-level rules and GQLPermission for operation-level rules, and migrate from the legacy permission system."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Permission
@@ -41,9 +42,14 @@ Read Permission act as automatic filters. Only records that match at least one p
 db.table("Example", {
   userId: db.uuid(),
 }).permission({
+  create: [],
   read: [[{ record: "userId" }, "=", { user: "id" }]],
+  update: [],
+  delete: [],
 });
 ```
+
+All four of `create`, `read`, `update` and `delete` must be present. An empty array denies the operation, which matches the secure-by-default behaviour.
 
 #### Create/Update/Delete Permissions
 
@@ -54,6 +60,9 @@ db.table("Example", {
   // fields
 }).permission({
   create: [[{ user: "role" }, "=", "ADMIN"]],
+  read: [],
+  update: [],
+  delete: [],
 });
 ```
 
@@ -62,7 +71,7 @@ db.table("Example", {
 Multiple policies can be defined for each permission type. The evaluation follows these rules:
 
 - **Explicit allow required**: If no policy matches, access is denied by default (implicit deny)
-- **Explicit deny takes precedence**: A policy with `permit = "deny"` always overrides allow policies
+- **Any matching policy grants access**: `.permission()` policies are plain condition arrays with no `permit` field and no explicit-deny mechanism — if any policy's conditions all match, the operation is permitted. (An explicit `permit: false` deny-override is only available on `.gqlPermission()` policies, which use a different `{ conditions, permit }` shape — see [GQLPermission](#gqlpermission-graphql-level-control).)
 - **All conditions must match**: Within a policy, all conditions must be satisfied for the policy to match
 
 ### Operands
@@ -71,7 +80,7 @@ The following operands can be used in conditions:
 
 #### `record`
 
-Uses the value of a specified field from the record. Cannot be used in Update Permission (use `old_record` or `new_record` instead).
+Uses the value of a specified field from the record. Cannot be used in Update Permission (use `oldRecord` or `newRecord` instead).
 
 Supported field types: `String`, `UUID`, `Enum`, `Boolean`, and their array forms.
 
@@ -80,7 +89,7 @@ Supported field types: `String`, `UUID`, `Enum`, `Boolean`, and their array form
 [{ record: "status" }, "=", "TODO"];
 ```
 
-#### `old_record` / `new_record`
+#### `oldRecord` / `newRecord`
 
 Used in Update Permission to reference the existing or updated record values. Cannot be used in Create/Read/Delete Permissions.
 
@@ -119,39 +128,39 @@ Equality and inequality comparison.
 
 ```typescript
 // Check if the record's status is "TODO"
-[{ record: "status" }, "=", "TODO"][
-  // Check if the user's role is not "ADMIN"
-  ({ user: "role" }, "!=", "ADMIN")
-];
+[{ record: "status" }, "=", "TODO"];
+
+// Check if the user's role is not "ADMIN"
+[{ user: "role" }, "!=", "ADMIN"];
 ```
 
-#### `in` / `nin`
+#### `in` / `not in`
 
 Array membership and non-membership.
 
 ```typescript
 // Check if the record's status is in a set of values
-[{ record: "status" }, "in", ["TODO", "IN_PROGRESS"]][
-  // Check if the user's role is not in a set of values
-  ({ user: "role" }, "nin", ["GUEST", "USER"])
-];
+[{ record: "status" }, "in", ["TODO", "IN_PROGRESS"]];
+
+// Check if the user's role is not in a set of values
+[{ user: "role" }, "not in", ["GUEST", "USER"]];
 ```
 
-#### `hasAny` / `nhasAny`
+#### `hasAny` / `not hasAny`
 
 Array overlap and non-overlap. Checks whether two string arrays share any common elements. Both operands must be string arrays.
 
 - `hasAny` — true if the two arrays have at least one element in common
-- `nhasAny` — true if the two arrays have no elements in common
+- `not hasAny` — true if the two arrays have no elements in common
 
 Supported array field types: `String`, `UUID`, `Enum`.
 
 ```typescript
 // Check if the record's roles share any values with the given list
-[{ record: "roles" }, "hasAny", ["ADMIN", "EDITOR"]][
-  // Check if the user's roles have no overlap with restricted roles
-  ({ user: "roles" }, "nhasAny", ["BLOCKED", "SUSPENDED"])
-];
+[{ record: "roles" }, "hasAny", ["ADMIN", "EDITOR"]];
+
+// Check if the user's roles have no overlap with restricted roles
+[{ user: "roles" }, "not hasAny", ["BLOCKED", "SUSPENDED"]];
 ```
 
 You can also compare a user attribute array against a record field array:
@@ -164,22 +173,20 @@ You can also compare a user attribute array against a record field array:
 ### Complete Example
 
 ```typescript
-const TaskStatus = db.enum("TaskStatus", [
-  { value: "TODO", description: "Task is pending" },
-  { value: "IN_PROGRESS", description: "Task is currently being worked on" },
-  { value: "DONE", description: "Task has been completed" },
-]);
-
 db.table("Task", {
-  title: db.string({ required: true, description: "Task title" }),
-  status: TaskStatus({
-    description: "Task status",
-    hooks: { create: "'TODO'" },
-  }),
-  assigneeId: db.uuid({
-    description: "ID of the user assigned to this task",
-    hooks: { create: "user.id" },
-  }),
+  title: db.string().description("Task title"),
+  status: db
+    .enum([
+      { value: "TODO", description: "Task is pending" },
+      { value: "IN_PROGRESS", description: "Task is currently being worked on" },
+      { value: "DONE", description: "Task has been completed" },
+    ])
+    .description("Task status")
+    .default("TODO"),
+  assigneeId: db
+    .uuid()
+    .description("ID of the user assigned to this task")
+    .hooks({ create: ({ invoker }) => invoker?.id ?? "" }),
 }).permission({
   create: [
     // Administrators can create any task
@@ -214,60 +221,63 @@ db.table("Task", {
 
 ## GQLPermission (GraphQL-Level Control)
 
-`GQLPermission` is defined as a separate resource and controls which users can execute specific GraphQL operations. This setting does not affect SQL execution via the Function service.
+`GQLPermission` controls which users can execute specific GraphQL operations. It is defined with the `.gqlPermission()` modifier on the table, which takes an array of policies. This setting does not affect SQL execution via the Function service.
 
 ### Basic Structure
 
 ```typescript
-db.gqlPermission("Example", {
-  policies: [
-    {
-      conditions: [/* conditions */],
-      actions: [/* actions */],
-      permit: "allow", // or "deny"
-      description: "Policy description",
-    },
-  ],
-});
+db.table("Example", {
+  // field definitions
+}).gqlPermission([
+  {
+    conditions: [/* conditions */],
+    actions: [/* actions */],
+    permit: true, // or false to deny
+    description: "Policy description",
+  },
+]);
 ```
+
+`permit` is a boolean. Omitting it defaults to deny and emits a warning, so always set it explicitly.
 
 ### Conditions
 
-The method for defining Conditions is basically the same as `Permission`. Just note that `record` / `old_record` / `new_record` operands are not available here.
+The method for defining Conditions is basically the same as `Permission`. Just note that `record` / `oldRecord` / `newRecord` operands are not available here.
 
 ### Actions
 
 Each GraphQL operation is categorized into the following actions:
 
-| Action        | GraphQL operation                                  |
-| ------------- | -------------------------------------------------- |
-| `all`         | All GraphQL operations for the type                |
-| `create`      | `create<Type>` mutation                            |
-| `read`        | `get<Type>`, `get<Type>By`, `list<Type>s` queries  |
-| `update`      | `update<Type>` mutation                            |
-| `delete`      | `delete<Type>` mutation                            |
-| `aggregate`   | `aggregate<Type>` query                            |
-| `bulk_upsert` | `bulkUpsert<Type>`, `bulkUpsert<Type>By` mutations |
+| Action       | GraphQL operation                                  |
+| ------------ | -------------------------------------------------- |
+| `create`     | `create<Type>` mutation                            |
+| `read`       | `get<Type>`, `get<Type>By`, `list<Type>s` queries  |
+| `update`     | `update<Type>` mutation                            |
+| `delete`     | `delete<Type>` mutation                            |
+| `aggregate`  | `aggregate<Type>` query                            |
+| `bulkUpsert` | `bulkUpsert<Type>`, `bulkUpsert<Type>By` mutations |
+
+To cover every operation for the type, set `actions: "all"` — the string on its own, not inside an array.
 
 ### Complete Example
 
 ```typescript
-db.gqlPermission("Task", {
-  policies: [
-    {
-      conditions: [[{ user: "role" }, "=", "ADMIN"]],
-      actions: ["all"],
-      permit: "allow",
-      description: "Administrators have full access to all GraphQL operations",
-    },
-    {
-      conditions: [[{ user: "loggedIn" }, "=", true]],
-      actions: ["create", "read", "update"],
-      permit: "allow",
-      description: "Authenticated users can create, read, and update tasks",
-    },
-  ],
-});
+db.table("Task", {
+  // field definitions
+}).gqlPermission([
+  {
+    conditions: [[{ user: "role" }, "=", "ADMIN"]],
+    actions: "all",
+    permit: true,
+    description: "Administrators have full access to all GraphQL operations",
+  },
+  {
+    conditions: [[{ user: "_loggedIn" }, "=", true]],
+    actions: ["create", "read", "update"],
+    permit: true,
+    description: "Authenticated users can create, read, and update tasks",
+  },
+]);
 ```
 
 ## Auth Integration
@@ -277,12 +287,18 @@ User attributes referenced in permissions are defined through the Auth service c
 ### User Profile Configuration
 
 ```typescript
-auth.idp.tailordb({
-  type: "User",
-  usernameField: "email",
-  attributeMap: {
-    // Reference the value of the role field as "role" using the "user" operand
-    role: "role",
+import { defineAuth } from "@tailor-platform/sdk";
+import { user } from "./db/user";
+
+export const auth = defineAuth("main-auth", {
+  userProfile: {
+    type: user,
+    // Must be a required, unique, non-array string field of the table
+    usernameField: "email",
+    attributes: {
+      // Expose the value of the role field as "role" for the "user" operand
+      role: true,
+    },
   },
 });
 ```
@@ -290,9 +306,16 @@ auth.idp.tailordb({
 ### Machine User Configuration
 
 ```typescript
-auth.machineUser("admin", {
-  // Set the role attribute to "ADMIN"
-  role: "ADMIN",
+import { defineAuth, t } from "@tailor-platform/sdk";
+
+export const auth = defineAuth("machine-auth", {
+  machineUserAttributes: {
+    role: t.string(),
+  },
+  machineUsers: {
+    // Set the role attribute to "ADMIN"
+    admin: { attributes: { role: "ADMIN" } },
+  },
 });
 ```
 
@@ -300,7 +323,7 @@ auth.machineUser("admin", {
 
 In addition to custom attributes, two built-in fields are always available:
 
-#### `_id`
+#### `id`
 
 The user's unique identifier.
 
@@ -315,7 +338,7 @@ Boolean indicating whether the user is authenticated.
 
 ```typescript
 // Check if the user is logged in
-[{ user: "loggedIn" }, "=", true];
+[{ user: "_loggedIn" }, "=", true];
 ```
 
 ## SQL Operation Behavior

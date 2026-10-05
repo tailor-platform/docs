@@ -1,6 +1,7 @@
 ---
 description: "How users log in: IdP authentication, mapping to a TailorDB user profile, OAuth2 client configuration and the login flow with the tailor CLI."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Log in to your app
@@ -120,7 +121,9 @@ const auth = defineAuth("my-auth", {
     // Public client for mobile applications
     "mobile-app": {
       clientType: "public",
-      redirectURIs: ["com.myapp://auth/callback"],
+      // Redirect URIs must start with https:// or http:// — custom URI schemes
+      // are not accepted, so use an app link / universal link callback.
+      redirectURIs: ["https://myapp.example.com/mobile/callback"],
       grantTypes: ["authorization_code", "refresh_token"],
     },
     // Browser client for Single Page Applications
@@ -143,7 +146,7 @@ const auth = defineAuth("my-auth", {
 | `Name`/`name`                  | Unique identifier for the OAuth2 client                                           | Use descriptive names for easier management        |
 | `ClientType`/`client_type`     | `confidential` for server-side apps, `public` for mobile apps, `browser` for SPAs | Browser clients provide enhanced security for SPAs |
 | `GrantTypes`/`grant_types`     | Supported OAuth2 flows: `authorization_code`, `refresh_token`                     | Authorization code is most secure for web apps     |
-| `RedirectURIs`/`redirect_uris` | Valid callback URLs after authentication                                          | Must match exactly; wildcards not supported        |
+| `RedirectURIs`/`redirect_uris` | Valid callback URLs after authentication. Must start with `https://` or `http://` | Must match exactly; wildcards not supported        |
 
 ### Choosing the Right Client Type
 

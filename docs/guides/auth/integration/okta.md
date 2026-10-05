@@ -1,6 +1,7 @@
 ---
 description: "Set up Okta as an identity provider for the Auth service using OIDC or SAML."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Okta Integration
@@ -89,25 +90,8 @@ Add attribute statements to map Okta user attributes to your application:
 Once your Okta application is set up, configure the Auth service in your Tailor Platform application:
 
 ```typescript
-import { defineAuth, defineIdp } from "@tailor-platform/sdk";
+import { defineAuth } from "@tailor-platform/sdk";
 import { user } from "./tailordb/user";
-
-// OIDC Configuration
-export const oktaOidc = defineIdp("okta-oidc", {
-  clientId: process.env.OKTA_CLIENT_ID,
-  clientSecret: process.env.OKTA_CLIENT_SECRET,
-  oidcConfiguration: {
-    issuer: "https://{your-okta-domain}",
-  },
-});
-
-// SAML Configuration (alternative)
-export const oktaSaml = defineIdp("okta-saml", {
-  clientId: "your-client-id",
-  samlConfiguration: {
-    metadataUrl: "https://{your-okta-domain}/app/{app_id}/sso/saml/metadata",
-  },
-});
 
 // Configure Auth service to use Okta (choose OIDC or SAML)
 export const auth = defineAuth("main-auth", {
@@ -120,9 +104,22 @@ export const auth = defineAuth("main-auth", {
       lastName: true,
     },
   },
-  // Use either OIDC or SAML IdP
-  idProvider: oktaOidc.provider("okta-oidc-provider"),
-  // idProvider: oktaSaml.provider("okta-saml-provider"),
+  // OIDC configuration
+  idProvider: {
+    name: "okta-oidc",
+    kind: "OIDC",
+    clientID: process.env.OKTA_CLIENT_ID!,
+    // Store the client secret in Secret Manager and reference it by vault/key
+    clientSecret: { vaultName: "default", secretKey: "okta-client-secret" },
+    providerURL: "https://{your-okta-domain}",
+  },
+  // SAML configuration (alternative)
+  // idProvider: {
+  //   name: "okta-saml",
+  //   kind: "SAML",
+  //   enableSignRequest: false,
+  //   metadataURL: "https://{your-okta-domain}/app/{app_id}/sso/saml/metadata",
+  // },
 });
 ```
 

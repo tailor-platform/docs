@@ -1,6 +1,7 @@
 ---
 description: "Enable the bulkUpsert mutation to insert or update many records of a table in one request."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Bulk Upsert
@@ -61,17 +62,16 @@ The maximum number of items that can be included in a single bulk upsert operati
 
 ## BulkUpsert with PluralForm settings
 
-When `PluralForm` is configured in the settings, as mentioned in the example below, TailorDB auto-generates `bulkUpsertUserDataList` instead of `bulkUpsertUserData` for bulk upserting data of the `UserData` table. Refer [PluralForm](/guides/tailordb/advanced-settings/uncountable-nouns) to learn about its setting.
+When a plural form is configured through the table name tuple, as mentioned in the example below, TailorDB auto-generates `bulkUpsertUserDataList` instead of `bulkUpsertUserData` for bulk upserting data of the `UserData` table. Refer [PluralForm](/guides/tailordb/advanced-settings/uncountable-nouns) to learn about its setting.
 
 ```typescript
 import { db } from "@tailor-platform/sdk";
 
 export const userData = db
-  .table("UserData", "UserData model", {
+  .table(["UserData", "UserDataList"], "UserData model", {
     // ...fields
   })
   .features({
     bulkUpsert: true,
-    pluralForm: "UserDataList",
   });
 ```

@@ -1,6 +1,7 @@
 ---
 description: "Send HTTP requests to third-party services from a function, bundling npm packages for deployment; only external endpoints and AI Gateway are reachable."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Sending requests from Function service
@@ -107,7 +108,7 @@ export default createResolver({
     return { species: res.getFuzzyPokemon[0].species };
   },
   output: t.object({
-    species: t.string().nullable(),
+    species: t.string({ optional: true }),
   }),
 });
 ```

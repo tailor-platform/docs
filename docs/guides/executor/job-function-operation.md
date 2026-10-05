@@ -1,6 +1,7 @@
 ---
 description: "Run a JavaScript or TypeScript function as a job from an executor, with a 5-minute execution limit for work that needs more than the 60-second function timeout."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Job Function Operation
@@ -42,7 +43,7 @@ createExecutor({
 | ------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`        | string | Yes      | The name of the executor. The name field has the validation rule `^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$`, and it does not allow capital letters |
 | `description` | string | No       | The description of the executor                                                                                                             |
-| `trigger`     | object | Yes      | The type of trigger (e.g., `scheduleTrigger`, `eventTrigger`, `webhookTrigger`)                                                             |
+| `trigger`     | object | Yes      | The type of trigger (e.g., `scheduleTrigger`, `recordCreatedTrigger`, `incomingWebhookTrigger`)                                             |
 
 **Job Function Operation Properties**
 

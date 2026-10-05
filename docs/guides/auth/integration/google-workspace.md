@@ -2,6 +2,7 @@
 title: Google Workspace Integration
 description: "Set up Google Workspace as a SAML identity provider for enterprise SSO with the Auth service."
 doc_type: guide
+sdk_version: "2.25.0"
 preview: true
 ---
 
@@ -68,20 +69,10 @@ To configure the Auth service, you’ll need to download the Google Workspace Id
 ### Configuration
 
 ```typescript
-import { defineAuth, defineIdp } from "@tailor-platform/sdk";
+import { defineAuth } from "@tailor-platform/sdk";
 import { user } from "./tailordb/user";
 
-// Define the Google Workspace SAML IdP
-export const googleSaml = defineIdp("google-saml", {
-  clientId: "your-client-id",
-  samlConfiguration: {
-    metadataUrl: "https://accounts.google.com/o/saml2?idpid={your-idp-id}",
-    // Or provide the XML metadata directly:
-    // rawMetadata: process.env.GOOGLE_SAML_METADATA,
-  },
-});
-
-// Configure Auth service to use Google SAML
+// Configure Auth service to use Google Workspace SAML
 export const auth = defineAuth("main-auth", {
   userProfile: {
     type: user,
@@ -92,7 +83,14 @@ export const auth = defineAuth("main-auth", {
       lastName: true,
     },
   },
-  idProvider: googleSaml.provider("google-saml-provider"),
+  idProvider: {
+    name: "google-saml",
+    kind: "SAML",
+    enableSignRequest: false,
+    metadataURL: "https://accounts.google.com/o/saml2?idpid={your-idp-id}",
+    // Or provide the XML metadata directly instead of metadataURL:
+    // rawMetadata: process.env.GOOGLE_SAML_METADATA!,
+  },
 });
 ```
 

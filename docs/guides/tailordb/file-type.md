@@ -1,6 +1,7 @@
 ---
 description: "Attach files to records with the file field type: schema definition, upload and download over HTTP, metadata queries and permission-based access."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # File Type
@@ -28,10 +29,13 @@ Files are defined in the **Files** section (not Fields) of your table definition
 ```typescript {{ title: "Schema Definition" }}
 db.table("Starship", {
   name: db.string().description("Name of the starship"),
-  blueprint: db.file().description("Technical blueprint file"),
-  thumbnail: db.file().description("Thumbnail image"),
+}).files({
+  blueprint: "Technical blueprint file",
+  thumbnail: "Thumbnail image",
 });
 ```
+
+Each key of `.files()` is the file field name and its value is the description. `.files()` can only be called once per table, so declare every file attachment in a single call.
 
 ## GraphQL Operations
 

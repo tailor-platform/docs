@@ -1,6 +1,7 @@
 ---
 description: "Query TailorDB from a function with the built-in tailordb Client: connect to a namespace, run SQL, and use Kysely for type-safe queries."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Accessing TailorDB
@@ -19,7 +20,7 @@ export interface Client {
   end(): Promise<void>;
   queryObject<T>(sql: string, args?: readonly any[]): Promise<{ rows: T[] }>;
   createTransaction(name: string): Transaction;
-  new (config?: { namespace?: string }): Client;
+  new (config: { namespace: string }): Client;
 }
 
 type Transaction = {
@@ -168,7 +169,7 @@ export default createResolver({
     };
   },
   output: t.object({
-    success: t.boolean().nullable(),
+    success: t.bool({ optional: true }),
   }),
 });
 ```
@@ -178,7 +179,7 @@ export default createResolver({
 To execute the function, you need to set up the Product table in TailorDB.
 
 ```typescript {{ title: 'product.ts' }}
-import { db, auth } from "@tailor-platform/sdk";
+import { db } from "@tailor-platform/sdk";
 
 export const product = db.table("Product", {
   title: db.string().description("Title of the product"),

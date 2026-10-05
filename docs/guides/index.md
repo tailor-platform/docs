@@ -7,6 +7,8 @@ doc_type: guide
 
 Comprehensive guides for building applications on Tailor Platform.
 
+The code examples in these guides are written for [SDK 2.25.0](https://github.com/tailor-platform/sdk/releases/tag/@tailor-platform/sdk@2.25.0).
+
 ## Core Platform Guides
 
 - [Application](application.md) - Create application manifests and API endpoints for your services

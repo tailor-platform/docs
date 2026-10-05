@@ -1,6 +1,7 @@
 ---
 description: "Host a single-page application on the platform with CDN caching, optional IP restrictions and custom domains, defined in your workspace configuration."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Static Website Hosting
@@ -35,7 +36,7 @@ Deploy pre-built static files using TailorCLI. The service is designed for singl
 tailor staticwebsite deploy \
   --name my-spa \
   --dir ./dist \
-  --workspace_id <workspace-id>
+  --workspace-id <workspace-id>
 ```
 
 ## Caching Behavior
@@ -48,16 +49,14 @@ tailor staticwebsite deploy \
 Each static website receives a unique URL that can be used in your application configuration. After deploying your static website, you can reference its URL in your application's CORS settings or auth redirect URLs:
 
 ```typescript {{ title: "Using Static Website URL in Application Config" }}
-import { defineTailorConfig } from "@tailor-platform/sdk";
+import { defineConfig } from "@tailor-platform/sdk";
+import { mySpa } from "./static-websites";
 
-export default defineTailorConfig({
-  workspace: "my-workspace",
-  app: {
-    name: "my-app",
-    // Add static website URL to CORS
-    cors: ["https://my-spa-{WORKSPACE_HASH}.web.erp.dev"],
-    subgraphs: [/* ... */],
-  },
+export default defineConfig({
+  name: "my-app",
+  // Add static website URL to CORS
+  cors: [mySpa.url],
+  staticWebsites: [mySpa],
 });
 ```
 

@@ -1,6 +1,7 @@
 ---
 description: "Start a workflow from an executor in response to an event, webhook or schedule."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Workflow Operation
@@ -12,23 +13,17 @@ For more details on workflows, refer to the [Workflow Service](/guides/workflow/
 ## Configuration Example
 
 ```typescript {{ title: 'executor.ts' }}
-import { createWorkflow, createExecutor } from "@tailor-platform/sdk";
+import { createExecutor, recordCreatedTrigger } from "@tailor-platform/sdk";
 import { order } from "./types";
-
-const processOrderWorkflow = createWorkflow({
-  name: "process-order",
-  steps: [
-    // workflow steps...
-  ],
-});
+import processOrderWorkflow from "./workflows/process-order";
 
 createExecutor({
   name: "workflow-executor",
   description: "Trigger workflow execution",
   // Choose one of the trigger types:
-  // trigger: recordCreatedTrigger({ type: order }),
-  // trigger: webhookTrigger(),
+  // trigger: incomingWebhookTrigger(),
   // trigger: scheduleTrigger({ cron: "0 * * * *" }),
+  trigger: recordCreatedTrigger({ type: order }),
   operation: {
     kind: "workflow",
     workflow: processOrderWorkflow,
@@ -48,15 +43,15 @@ createExecutor({
 | ------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`        | string | Yes      | The name of the executor. The name field has the validation rule `^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$`, and it does not allow capital letters |
 | `description` | string | No       | The description of the executor                                                                                                             |
-| `trigger`     | object | Yes      | The type of trigger (e.g., `recordCreatedTrigger`, `webhookTrigger`, `scheduleTrigger`)                                                     |
+| `trigger`     | object | Yes      | The type of trigger (e.g., `recordCreatedTrigger`, `incomingWebhookTrigger`, `scheduleTrigger`)                                             |
 
 **Workflow Operation Properties**
 
-| Property   | Type         | Required | Description                                                                                                              |
-| ---------- | ------------ | -------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `kind`     | `"workflow"` | Yes      | Specifies this is a workflow operation                                                                                   |
-| `workflow` | Workflow     | Yes      | The workflow to trigger (created with `createWorkflow()`)                                                                |
-| `args`     | function     | No       | A function that returns the arguments to pass to the workflow. Receives trigger context (e.g., `newRecord`, `oldRecord`) |
+| Property   | Type              | Required    | Description                                                                                                                                                                                              |
+| ---------- | ----------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `kind`     | `"workflow"`      | Yes         | Specifies this is a workflow operation                                                                                                                                                                   |
+| `workflow` | Workflow          | Yes         | The workflow to trigger (created with `createWorkflow()`)                                                                                                                                                |
+| `args`     | value or function | Conditional | The arguments to pass to the workflow, either as a literal value or as a function receiving the trigger context (e.g., `newRecord`, `oldRecord`). Required unless the workflow's main job takes no input |
 
 **Executor Properties**
 

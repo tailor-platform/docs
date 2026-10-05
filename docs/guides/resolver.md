@@ -1,6 +1,7 @@
 ---
 description: "Write custom GraphQL resolvers with the SDK that chain queries, run business logic and transform data beyond the auto-generated API."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Resolver
@@ -58,12 +59,10 @@ export default createResolver({
 ```typescript
 createResolver({
   input: {
-    email: t
-      .string()
-      .validate(
-        ({ value }) => value.includes("@"),
-        [({ value }) => value.length <= 255, "Email must be 255 characters or less"],
-      ),
+    email: t.string().validate(
+      ({ value }) => (value.includes("@") ? undefined : "Email must contain @"),
+      ({ value }) => (value.length <= 255 ? undefined : "Email must be 255 characters or less"),
+    ),
   },
   // ...
 });
@@ -104,7 +103,7 @@ export default createResolver({
     return { success: true };
   },
   output: t.object({
-    success: t.boolean(),
+    success: t.bool(),
   }),
 });
 ```
@@ -132,10 +131,12 @@ The SDK `createResolver` function defines a complete resolver with its input, ou
 
 The `body` function receives a `context` object with:
 
-| Property         | Description                                                                     |
-| ---------------- | ------------------------------------------------------------------------------- |
-| `context.input`  | The validated input arguments                                                   |
-| `context.caller` | The user or machine user who called the resolver, or `null` for anonymous calls |
+| Property          | Description                                                                            |
+| ----------------- | -------------------------------------------------------------------------------------- |
+| `context.input`   | The validated input arguments                                                          |
+| `context.caller`  | The user or machine user who called the resolver, or `null` for anonymous calls        |
+| `context.invoker` | The principal the body runs as (the `invoker` machine user when configured), or `null` |
+| `context.env`     | The environment variables declared in `tailor.config.ts`                               |
 
 **Example**
 
@@ -205,14 +206,16 @@ export default createResolver({
   name: "myResolver",
   operation: "mutation",
   input: {
-    email: t.string().validate(({ value }) => value.includes("@")),
+    email: t
+      .string()
+      .validate(({ value }) => (value.includes("@") ? undefined : "Email must contain @")),
   },
   body: async (context) => {
     // Your resolver logic executes here
     return { success: true };
   },
   output: t.object({
-    success: t.boolean(),
+    success: t.bool(),
   }),
 });
 ```
@@ -374,6 +377,8 @@ In the SDK, the `context` object is passed to the `body` function and provides a
 
 - `context.input` - The validated input arguments
 - `context.caller` - The user or machine user who called the resolver (id, attributes, workspaceId, etc.), or `null` for anonymous calls
+- `context.invoker` - The principal the body runs as (the `invoker` machine user when configured), or `null` for anonymous calls
+- `context.env` - The environment variables declared in `tailor.config.ts`
 
 Data from previous operations is simply stored in TypeScript variables:
 
@@ -478,7 +483,7 @@ export default createResolver({
   name: "processProducts",
   operation: "mutation",
   input: {
-    productIds: t.array(t.uuid()),
+    productIds: t.uuid({ array: true }),
   },
   body: async (context) => {
     const db = getDB("tailordb");
@@ -501,11 +506,12 @@ export default createResolver({
     return { products: results };
   },
   output: t.object({
-    products: t.array(
-      t.object({
+    products: t.object(
+      {
         id: t.uuid(),
         name: t.string(),
-      }),
+      },
+      { array: true },
     ),
   }),
 });

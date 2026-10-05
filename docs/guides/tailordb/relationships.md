@@ -1,6 +1,7 @@
 ---
 description: "Define relationships between tables with db.uuid().relation() to query related records, with automatic indexes and foreign key constraints."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Relationship Field
@@ -15,13 +16,13 @@ The following table describes the available configuration options:
 
 The SDK uses `db.uuid().relation()` to define relationships with automatic index and foreign key constraints:
 
-| Option        | Description                                                                 | Required |
-| ------------- | --------------------------------------------------------------------------- | -------- |
-| `type`        | Relationship type: `"1-1"` for one-to-one, `"n-1"` for many-to-one          | ✅       |
-| `toward.type` | Referenced Type                                                             | ✅       |
-| `toward.key`  | Referenced field name (defaults to `"id"`)                                  | ⬜       |
-| `toward.as`   | Custom name for accessing the related type from this type                   | ⬜       |
-| `backward`    | Custom name for accessing this type from the related type (for 1:N queries) | ⬜       |
+| Option         | Description                                                                 | Required |
+| -------------- | --------------------------------------------------------------------------- | -------- |
+| `type`         | Relationship type: `"1-1"` for one-to-one, `"n-1"` for many-to-one          | ✅       |
+| `toward.table` | The referenced table object (or `"self"`)                                   | ✅       |
+| `toward.key`   | Referenced field name (defaults to `"id"`)                                  | ⬜       |
+| `toward.as`    | Custom name for accessing the related type from this type                   | ⬜       |
+| `backward`     | Custom name for accessing this type from the related type (for 1:N queries) | ⬜       |
 
 | Attribute     | Description                                                    | Required |
 | ------------- | -------------------------------------------------------------- | -------- |
@@ -57,19 +58,19 @@ In a 1:1 relationship, each record in Type A can be associated with at most one 
 import { db } from "@tailor-platform/sdk";
 
 export const species = db.table("Species", "Species data schema", {
-  name: db.string().description("Name of the species").required(),
+  name: db.string().description("Name of the species"),
   ...db.fields.timestamps(),
 });
 export type species = typeof species;
 
 export const character = db.table("Character", "Character data schema", {
-  name: db.string().description("Name of the character").required(),
+  name: db.string().description("Name of the character"),
   speciesId: db
     .uuid()
     .description("Species ID of the character")
     .relation({
       type: "1-1",
-      toward: { type: species, as: "species" },
+      toward: { table: species, as: "species" },
     }),
   ...db.fields.timestamps(),
 });
@@ -133,19 +134,19 @@ In a 1:N relationship, each record in Type A can be associated with multiple rec
 import { db } from "@tailor-platform/sdk";
 
 export const species = db.table("Species", "Species data schema", {
-  name: db.string().description("Name of the species").required(),
+  name: db.string().description("Name of the species"),
   ...db.fields.timestamps(),
 });
 export type species = typeof species;
 
 export const character = db.table("Character", "Character data schema", {
-  name: db.string().description("Name of the character").required(),
+  name: db.string().description("Name of the character"),
   speciesId: db
     .uuid()
     .description("Species ID of the character")
     .relation({
       type: "n-1",
-      toward: { type: species },
+      toward: { table: species },
       backward: "characters", // Access characters from Species
     }),
   ...db.fields.timestamps(),

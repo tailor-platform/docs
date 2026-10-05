@@ -1,6 +1,7 @@
 ---
 description: "Set up Auth0 as an identity provider for the Auth service using OIDC, SAML or ID token authentication."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Auth0 Integration
@@ -111,33 +112,8 @@ Follow the same steps as OIDC setup, but additionally:
 Configure your Tailor Platform Auth service to work with Auth0:
 
 ```typescript
-import { defineAuth, defineIdp } from "@tailor-platform/sdk";
+import { defineAuth } from "@tailor-platform/sdk";
 import { user } from "./tailordb/user";
-
-// OIDC Configuration
-export const auth0Oidc = defineIdp("auth0-oidc", {
-  clientId: process.env.AUTH0_CLIENT_ID,
-  clientSecret: process.env.AUTH0_CLIENT_SECRET,
-  oidcConfiguration: {
-    issuer: "https://{your-auth0-domain}",
-  },
-});
-
-// SAML Configuration (alternative)
-export const auth0Saml = defineIdp("auth0-saml", {
-  clientId: "your-client-id",
-  samlConfiguration: {
-    metadataUrl: "https://{your-auth0-domain}/samlp/metadata/{client-id}",
-  },
-});
-
-// ID Token Configuration (alternative)
-export const auth0IdToken = defineIdp("auth0-id-token", {
-  clientId: "your-client-id",
-  idTokenConfiguration: {
-    issuer: "https://{your-auth0-domain}",
-  },
-});
 
 // Configure Auth service to use Auth0 (choose OIDC, SAML, or ID Token)
 export const auth = defineAuth("main-auth", {
@@ -150,10 +126,29 @@ export const auth = defineAuth("main-auth", {
       lastName: true,
     },
   },
-  // Use one of the IdP configurations
-  idProvider: auth0Oidc.provider("auth0-oidc-provider"),
-  // idProvider: auth0Saml.provider("auth0-saml-provider"),
-  // idProvider: auth0IdToken.provider("auth0-id-token-provider"),
+  // OIDC configuration
+  idProvider: {
+    name: "auth0-oidc",
+    kind: "OIDC",
+    clientID: process.env.AUTH0_CLIENT_ID!,
+    // Store the client secret in Secret Manager and reference it by vault/key
+    clientSecret: { vaultName: "default", secretKey: "auth0-client-secret" },
+    providerURL: "https://{your-auth0-domain}",
+  },
+  // SAML configuration (alternative)
+  // idProvider: {
+  //   name: "auth0-saml",
+  //   kind: "SAML",
+  //   enableSignRequest: false,
+  //   metadataURL: "https://{your-auth0-domain}/samlp/metadata/{client-id}",
+  // },
+  // ID Token configuration (alternative)
+  // idProvider: {
+  //   name: "auth0-id-token",
+  //   kind: "IDToken",
+  //   clientID: "your-client-id",
+  //   providerURL: "https://{your-auth0-domain}",
+  // },
 });
 ```
 

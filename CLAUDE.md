@@ -49,7 +49,10 @@ docs/
 ## Writing Docs
 
 - Place markdown files in the appropriate folder under `docs/`
-- Use frontmatter for metadata
+- Use frontmatter for metadata. On guide pages, `sdk_version: "x.y.z"` records the
+  `@tailor-platform/sdk` release the page's code examples were last checked against.
+  It is machine-readable data for the drift-check bot and is not rendered; leave it
+  off pages whose examples have not been checked
 - Internal links should be extensionless (resolved at build time)
 - Links inside components (`<Card href="...">`) are emitted verbatim — the VitePress
   build does **not** dead-link-check HTML attributes. Run `pnpm check:links` after

@@ -1,6 +1,7 @@
 ---
 description: "Table-level settings that generate extra GraphQL operations: aggregation, bulk upsert, plural form for uncountable nouns and change data capture."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Advanced Settings
@@ -38,20 +39,7 @@ The `Directives` field holds a map structure data, where the key is directive na
 
 For example, we can define the directive of `@key(fields: "id")` as the following:
 
-```typescript
-import { db } from "@tailor-platform/sdk";
-
-export const myType = db
-  .table("MyType", "My type with directives", {
-    // ...fields
-  })
-  .directives([
-    {
-      name: "key",
-      args: [{ name: "fields", value: "id" }],
-    },
-  ]);
-```
+Directives are not configurable through the SDK — there is no `.directives()` modifier on `db.table()`.
 
 ```sh
   // enable directives
@@ -79,22 +67,7 @@ To make this work, the directive of `@key(fields: "id")` must be defined.
 For example, if we want to extend State resource in StateFlow, we can define the `extend` and directives in the schema as follows:
 This will generate `createExtendState`, `updateExtendState`, `deleteExtendState`, and `changeExtendState` API.
 
-```typescript
-import { db } from "@tailor-platform/sdk";
-
-// Example of extending State type
-export const state = db
-  .table("State", "State type with extends", {
-    // ...fields
-  })
-  .extends(true)
-  .directives([
-    {
-      name: "key",
-      args: [{ name: "fields", value: "id" }],
-    },
-  ]);
-```
+Like directives, `extends` is not configurable through the SDK — there is no `.extends()` modifier on `db.table()`.
 
 ```sh
   // example of state.tf enabling extends

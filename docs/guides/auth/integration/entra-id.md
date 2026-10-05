@@ -1,6 +1,7 @@
 ---
 description: "Set up Microsoft Entra ID as an identity provider for the Auth service with OIDC."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Microsoft Entra ID Integration
@@ -77,17 +78,8 @@ If you need additional user information:
 Once your Entra ID application is set up, configure the Auth service in your Tailor Platform application:
 
 ```typescript
-import { defineAuth, defineIdp } from "@tailor-platform/sdk";
+import { defineAuth } from "@tailor-platform/sdk";
 import { user } from "./tailordb/user";
-
-// Define the Entra ID OIDC IdP
-export const entraIdOidc = defineIdp("entra-id-oidc", {
-  clientId: process.env.ENTRA_ID_CLIENT_ID,
-  clientSecret: process.env.ENTRA_ID_CLIENT_SECRET,
-  oidcConfiguration: {
-    issuer: "https://login.microsoftonline.com/{tenant-id}/v2.0",
-  },
-});
 
 // Configure Auth service to use Entra ID
 export const auth = defineAuth("main-auth", {
@@ -100,7 +92,14 @@ export const auth = defineAuth("main-auth", {
       lastName: true,
     },
   },
-  idProvider: entraIdOidc.provider("entra-id-oidc-provider"),
+  idProvider: {
+    name: "entra-id-oidc",
+    kind: "OIDC",
+    clientID: process.env.ENTRA_ID_CLIENT_ID!,
+    // Store the client secret in Secret Manager and reference it by vault/key
+    clientSecret: { vaultName: "default", secretKey: "entra-id-client-secret" },
+    providerURL: "https://login.microsoftonline.com/{tenant-id}/v2.0",
+  },
 });
 ```
 

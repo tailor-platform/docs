@@ -1,6 +1,7 @@
 ---
 description: "Push new TailorDB products to a Shopify store automatically with an Executor trigger and the Shopify API."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Integrate Shopify with Tailor Platform
@@ -56,9 +57,9 @@ Treat your API key as a sensitive data and never share it publicly or commit it 
 
 Follow the below steps to create an event based trigger.
 
-1. Enable `PublishRecordEvents` settings in the `Products` table
+1. Enable the `publishEvents` feature on the `Product` type
 
-To enable event publishing for Product records, add the `publishRecordEvents` feature to your Product type:
+To enable event publishing for Product records, add the `publishEvents` feature to your Product type:
 
 ```typescript {{ title: 'tailordb/product.ts' }}
 import { db } from "@tailor-platform/sdk";
@@ -70,7 +71,7 @@ export const product = db
     // ... other fields
   })
   .features({
-    publishRecordEvents: true,
+    publishEvents: true,
   });
 ```
 
@@ -164,7 +165,7 @@ export default createExecutor({
   description: "Handle Shopify product creation webhook",
   trigger: incomingWebhookTrigger(),
   operation: {
-    kind: "tailorGraphql",
+    kind: "graphql",
     query: `
       mutation createProduct($input: createProductInput!) {
         createProduct(input: $input) {

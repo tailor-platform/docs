@@ -1,6 +1,7 @@
 ---
 description: "Start workflows in production from a job function with tailor.workflow.startWorkflow or automatically from an executor."
 doc_type: guide
+sdk_version: "2.25.0"
 ---
 
 # Triggering Workflow
@@ -41,7 +42,7 @@ export async function main(args) {
 **API Reference:**
 
 - **First argument**: Name of the workflow to trigger
-- **Second argument**: JSON string of input arguments
+- **Second argument**: Arguments forwarded to the workflow's main job
 - **Third argument** (optional): Options object
   - `authInvoker` - Authentication context for the workflow
     - `namespace` - Auth namespace
@@ -68,13 +69,9 @@ Workflows can be triggered automatically from Executor service in response to ev
 Start a workflow when a database record is created:
 
 ```typescript {{ title: 'executor.ts' }}
-import { createWorkflow, createExecutor, recordCreatedTrigger } from "@tailor-platform/sdk";
+import { createExecutor, recordCreatedTrigger } from "@tailor-platform/sdk";
 import { order } from "./types";
-
-const processOrderWorkflow = createWorkflow({
-  name: "process-order",
-  steps: [/* ... */],
-});
+import processOrderWorkflow from "./workflows/process-order";
 
 createExecutor({
   name: "order-created-workflow",
@@ -95,17 +92,16 @@ createExecutor({
 Start a workflow from an incoming webhook:
 
 ```typescript {{ title: 'executor.ts' }}
-import { createWorkflow, createExecutor, webhookTrigger } from "@tailor-platform/sdk";
-
-const processWebhookWorkflow = createWorkflow({
-  name: "process-webhook",
-  steps: [/* ... */],
-});
+import { createExecutor, incomingWebhookTrigger } from "@tailor-platform/sdk";
+import processWebhookWorkflow from "./workflows/process-webhook";
 
 createExecutor({
   name: "webhook-workflow",
   description: "Process webhook data",
-  trigger: webhookTrigger(),
+  trigger: incomingWebhookTrigger<{
+    body: { orderId: string };
+    headers: Record<string, string>;
+  }>(),
   operation: {
     kind: "workflow",
     workflow: processWebhookWorkflow,
@@ -119,12 +115,8 @@ createExecutor({
 Start a workflow on a schedule:
 
 ```typescript {{ title: 'executor.ts' }}
-import { createWorkflow, createExecutor, scheduleTrigger } from "@tailor-platform/sdk";
-
-const dailySyncWorkflow = createWorkflow({
-  name: "daily-sync",
-  steps: [/* ... */],
-});
+import { createExecutor, scheduleTrigger } from "@tailor-platform/sdk";
+import dailySyncWorkflow from "./workflows/daily-sync";
 
 createExecutor({
   name: "daily-sync-workflow",
@@ -317,7 +309,7 @@ Start a workflow execution using the `tailor workflow start` command:
 
 ```bash
 tailor workflow start my-workflow \
-  --machineuser admin-machine-user \
+  --machine-user admin-machine-user \
   --arg '{"orderId": "12345"}'
 ```
 
@@ -335,7 +327,7 @@ tailor workflow start [options] <name>
 
 **Options:**
 
-- `--machineuser <MACHINEUSER>` (`-m`): Machine user name (required)
+- `--machine-user <MACHINE-USER>` (`-m`): Machine user name. Falls back to the active profile's default machine user (optional)
 - `--arg <ARG>` (`-a`): Workflow argument as JSON string (optional)
 - `--wait` (`-W`): Wait for execution to complete (optional)
 - `--interval <INTERVAL>` (`-i`): Polling interval when using --wait (e.g., '3s', '500ms', '1m') (optional, default: '3s')
@@ -354,18 +346,21 @@ Pass input data to your workflow using the `--arg` option:
 
 ```bash
 tailor workflow start my-workflow \
-  --machineuser admin-machine-user \
+  --machine-user admin-machine-user \
   --arg '{"orderId": "12345", "priority": "high"}'
 ```
 
-The argument is available in the main function as `args`:
+The argument is passed to the main job's `body` as its `input`:
 
-```javascript
-export function main(args) {
-  console.log("Order ID:", args.orderId);
-  console.log("Priority:", args.priority);
-  // ...
-}
+```typescript
+export const processOrder = createWorkflowJob({
+  name: "process-order",
+  body: (input: { orderId: string; priority: string }) => {
+    console.log("Order ID:", input.orderId);
+    console.log("Priority:", input.priority);
+    // ...
+  },
+});
 ```
 
 ### Authentication
@@ -376,11 +371,11 @@ Workflows execute with machine user authentication context.
 
 ```bash
 tailor workflow start my-workflow \
-  --machineuser my-machine-user \
+  --machine-user my-machine-user \
   --arg '{"data": "value"}'
 ```
 
-The workflow will execute with the permissions of the specified machine user, allowing access to protected resources. The `--machineuser` option is required when starting workflows.
+The workflow will execute with the permissions of the specified machine user, allowing access to protected resources. The `--machine-user` option falls back to the active profile's default machine user when omitted.
 
 ## Further Information
 
