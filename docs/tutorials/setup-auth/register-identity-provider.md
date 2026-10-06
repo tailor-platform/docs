@@ -50,14 +50,13 @@ const auth = defineAuth("project-management-auth", {
   },
   idProvider: {
     name: "oidc-provider",
-    oidc: {
-      clientId: process.env.OIDC_CLIENT_ID!,
-      clientSecret: {
-        vaultName: "my-vault",
-        secretName: "oidc-client-secret",
-      },
-      providerUrl: process.env.OIDC_PROVIDER_URL!,
+    kind: "OIDC",
+    clientID: process.env.OIDC_CLIENT_ID!,
+    clientSecret: {
+      vaultName: "my-vault",
+      secretKey: "oidc-client-secret",
     },
+    providerURL: process.env.OIDC_PROVIDER_URL!,
   },
 });
 
@@ -118,13 +117,12 @@ const auth = defineAuth("project-management-auth", {
   },
   idProvider: {
     name: "saml-provider",
-    saml: {
-      metadataUrl: process.env.SAML_METADATA_URL!,
-      // Alternative: use rawMetadata for inline XML
-      // rawMetadata: `<?xml version="1.0"?>...`,
-      enableSignRequest: false, // Set to true to enable request signing
-      defaultRedirectURL: "https://your-app.example.com/login",
-    },
+    kind: "SAML",
+    metadataURL: process.env.SAML_METADATA_URL!,
+    // Alternative: use rawMetadata for inline XML
+    // rawMetadata: `<?xml version="1.0"?>...`,
+    enableSignRequest: false, // Set to true to enable request signing
+    defaultRedirectURL: "https://your-app.example.com/login",
   },
 });
 
@@ -143,8 +141,8 @@ export default defineConfig({
 
 | Property               | Description                                                                                                                                            |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **metadataUrl**        | Metadata URL of the identity provider **(required if rawMetadata is not provided)**.                                                                   |
-| **rawMetadata**        | Raw SAML metadata XML string **(required if metadataUrl is not provided)**.                                                                            |
+| **metadataURL**        | Metadata URL of the identity provider **(required if rawMetadata is not provided)**.                                                                   |
+| **rawMetadata**        | Raw SAML metadata XML string **(required if metadataURL is not provided)**.                                                                            |
 | **enableSignRequest**  | Whether to enable signing of SAML authentication requests (optional, defaults to `false`). When enabled, the platform uses a built-in key for signing. |
 | **defaultRedirectURL** | URL the platform redirects to when a SAML assertion arrives without a `RelayState`.                                                                    |
 
@@ -176,10 +174,9 @@ const auth = defineAuth("project-management-auth", {
   },
   idProvider: {
     name: "idtoken-provider",
-    idToken: {
-      clientId: process.env.ID_TOKEN_CLIENT_ID!,
-      providerUrl: process.env.ID_TOKEN_PROVIDER_URL!,
-    },
+    kind: "IDToken",
+    clientID: process.env.ID_TOKEN_CLIENT_ID!,
+    providerURL: process.env.ID_TOKEN_PROVIDER_URL!,
   },
 });
 
@@ -221,40 +218,9 @@ The SDK will deploy the Auth service with your IdP configuration.
 2. Go to the Auth section to verify your IdP configuration
 3. Test the authentication flow with your IdP
 
-**Multiple IdP Configurations:**
+**One Identity Provider per Auth Service:**
 
-You can register multiple identity providers in the same application:
-
-```typescript
-export default defineConfig({
-  name: "project-management",
-  auth: {
-    namespace: "project-management-auth",
-    idpConfigs: [
-      {
-        name: "oidc-provider",
-        oidc: {/* ... */},
-      },
-      {
-        name: "saml-provider",
-        saml: {/* ... */},
-      },
-      {
-        name: "idtoken-provider",
-        idToken: {/* ... */},
-      },
-    ],
-    userProfileConfig: {
-      tailordb: {
-        namespace: "main-db",
-        type: "User",
-        usernameField: "email",
-        attributeFields: ["roles"],
-      },
-    },
-  },
-});
-```
+Each Auth service accepts a single `idProvider` entry, and each application can have exactly one Auth service (see [Auth Configuration Rules](../../sdk/services/auth#configuration)). If you need to support more than one authentication protocol, define a separate application (with its own `tailor.config.ts` and Auth service) per identity provider rather than listing several providers under one `auth`.
 
 You can now use your Auth service to manage access to resources.
 
