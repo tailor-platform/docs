@@ -4,6 +4,16 @@
 `tailor deploy` applies your application. It can provide deployed URLs and public
 OAuth client IDs as build environment variables.
 
+## Installation
+
+```sh
+pnpm add -D @tailor-platform/sdk-plugin-frontend
+```
+
+Use an SDK version that supports `onDeployed` hooks. When testing a PR before
+that SDK release, install both the SDK and frontend plugin from the same
+`pkg.pr.new` commit.
+
 ## Monorepo example
 
 Given this layout:
@@ -21,7 +31,7 @@ Register the plugin in `apps/backend/tailor.config.ts`:
 
 ```typescript
 import { defineConfig, definePlugins, defineStaticWebSite } from "@tailor-platform/sdk";
-import { frontendPlugin } from "@tailor-platform/sdk/plugin/frontend";
+import { frontendPlugin } from "@tailor-platform/sdk-plugin-frontend";
 
 const website = defineStaticWebSite("my-frontend", { description: "Web app" });
 
@@ -37,7 +47,7 @@ export const plugins = definePlugins(
     build: "pnpm run build",
     distDir: "dist",
     env: ({ site, application }) => ({
-      VITE_TAILOR_APP_URL: application.url,
+      ...(application.url ? { VITE_TAILOR_APP_URL: application.url } : {}),
       VITE_SITE_URL: site.url,
       VITE_OAUTH2_CLIENT_ID:
         application.auth?.oauth2Clients.find((client) => client.name === "web")?.clientId ?? "",
@@ -106,3 +116,9 @@ not rolled back. Skipped upload files produce warnings and are listed in the res
 With `--json`, the result contains a `deployedHooks` entry for
 `@tailor-platform/frontend`. Its `outputs.frontends` array contains each site's
 `site`, published `url`, and `skippedFiles`.
+
+The same deploy result includes `workspaceId` and `applications`, including each
+config's Static Website URLs, AI Gateway URLs, and public OAuth client IDs. The
+application endpoint URL and domain are present when a Platform Application with
+the config's name exists. Read these directly from `tailor deploy --json`; a
+separate `show` command is not required.
