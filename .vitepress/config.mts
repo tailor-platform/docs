@@ -89,13 +89,6 @@ export default withMermaid(
       nav: generateNav(docsDir),
       sidebar: generateAllSidebars(docsDir),
 
-      socialLinks: [
-        {
-          icon: "github",
-          link: "https://github.com/tailor-platform/docs",
-        },
-      ],
-
       search: {
         provider: "local",
         options: {
@@ -115,11 +108,6 @@ export default withMermaid(
 
       outline: {
         level: [2, 3],
-      },
-
-      editLink: {
-        pattern: "https://github.com/tailor-platform/docs/edit/main/docs/:path",
-        text: "Edit this page on GitHub",
       },
     },
 
