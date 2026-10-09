@@ -63,6 +63,8 @@ Specify the model with the `model` field in the request body. The following mode
 | `gpt-5.6-sol`            | Chat      | Regional |
 | `gpt-5.6-terra`          | Chat      | Regional |
 | `gpt-6-astra`            | Chat      | Regional |
+| `gpt-6-luna`             | Chat      | Regional |
+| `gpt-6.1-sol`            | Chat      | Regional |
 | `gemini-embedding-001`   | Embedding | Global   |
 | `text-embedding-3-large` | Embedding | Regional |
 | `text-embedding-3-small` | Embedding | Regional |
