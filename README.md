@@ -1,6 +1,6 @@
 # Tailor Platform Documentation
 
-Central docs repo covering technical docs and ERP app building guides.
+Central docs repo covering technical docs and ERP app building guides, published at https://docs.tailor.tech.
 
 ## Overview
 

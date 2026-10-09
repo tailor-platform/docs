@@ -4,7 +4,7 @@ Thank you for your interest in contributing to the Tailor Platform documentation
 
 ## Getting Started
 
-1. Fork and clone the repository
+1. Clone the repository
 2. Install dependencies:
    ```bash
    pnpm install
