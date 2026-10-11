@@ -38,7 +38,12 @@ Each application can:
 With the SDK, applications are defined in `tailor.config.ts`:
 
 ```typescript
-import { defineConfig } from "@tailor-platform/sdk";
+import { defineAuth, defineConfig } from "@tailor-platform/sdk";
+import { user } from "./db/user";
+
+const auth = defineAuth("my-auth", {
+  userProfile: { type: user, usernameField: "email" },
+});
 
 export default defineConfig({
   name: "my-app",
@@ -48,7 +53,7 @@ export default defineConfig({
   resolver: {
     "my-resolver": { files: ["resolver/**/*.ts"] },
   },
-  auth: { name: "my-auth" },
+  auth,
   // ... other configuration
 });
 ```
